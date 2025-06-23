@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="light">
       <body
-        className={`${inter.variable} ${poppins.variable} font-sans antialiased`}
+        className={`${inter.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-neutral-100 via-neutral-200 to-white`}
       >
         <Navbar />
         {/* The {children} prop will be the content of our pages */}
