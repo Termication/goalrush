@@ -44,10 +44,12 @@ export default function HomePage() {
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+
 if (isMobile) {
   return (
-    <div className="w-full min-h-screen flex flex-col bg-gray-50 pb-4">
-      {/* Hero Section - Full Width, Prominent Breaking News */}
+    <div className="w-full min-h-screen flex flex-col">
+      {/* Hero Section */}
       <div className="relative w-full h-[45vh] min-h-[280px] mb-4">
         <Image
           src={featured.image}
@@ -77,7 +79,7 @@ if (isMobile) {
         </div>
       </div>
 
-      {/* News List - Long, Detailed Cards */}
+      {/* Detailed Cards */}
       <div className="px-4 space-y-4">
         {headlines.map((item, idx) => (
           <div 
@@ -121,9 +123,9 @@ if (isMobile) {
 }
 
 
-  // ✅ Original desktop layout stays unchanged
+  //  Desktop layout
   return (
-    <div className="min-h-screen px-4 py-10 bg-gradient-to-br from-neutral-100 via-neutral-200 to-white">
+    <div className="min-h-screen px-4 py-5">
       {/* Hero */}
       <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 mb-12">
         <div className="flex flex-col justify-center">
