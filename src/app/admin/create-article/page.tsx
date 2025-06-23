@@ -9,14 +9,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from 'lucide-react';
+import { RichTextEditor } from '@/components/common/RichTextEditor';
 
-// --- Main Page Component ---
+
 
 export default function CreateArticlePage() {
   const [formData, setFormData] = useState({
     title: '',
     summary: '',
-    body: '',
+    body: '', // store HTML from the RichTextEditor
     imageUrl: '',
     category: '',
     isFeatured: false,
@@ -26,11 +27,18 @@ export default function CreateArticlePage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  // Handler for standard input and textarea fields
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+  
+  // Handler specifically for the RichTextEditor component
+  const handleBodyChange = (html: string) => {
+    setFormData(prev => ({...prev, body: html}));
+  };
 
+  // Handler for the checkbox component
   const handleCheckboxChange = (checked: boolean | 'indeterminate') => {
     setFormData(prev => ({ ...prev, isFeatured: Boolean(checked) }));
   };
@@ -54,6 +62,7 @@ export default function CreateArticlePage() {
       }
       
       setSuccess('Article created successfully!');
+      // Reset form, including the body which will clear the editor
       setFormData({
         title: '', summary: '', body: '', imageUrl: '', category: '', isFeatured: false,
       });
@@ -84,14 +93,18 @@ export default function CreateArticlePage() {
                 <Textarea id="summary" name="summary" value={formData.summary} onChange={handleInputChange} placeholder="A short summary of the article..." required />
               </div>
 
+              
               <div className="space-y-2">
-                <Label htmlFor="body">Body</Label>
-                <Textarea id="body" name="body" value={formData.body} onChange={handleInputChange} placeholder="Write the full article content here..." className="h-40" required />
+                <Label>Body</Label>
+                <RichTextEditor
+                  content={formData.body}
+                  onChange={handleBodyChange}
+                />
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="imageUrl">Image URL</Label>
+                  <Label htmlFor="imageUrl">Featured Image URL</Label>
                   <Input id="imageUrl" name="imageUrl" type="url" value={formData.imageUrl} onChange={handleInputChange} placeholder="https://example.com/image.jpg" required />
                 </div>
                 <div className="space-y-2">
