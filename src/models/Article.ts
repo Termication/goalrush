@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, models } from 'mongoose';
 
-// 1. DEFINE THE INTERFACE FOR THE DOCUMENT (TYPE-CHECKING)
+// 1. DEFINE THE INTERFACE FOR THE DOCUMENT
 export interface IArticle extends Document {
   title: string;
   summary: string;
