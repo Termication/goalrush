@@ -69,13 +69,13 @@ if (isMobile) {
           <p className="text-white/90 text-sm line-clamp-2">
             {featured.summary}
           </p>
-          <Link
+            <Link
             href={featured.link}
-            className="text-sm text-blue-200 hover:text-blue-100 
-              inline-flex items-center gap-1 transition-colors"
-          >
+            className="relative text-sm text-blue-200 inline-flex items-center gap-1 transition-colors hover:text-blue-100 after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-blue-100 after:transition-all after:duration-300 after:ease-in-out hover:after:w-full"
+            >
             Read full story <span>→</span>
-          </Link>
+            </Link>
+
         </div>
       </div>
 
@@ -136,12 +136,16 @@ if (isMobile) {
             {featured.title}
           </h1>
           <p className="text-lg text-muted-foreground mb-4">{featured.summary}</p>
-          <Link
+            <Link
             href={featured.link}
-            className="text-primary font-medium hover:underline"
-          >
-            Read full story →
-          </Link>
+            className="text-primary font-medium inline-flex items-center gap-1"
+            >
+            <span className="relative after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 after:ease-in-out hover:after:w-full">
+                Read full story
+            </span>
+            <span>→</span>
+            </Link>
+
         </div>
         <div className="relative h-64 sm:h-80 md:h-96 w-full rounded-xl overflow-hidden shadow">
           <Image
@@ -156,7 +160,7 @@ if (isMobile) {
       {/* Grid Cards */}
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
         {headlines.map((item, idx) => (
-          <Card key={idx} className="overflow-hidden hover:shadow-md transition-shadow duration-200">
+         <Card key={idx} className="overflow-hidden hover:shadow-md transition-shadow duration-200">
             <div className="relative w-full h-40">
               <Image
                 src={item.image}
@@ -170,12 +174,12 @@ if (isMobile) {
               <p className="text-sm text-muted-foreground mt-1 mb-3">
                 {item.summary}
               </p>
-              <Link
+                <Link
                 href={item.link}
-                className="text-sm text-primary hover:underline"
-              >
+                className="relative text-sm text-primary after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
+                >
                 Read more →
-              </Link>
+                </Link>
             </CardContent>
           </Card>
         ))}
