@@ -46,15 +46,20 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
+        // Explicitly configure heading levels for robustness
+        heading: {
+          levels: [1, 2, 3],
+        },
       }),
       Image.configure({
-        inline: false, // Allows images
+        inline: false, 
       }),
     ],
     content: content,
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none min-h-[200px]',
+        // Enlarge the text box and apply typography styles via the `prose` class
+        class: 'prose dark:prose-invert max-w-none prose-sm sm:prose-base p-4 focus:outline-none min-h-[400px]',
       },
     },
     onUpdate({ editor }) {
