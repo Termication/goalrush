@@ -5,6 +5,12 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import { Button } from '@/components/ui/button';
 import { Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, Pilcrow, List, ListOrdered, ImageIcon, Quote } from 'lucide-react';
+import Heading from '@tiptap/extension-heading'
+import BulletList from '@tiptap/extension-bullet-list'
+import OrderedList from '@tiptap/extension-ordered-list'
+import ListItem from '@tiptap/extension-list-item'
+
+
 
 // --- MenuBar Component ---
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
@@ -36,7 +42,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
-// --- RichTextEditor Component ---
+// RichTextEditor Component
 interface RichTextEditorProps {
     content: string;
     onChange: (html: string) => void;
@@ -46,14 +52,18 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        // Explicitly configure heading levels for robustness
-        heading: {
-          levels: [1, 2, 3],
-        },
+        heading: false, // disable default to use custom
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
       }),
-      Image.configure({
-        inline: false, 
+      Heading.configure({
+        levels: [1, 2, 3],
       }),
+      BulletList,
+      OrderedList,
+      ListItem,
+      Image.configure({ inline: false }),
     ],
     content: content,
     editorProps: {
