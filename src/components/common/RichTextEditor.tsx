@@ -52,7 +52,7 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: false, // disable default to use custom
+        heading: false,
         bulletList: false,
         orderedList: false,
         listItem: false,
