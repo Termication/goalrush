@@ -77,6 +77,7 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     },
   });
 
+  // Ensure the editor is initialized before rendering
   return (
     <div className="rounded-md border border-input bg-background">
       <MenuBar editor={editor} />
