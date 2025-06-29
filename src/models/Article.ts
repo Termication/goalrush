@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, models } from 'mongoose';
+import slugify from 'slugify';
 
-// 1. DEFINE THE INTERFACE FOR THE DOCUMENT
+// 1. INTERFACE
 export interface IArticle extends Document {
   title: string;
   summary: string;
@@ -8,11 +9,12 @@ export interface IArticle extends Document {
   imageUrl: string;
   category: string;
   isFeatured: boolean;
+  slug: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// 2. DEFINE THE MONGOOSE SCHEMA
+// 2. SCHEMA
 const ArticleSchema: Schema = new Schema({
   title: {
     type: String,
@@ -41,12 +43,23 @@ const ArticleSchema: Schema = new Schema({
     type: Boolean,
     default: false,
   },
+  slug: {
+    type: String,
+    unique: true,
+  },
 }, {
-  // Add timestamps to automatically create `createdAt` and `updatedAt` fields
   timestamps: true,
 });
 
-// 3. CREATE AND EXPORT THE MODEL
-const Article = models.Article || mongoose.model<IArticle>('Article', ArticleSchema);
+// 3. PRE-SAVE HOOK TO GENERATE SLUG
+ArticleSchema.pre<IArticle>('validate', function (next) {
+  if (this.isModified('title') || !this.slug) {
+    this.slug = slugify(this.title, { lower: true, strict: true });
+  }
+  next();
+});
 
+
+// 4. MODEL
+const Article = models.Article || mongoose.model<IArticle>('Article', ArticleSchema);
 export default Article;

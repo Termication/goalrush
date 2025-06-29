@@ -6,31 +6,18 @@ import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import Image from "next/image"
 
-const featured = {
-  title: "🇫🇷 Mbappé Joins Real Madrid!",
-  summary:
-    "It's official — Kylian Mbappé has signed a five-year contract with Real Madrid. The football world reacts.",
-  image: "https://picsum.photos/seed/mbappe/900/600",
-  slug: "mbappe-joins-real-madrid",
+interface Article {
+  title: string
+  summary: string
+  imageUrl: string
+  slug: string
+  category?: string
+  isFeatured?: boolean
 }
-
-const headlines = [
-  {
-    title: "🔥 Premier League Fixtures Released",
-    summary: "Arsenal vs Man City opens the 2025 season.",
-    image: "https://picsum.photos/seed/fixtures/600/400",
-    slug: "premier-league-fixtures",
-  },
-  {
-    title: "💰 Record Transfer Rumor: Haaland to PSG?",
-    summary: "Insiders suggest a €250M bid is in play.",
-    image: "https://picsum.photos/seed/haaland/600/400",
-    slug: "haaland-to-psg-rumor",
-  },
-]
 
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
+  const [articles, setArticles] = useState<Article[]>([])
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768)
@@ -39,13 +26,38 @@ export default function HomePage() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+useEffect(() => {
+  const fetchArticles = async () => {
+    try {
+      const res = await fetch('/api/articles');
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+
+      const text = await res.text(); // read raw text
+      if (!text) throw new Error('Empty response');
+
+      const data = JSON.parse(text);
+      setArticles(data.articles || []);
+    } catch (err) {
+      console.error('Failed to fetch articles:', err);
+    }
+  };
+
+  fetchArticles();
+}, []);
+
+
+  const featured = articles.find((article) => article.isFeatured) || articles[0]
+  const headlines = articles.filter((a) => a.slug !== featured?.slug)
+
+  if (!featured) return null
+
   if (isMobile) {
     return (
       <div className="w-full min-h-screen flex flex-col">
         {/* Mobile Hero Section */}
         <div className="relative w-full h-[45vh] min-h-[280px] mb-4">
           <Image
-            src={featured.image}
+            src={featured.imageUrl}
             alt={featured.title}
             fill
             className="object-cover"
@@ -76,7 +88,7 @@ export default function HomePage() {
               className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col transition-all hover:shadow-lg"
             >
               <div className="relative w-full aspect-[16/9]">
-                <Image src={item.image} alt={item.title} fill className="object-cover" />
+                <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
               </div>
               <div className="p-4 flex flex-col space-y-2">
                 <div className="flex items-center gap-2 mb-1">
@@ -122,7 +134,7 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="relative h-64 sm:h-80 md:h-96 w-full rounded-xl overflow-hidden shadow">
-          <Image src={featured.image} alt={featured.title} fill className="object-cover" />
+          <Image src={featured.imageUrl} alt={featured.title} fill className="object-cover" />
         </div>
       </div>
 
@@ -131,7 +143,7 @@ export default function HomePage() {
         {headlines.map((item, idx) => (
           <Card key={idx} className="overflow-hidden hover:shadow-md transition-shadow duration-200">
             <div className="relative w-full h-40">
-              <Image src={item.image} alt={item.title} fill className="object-cover" />
+              <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
             </div>
             <CardContent className="p-4">
               <h3 className="text-lg font-semibold">{item.title}</h3>

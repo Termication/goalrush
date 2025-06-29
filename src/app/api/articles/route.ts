@@ -1,38 +1,54 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
+import slugify from 'slugify';
 
-// This function will handle POST requests to /api/articles
+// Handle GET requests — fetch all articles
+export async function GET() {
+  try {
+    await dbConnect();
+
+    const articles = await Article.find({}).sort({ createdAt: -1 });
+
+    return NextResponse.json({ success: true, articles });
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    return NextResponse.json({ success: false, error: 'Failed to fetch articles' }, { status: 500 });
+  }
+}
+
+// Handle POST requests — create a new article
 export async function POST(request: Request) {
   try {
-    // 1. Connect to the database
     await dbConnect();
-    console.log("Database connected successfully for POST request.");
+    console.log("✅ Connected to MongoDB");
 
-    // 2. Parse the incoming request body
     const body = await request.json();
-    console.log("Request body:", body);
+    const { title, summary, body: articleBody, imageUrl, category, isFeatured } = body;
 
-    // Basic validation
-    const { title, summary, body: articleBody, imageUrl, category } = body;
     if (!title || !summary || !articleBody || !imageUrl || !category) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
-    // 3. Create a new article using the Article model
-    const ArticleModel = (Article as any).default || Article;
-    const articleInstance = new ArticleModel(body);
-    const newArticle = await articleInstance.save();
-    
-    console.log("New article created:", newArticle);
+    // ✅ Generate a slug manually
+    const slug = slugify(title, { lower: true, strict: true });
 
-    // 4. Return a success response with the created article data
+    const ArticleModel = (Article as any).default || Article;
+
+    const newArticle = await new ArticleModel({
+      title,
+      summary,
+      body: articleBody,
+      imageUrl,
+      category,
+      isFeatured,
+      slug,
+    }).save();
+
     return NextResponse.json({ success: true, data: newArticle }, { status: 201 });
 
   } catch (error: any) {
-    // 5. Handle any errors that occur
     console.error("Error creating article:", error);
-    // Check for Mongoose validation errors
     if (error.name === 'ValidationError') {
       return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
