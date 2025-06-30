@@ -47,7 +47,8 @@ useEffect(() => {
 
 
   const featured = articles.find((article) => article.isFeatured) || articles[0]
-  const headlines = articles.filter((a) => a.slug !== featured?.slug)
+  const headlines = articles.filter((a) => a.slug !== featured?.slug).slice(0, 3)
+
 
   if (!featured) return null
 
