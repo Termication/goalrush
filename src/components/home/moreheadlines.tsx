@@ -13,33 +13,41 @@ interface Article {
 }
 
 export default function MoreHeadlinesSection() {
-  const [headlines, setHeadlines] = useState<Article[]>([])
+  const [articles, setArticles] = useState<Article[]>([])
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const limit = 6
+
+  const fetchArticles = async (page: number) => {
+    try {
+      const res = await fetch(`/api/articles?page=${page}&limit=${limit}`)
+      const json = await res.json()
+
+      if (res.ok) {
+        const newArticles = (json.articles || []).filter((a: Article) => !a.isFeatured)
+        setArticles((prev) => [...prev, ...newArticles])
+        const more = page < json.totalPages
+        setHasMore(more)
+      }
+    } catch (err) {
+      console.error('Pagination fetch error:', err)
+    }
+  }
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const res = await fetch('/api/articles')
-        const json = await res.json()
-        if (res.ok) {
-          // filter out the featured article and limit to 6
-          const data = json.articles || []
-          const nonFeatured = data.filter((a: Article) => !a.isFeatured).slice(0, 6)
-          setHeadlines(nonFeatured)
-        }
-      } catch (err) {
-        console.error('Failed to fetch more headlines:', err)
-      }
-    }
+    fetchArticles(page)
+  }, [page])
 
-    fetchArticles()
-  }, [])
+  const loadMore = () => {
+    setPage((prev) => prev + 1)
+  }
 
   return (
     <section className="px-4 py-6">
       <h2 className="text-lg font-bold mb-4">More Headlines</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {headlines.map((item, idx) => (
+        {articles.map((item, idx) => (
           <Link
             key={idx}
             href={`/news/${item.slug}`}
@@ -71,12 +79,14 @@ export default function MoreHeadlinesSection() {
         ))}
       </div>
 
-      {/* More Button */}
-      <div className="mt-6 text-center">
-        <Link href="/news" className="btn btn-soft btn-primary">
-          More News →
-        </Link>
-      </div>
+      {/* Load More Button */}
+      {hasMore && (
+        <div className="mt-6 text-center">
+          <button onClick={loadMore} className="btn btn-primary">
+            Load More →
+          </button>
+        </div>
+      )}
     </section>
   )
 }
