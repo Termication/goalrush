@@ -1,3 +1,4 @@
+// app/login/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -5,8 +6,10 @@ import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import jwt from 'jsonwebtoken';
 
-const ADMIN_PASSWORD = 'editoronly2025'; // Ideally from env
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'editoronly2025';
+const SECRET_KEY = process.env.NEXT_PUBLIC_ADMIN_SECRET || 'supersecretkey';
 
 export default function LoginPage() {
   const [password, setPassword] = useState('');
@@ -15,7 +18,8 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     if (password === ADMIN_PASSWORD) {
-      document.cookie = `admin=true; path=/`; // set cookie
+      const token = jwt.sign({ role: 'admin' }, SECRET_KEY, { expiresIn: '1h' });
+      document.cookie = `admin-token=${token}; path=/; max-age=3600`;
       router.push('/admin/create-article');
     } else {
       setError('Incorrect password');
