@@ -52,14 +52,14 @@ export default function NewsPage() {
       </div>
       <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
       <p className="text-muted-foreground mb-4">{article.summary}</p>
-      <div className="relative w-full h-64 mb-6 rounded overflow-hidden">
+      {/* <div className="relative w-full h-64 mb-6 rounded overflow-hidden">
         <Image
           src={article.imageUrl}
           alt={article.title}
           fill
           className="object-cover"
         />
-      </div>
+      </div> */}
       <article className="prose dark:prose-invert prose-sm sm:prose-base max-w-none">
         <div dangerouslySetInnerHTML={{ __html: article.body }} />
       </article>

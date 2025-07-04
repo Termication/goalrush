@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react';
-import { redirect } from 'next/navigation';
+import { useState, ChangeEvent, FormEvent, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,19 +10,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from 'lucide-react';
+import { Terminal, UploadCloud } from 'lucide-react';
 import { RichTextEditor } from '@/components/common/RichTextEditor';
 
-
-
 export default function CreateArticlePage() {
-
+  // --- AUTHENTICATION CHECK ---
   const { data: session, status } = useSession();
-  
+
   const [formData, setFormData] = useState({
     title: '',
     summary: '',
-    body: '', // store HTML from the RichTextEditor
+    body: '',
     imageUrl: '',
     category: '',
     isFeatured: false,
@@ -31,25 +29,57 @@ export default function CreateArticlePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const featuredImageRef = useRef<HTMLInputElement | null>(null);
 
-  // Handler for standard input and textarea fields
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-  
-  // Handler specifically for the RichTextEditor component
+
   const handleBodyChange = (html: string) => {
     setFormData(prev => ({...prev, body: html}));
   };
 
-  // Handler for the checkbox component
   const handleCheckboxChange = (checked: boolean | 'indeterminate') => {
     setFormData(prev => ({ ...prev, isFeatured: Boolean(checked) }));
   };
   
+  const handleFeaturedImageUpload = async (file: File) => {
+    const uploadFormData = new FormData();
+    uploadFormData.append('file', file);
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setFormData(prev => ({ ...prev, imageUrl: json.data.secure_url }));
+      } else {
+        throw new Error(json.error || 'Upload failed');
+      }
+    } catch (err: any) {
+      setError(`Featured Image Upload Failed: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFeaturedImageUpload(file);
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!formData.imageUrl) {
+        setError("Please upload a featured image before publishing.");
+        return;
+    }
     setIsLoading(true);
     setError(null);
     setSuccess(null);
@@ -67,7 +97,6 @@ export default function CreateArticlePage() {
       }
       
       setSuccess('Article created successfully!');
-      // Reset form, including the body which will clear the editor
       setFormData({
         title: '', summary: '', body: '', imageUrl: '', category: '', isFeatured: false,
       });
@@ -79,20 +108,20 @@ export default function CreateArticlePage() {
     }
   };
 
-    if (status === 'loading') {
+  // --- REDIRECTION LOGIC ---
+  if (status === 'loading') {
     return (
         <main className="flex items-center justify-center min-h-screen">
-            <p>Loading...</p>
+            <p>Loading session...</p>
         </main>
     );
   }
 
-  // If the user is not authenticated, redirect them to the login page.
   if (status === 'unauthenticated') {
     redirect('/login');
   }
 
-  // If the user is authenticated, render the page content.
+  // Render the form only if authenticated
   return (
     <main className="bg-slate-100 dark:bg-slate-900 min-h-screen p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
@@ -111,7 +140,7 @@ export default function CreateArticlePage() {
                 <Label htmlFor="summary">Summary (Subtitle)</Label>
                 <Textarea id="summary" name="summary" value={formData.summary} onChange={handleInputChange} placeholder="A short summary of the article..." required />
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Body</Label>
                 <RichTextEditor
@@ -122,8 +151,27 @@ export default function CreateArticlePage() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="imageUrl">Featured Image URL</Label>
-                  <Input id="imageUrl" name="imageUrl" type="url" value={formData.imageUrl} onChange={handleInputChange} placeholder="https://example.com/image.jpg" required />
+                  <Label htmlFor="featuredImage">Featured Image</Label>
+                   <input
+                    ref={featuredImageRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={onFileSelect}
+                    className="hidden"
+                  />
+                  <div className="border border-dashed rounded-lg p-4 text-center">
+                    {formData.imageUrl ? (
+                       <div className="flex flex-col items-center gap-2">
+                         <img src={formData.imageUrl} alt="Featured preview" className="h-24 w-auto rounded-md" />
+                         <Button type="button" variant="link" onClick={() => featuredImageRef.current?.click()}>Change Image</Button>
+                       </div>
+                    ) : (
+                      <Button type="button" variant="outline" onClick={() => featuredImageRef.current?.click()}>
+                        <UploadCloud className="mr-2 h-4 w-4" />
+                        Upload Featured Image
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="category">Category</Label>
