@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/common/navbar";
+import NextAuthProvider from "@/components/providers/NextAuthProvider";
 
 
 const inter = Inter({
@@ -35,8 +35,10 @@ export default function RootLayout({
         className={`${inter.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-neutral-100 via-neutral-200 to-white`}
       >
         <Navbar />
-        {/* The {children} prop will be the content of our pages */}
-        {children}
+        <NextAuthProvider>
+          {/* The {children} prop will be the content of our pages */}
+          {children}
+        </NextAuthProvider>
       </body>
     </html>
   );
