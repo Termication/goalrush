@@ -1,22 +1,18 @@
-import { v2 as cloudinary } from 'cloudinary';
 import { NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
 
-// Parse CLOUDINARY_URL
-const parsed = process.env.CLOUDINARY_URL?.match(/^cloudinary:\/\/([^:]+):([^@]+)@(.+)$/);
-
-if (!parsed) {
-  throw new Error('❌ Invalid CLOUDINARY_URL format');
-}
-
-const [, apiKey, apiSecret, cloudName] = parsed;
-
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-});
+// The Cloudinary config is automatically read from the CLOUDINARY_URL
+// environment variable. No manual parsing or configuration is needed.
 
 export async function POST(req: Request) {
+  // Security Check: Ensure the user is authenticated before allowing uploads
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   const formData = await req.formData();
   const file = formData.get('file') as File;
 
@@ -25,18 +21,33 @@ export async function POST(req: Request) {
   }
 
   try {
+    // Convert the file to a buffer to be sent to Cloudinary
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const base64 = buffer.toString('base64');
-    const dataUri = `data:${file.type};base64,${base64}`;
 
-    const upload = await cloudinary.uploader.upload(dataUri, {
-      folder: 'articles',
+    // Use a Promise to handle the upload stream from Cloudinary
+    const uploadResult: any = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          // FIX: Removed the conflicting 'upload_preset' line.
+          // The upload is already signed because this is a server-side route.
+          tags: ['article-image'],
+          folder: 'goalrush-articles',
+        },
+        (error, result) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve(result);
+        }
+      ).end(buffer);
     });
 
-    return NextResponse.json({ success: true, data: upload });
-  } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ success: false, error: 'Upload failed' }, { status: 500 });
+    // Return the secure URL of the uploaded image
+    return NextResponse.json({ success: true, data: { secure_url: uploadResult.secure_url } });
+
+  } catch (error: any) {
+    console.error('Cloudinary Upload Error:', error);
+    return NextResponse.json({ success: false, error: error.message || 'Upload failed' }, { status: 500 });
   }
 }
