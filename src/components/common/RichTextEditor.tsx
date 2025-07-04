@@ -9,10 +9,6 @@ import {
   Bold, Italic, Strikethrough, Heading1, Heading2,
   List, ListOrdered, ImageIcon
 } from 'lucide-react';
-import Heading from '@tiptap/extension-heading';
-import BulletList from '@tiptap/extension-bullet-list';
-import OrderedList from '@tiptap/extension-ordered-list';
-import ListItem from '@tiptap/extension-list-item';
 
 // --- MenuBar Component ---
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
@@ -20,28 +16,28 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 
   if (!editor) return null;
 
-const handleImageUpload = async (file: File) => {
-  const formData = new FormData();
-  formData.append('file', file);
+  const handleImageUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
 
-  try {
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-    const json = await res.json();
+      const json = await res.json();
 
-    if (res.ok && json.success) {
-      editor?.chain().focus().setImage({ src: json.data.secure_url }).run();
-    } else {
-      throw new Error(json.error || 'Upload failed');
+      if (res.ok && json.success) {
+        // secure_url to insert the image
+        editor.chain().focus().setImage({ src: json.data.secure_url }).run();
+      } else {
+        throw new Error(json.error || 'Upload failed');
+      }
+    } catch (err: any) {
+      console.error('Image upload failed:', err.message);
     }
-  } catch (err) {
-    console.error('Image upload failed:', err);
-    alert('❌ Failed to upload image');
-  }
-};
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,15 +84,11 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: false,
-        bulletList: false,
-        orderedList: false,
-        listItem: false,
+        
+        heading: {
+          levels: [1, 2],
+        },
       }),
-      Heading.configure({ levels: [1, 2] }),
-      BulletList,
-      OrderedList,
-      ListItem,
       Image.configure({ inline: false }),
     ],
     content,
