@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, ChangeEvent, FormEvent } from 'react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +16,9 @@ import { RichTextEditor } from '@/components/common/RichTextEditor';
 
 
 export default function CreateArticlePage() {
+
+  const { data: session, status } = useSession();
+  
   const [formData, setFormData] = useState({
     title: '',
     summary: '',
@@ -74,6 +79,20 @@ export default function CreateArticlePage() {
     }
   };
 
+    if (status === 'loading') {
+    return (
+        <main className="flex items-center justify-center min-h-screen">
+            <p>Loading...</p>
+        </main>
+    );
+  }
+
+  // If the user is not authenticated, redirect them to the login page.
+  if (status === 'unauthenticated') {
+    redirect('/login');
+  }
+
+  // If the user is authenticated, render the page content.
   return (
     <main className="bg-slate-100 dark:bg-slate-900 min-h-screen p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
@@ -92,7 +111,6 @@ export default function CreateArticlePage() {
                 <Label htmlFor="summary">Summary (Subtitle)</Label>
                 <Textarea id="summary" name="summary" value={formData.summary} onChange={handleInputChange} placeholder="A short summary of the article..." required />
               </div>
-
               
               <div className="space-y-2">
                 <Label>Body</Label>
