@@ -9,6 +9,30 @@
   --foreground: #171717;
 }
 
+@layer utilities {
+  @keyframes typing {
+    0%, 100% { width: 0 }
+    13%, 99.9% { width: 100% }
+  }
+
+  @keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: white; }
+  }
+
+  .animate-typing {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: .15em solid white;
+
+    animation:
+      typing 6.5s steps(14, end) infinite,
+      blink-caret .75s step-end infinite;
+  }
+}
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
