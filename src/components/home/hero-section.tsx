@@ -145,7 +145,7 @@ useEffect(() => {
       {headlines.map((item, idx) => (
         // The Link component now wraps the entire Card
         <Link href={`/news/${item.slug}`} key={idx} className="block group">
-          <Card className="overflow-hidden h-full group-hover:shadow-lg transition-shadow duration-300">
+          <Card className="overflow-hidden h-full group-hover:shadow-2xl transition-shadow duration-300">
             <div className="relative w-full h-40">
               <Image
                 src={item.imageUrl}
