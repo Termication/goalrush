@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import Image from "next/image"
-import ArticleSkeleton from "@/components/common/ArticleSkeleton"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 
 interface Article {
   title: string
@@ -118,32 +119,43 @@ useEffect(() => {
   return (
     <div className="min-h-screen px-4 py-5">
       {/* Desktop Hero */}
-      <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 mb-12">
+    <Link
+        href={`/news/${featured.slug}`}
+        className="group max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 mb-12 cursor-pointer"
+      >
         <div className="flex flex-col justify-center">
-          <Badge className="animate-pulse mb-4 px-4 py-1 text-sm bg-red-600 text-white hover:bg-red-700">
+          <Badge className="animate-pulse mb-4 px-4 py-1 text-sm bg-red-600 text-white hover:bg-red-700 w-fit">
             Breaking News
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{featured.title}</h1>
-          <p className="text-lg text-muted-foreground mb-4">{featured.summary}</p>
-          <Link
-            href={`/news/${featured.slug}`}
-            className="text-primary font-medium inline-flex items-center gap-1"
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors duration-300">
+            {featured.title}
+          </h1>
+          <p className="text-lg text-muted-foreground mb-6">{featured.summary}</p>
+          
+          <Button
+            variant="default"
+            className="w-fit"
           >
-            <span className="relative after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 after:ease-in-out hover:after:w-full">
-              Read full story
-            </span>
-            <span>→</span>
-          </Link>
+            Read Full Story
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </Button>
         </div>
-        <div className="relative h-64 sm:h-80 md:h-96 w-full rounded-xl overflow-hidden shadow">
-          <Image src={featured.imageUrl} alt={featured.title} fill className="object-cover" />
+
+        {/* Image Side */}
+        <div className="relative h-80 md:h-96 w-full rounded-xl overflow-hidden shadow-lg">
+          <Image
+            src={featured.imageUrl}
+            alt={featured.title}
+            fill
+            className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          />
         </div>
-      </div>
+      </Link>
 
       {/* Desktop Cards */}
     <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
       {headlines.map((item, idx) => (
-        // The Link component now wraps the entire Card
+        // The Link entire Card
         <Link href={`/news/${item.slug}`} key={idx} className="block group">
           <Card className="overflow-hidden h-full group-hover:shadow-2xl transition-shadow duration-300">
             <div className="relative w-full h-40">
