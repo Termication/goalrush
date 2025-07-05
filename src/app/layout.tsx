@@ -3,9 +3,11 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/common/navbar";
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
+import { Toaster } from "react-hot-toast";
 
 
-const inter = Inter({
+const inter =
+ Inter({
   subsets: ["latin"],
   display: 'swap',
   variable: "--font-inter", 
@@ -36,6 +38,7 @@ export default function RootLayout({
       >
         <Navbar />
         <NextAuthProvider>
+          <Toaster position="top-center" reverseOrder={false} />
           {/* The {children} prop will be the content of our pages */}
           {children}
         </NextAuthProvider>

@@ -1,17 +1,45 @@
-import type { Metadata } from 'next';
-import { EnvelopeIcon, PhoneIcon, MapPinIcon, QuestionMarkCircleIcon, ChatBubbleLeftRightIcon, NewspaperIcon } from '@heroicons/react/24/outline';
+'use client'; // This must be a client component to handle user interaction
+
+import { useState, FormEvent, ChangeEvent } from 'react';
+import { toast } from "react-hot-toast";
+import Image from 'next/image';
+import { EnvelopeIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-// Metadata for this page for SEO
-export const metadata: Metadata = {
-  title: "Support Center | GoalRush",
-  description: "Get help and support from the GoalRush team. Find answers in our FAQ or contact us directly with your questions, feedback, or news tips.",
-};
-
 export default function SupportPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+  
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Trigger the custom toast notification using sonner
+    toast("Message Sent!", {
+      icon: <Image src="/logo.png" alt="GoalRush Logo" width={24} height={24} />,
+      duration: 4000,
+    });
+
+    // Reset form and loading state
+    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsLoading(false);
+  };
+
   return (
     <div className="bg-base-200/60">
       {/* --- HERO SECTION --- */}
@@ -33,27 +61,29 @@ export default function SupportPage() {
           <section>
             <h2 className="text-4xl font-poppins font-bold text-center mb-2">Get in Touch</h2>
             <p className="text-center text-base-content/70 mb-8">Fill out the form below and our team will get back to you as soon as possible.</p>
-            <form className="space-y-6 max-w-2xl mx-auto">
+            <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" placeholder="Your Name" />
+                  <Input id="name" placeholder="Your Name" value={formData.name} onChange={handleInputChange} required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" placeholder="you@example.com" />
+                  <Input id="email" type="email" placeholder="you@example.com" value={formData.email} onChange={handleInputChange} required />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" placeholder="e.g., Feedback, News Tip, Technical Issue" />
+                <Input id="subject" placeholder="e.g., Feedback, News Tip, Technical Issue" value={formData.subject} onChange={handleInputChange} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="Tell us how we can help..." className="h-32" />
+                <Textarea id="message" placeholder="Tell us how we can help..." className="h-32" value={formData.message} onChange={handleInputChange} required />
               </div>
               <div className="text-right">
-                <Button type="submit">Send Message</Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? 'Sending...' : 'Send Message'}
+                </Button>
               </div>
             </form>
           </section>
@@ -111,7 +141,7 @@ export default function SupportPage() {
                  <div className="card bg-base-200/50 p-6">
                     <MapPinIcon className="h-12 w-12 text-primary mx-auto mb-4"/>
                     <h3 className="text-2xl font-poppins font-bold">Our Office</h3>
-                    <p className="mt-2 text-base-content/80">430 Football Lane,<br/>Germiston, Gauteng</p>
+                    <p className="mt-2 text-base-content/80">123 Football Lane,<br/>Germiston, Gauteng</p>
                  </div>
              </div>
           </section>
