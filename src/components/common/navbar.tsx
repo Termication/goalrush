@@ -11,7 +11,7 @@ export default function Navbar() {
   const pathname = usePathname()
 
   const navLinks = [
-    { name: "News", href: "/" },
+    { name: "News", href: "/news_page" },
     { name: "About", href: "/about" },
     { name: "Support", href: "/support" },
   ]
