@@ -54,65 +54,70 @@ useEffect(() => {
 
   if (!featured) return null
 
+  // Mobile layout
   if (isMobile) {
     return (
-      <div className="w-full min-h-screen flex flex-col">
-        {/* Mobile Hero Section */}
-        <div className="relative w-full h-[45vh] min-h-[280px] mb-4">
-          <Image
-            src={featured.imageUrl}
-            alt={featured.title}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex flex-col justify-end p-5 space-y-3">
-            <Badge className="w-fit px-3 py-1.5 text-xs bg-red-600 text-white rounded-full">
+    <div className="space-y-12 p-4 md:p-6 lg:p-8">
+      <Link href={`/news/${featured.slug}`} className="block group max-w-7xl mx-auto">
+        <div className="relative overflow-hidden rounded-xl shadow-lg 
+                        lg:grid lg:grid-cols-5 lg:gap-1">
+          
+          <div className="relative h-[60vh] lg:h-[60vh] lg:col-span-5">
+            <Image
+              src={featured.imageUrl}
+              alt={featured.title}
+              fill
+              className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+              priority
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent lg:hidden" />
+          </div>
+
+          <div className="absolute bottom-0 left-0 p-6 text-white 
+                          lg:static lg:col-start-1 lg:col-span-3 lg:row-start-1 
+                          lg:bg-black/60 lg:backdrop-blur-sm lg:m-6 lg:rounded-xl lg:self-center">
+            
+            <Badge className="mb-3 px-3 py-1 text-xs bg-red-600 text-white rounded-full border-none">
               Breaking News
             </Badge>
-            <h1 className="text-white text-3xl font-bold leading-tight drop-shadow-lg">
+            <h1 className="text-3xl lg:text-4xl font-bold font-poppins leading-tight drop-shadow-md">
               {featured.title}
             </h1>
-            <p className="text-white/90 text-sm line-clamp-2">{featured.summary}</p>
-            <Link
-              href={`/news/${featured.slug}`}
-              className="relative text-sm text-blue-200 inline-flex items-center gap-1 transition-colors hover:text-blue-100 after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-blue-100 after:transition-all after:duration-300 after:ease-in-out hover:after:w-full"
-            >
-              Read full story <span>→</span>
-            </Link>
+            <p className="mt-2 text-white/90 text-sm md:text-base line-clamp-2">
+              {featured.summary}
+            </p>
+            <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-sky-300 group-hover:text-white transition-colors">
+              Read full story <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </div>
           </div>
         </div>
+      </Link>
 
-        {/* Mobile Detailed Cards */}
-        <div className="px-4 space-y-4">
-          {headlines.map((item, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col transition-all hover:shadow-lg"
-            >
-              <div className="relative w-full aspect-[16/9]">
-                <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
+      {/* --- UNIFIED RESPONSIVE HEADLINES GRID --- */}
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
+        {headlines.map((item, idx) => (
+          <Link href={`/news/${item.slug}`} key={idx} className="block group">
+            <Card className="overflow-hidden h-full group-hover:shadow-2xl transition-shadow duration-300">
+              <div className="relative w-full h-48">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
-              <div className="p-4 flex flex-col space-y-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
-                    <span className="text-xs text-white font-bold">🏆</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-800 line-clamp-2">{item.title}</h3>
-                </div>
-                <p className="text-sm text-gray-600 line-clamp-3 mb-2">{item.summary}</p>
-                <Link
-                  href={`/news/${item.slug}`}
-                  className="text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 text-sm font-medium"
-                >
-                  Read more <span>→</span>
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+              <CardContent className="p-4">
+                <Badge variant="secondary" className="mb-2">{item.category}</Badge>
+                <h3 className="text-lg font-semibold leading-tight h-20 group-hover:text-primary transition-colors">{item.title}</h3>
+                <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{item.summary}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
-    )
+    </div>
+  );
   }
 
   // Desktop layout
@@ -124,8 +129,8 @@ useEffect(() => {
         className="group max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 mb-12 cursor-pointer"
       >
         <div className="flex flex-col justify-center">
-          <Badge className="animate-pulse mb-4 px-4 py-1 text-sm bg-red-600 text-white hover:bg-red-700 w-fit">
-            Breaking News
+          <Badge className="mb-4 px-4 py-1 text-sm bg-red-600 text-white w-fit">
+            <span className="animate-typing">Breaking News</span>
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors duration-300">
             {featured.title}
