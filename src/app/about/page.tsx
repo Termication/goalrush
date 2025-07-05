@@ -27,7 +27,6 @@ export default function AboutPage() {
       <div className="container mx-auto max-w-5xl p-6 md:p-12 -mt-16">
         <div className="bg-base-100 rounded-2xl shadow-xl p-8 md:p-12 space-y-12">
           
-          {/* Introduction Section */}
           <section className="text-center">
             <p className="text-2xl font-poppins leading-relaxed text-base-content/90">
               It’s more than just a ball hitting the back of the net. It's a jolt of electricity. It's the roar of the crowd, the explosion of passion, the single moment a match turns on its head. <span className="text-primary font-bold">It's a rush.</span>

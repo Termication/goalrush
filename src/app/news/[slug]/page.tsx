@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { MoveLeft } from 'lucide-react'
 
 interface Article {
   title: string
@@ -44,8 +46,13 @@ export default function NewsPage() {
 
   return (
     <main className="max-w-4xl mx-auto p-4">
-      <div className="mb-4">
-        <Link href="/" className="text-blue-600 hover:underline">← Back to Home</Link>
+      <div className="mb-6">
+        <Button asChild variant="outline" className="group">
+          <Link href="/">
+            <MoveLeft className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+            Back
+          </Link>
+        </Button>
       </div>
       <div className="mb-4">
         <Badge>{article.category || 'News'}</Badge>
