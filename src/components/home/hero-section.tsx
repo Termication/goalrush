@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import Image from "next/image"
+import ArticleSkeleton from "@/components/common/ArticleSkeleton"
 
 interface Article {
   title: string
@@ -140,25 +141,27 @@ useEffect(() => {
       </div>
 
       {/* Desktop Cards */}
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-        {headlines.map((item, idx) => (
-          <Card key={idx} className="overflow-hidden hover:shadow-md transition-shadow duration-200">
+    <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+      {headlines.map((item, idx) => (
+        // The Link component now wraps the entire Card
+        <Link href={`/news/${item.slug}`} key={idx} className="block group">
+          <Card className="overflow-hidden h-full group-hover:shadow-lg transition-shadow duration-300">
             <div className="relative w-full h-40">
-              <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
+              <Image
+                src={item.imageUrl}
+                alt={item.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+              />
             </div>
             <CardContent className="p-4">
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1 mb-3">{item.summary}</p>
-              <Link
-                href={`/news/${item.slug}`}
-                className="relative text-sm text-primary after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
-              >
-                Read more →
-              </Link>
+              <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{item.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{item.summary}</p>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        </Link>
+      ))}
+    </div>
     </div>
   )
 }
