@@ -3,8 +3,12 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import MoreHeadlinesSkeleton from '@/components/skeletons/MoreHeadlinesSkeleton'
 
 interface Article {
+  _id?: string
   title: string
   imageUrl: string
   slug: string
@@ -16,21 +20,30 @@ export default function MoreHeadlinesSection() {
   const [articles, setArticles] = useState<Article[]>([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [isPaginating, setIsPaginating] = useState(false)
   const limit = 6
 
-  const fetchArticles = async (page: number) => {
+  const fetchArticles = async (currentPage: number) => {
+    currentPage === 1 ? setIsInitialLoading(true) : setIsPaginating(true)
+
     try {
-      const res = await fetch(`/api/articles?page=${page}&limit=${limit}`)
+      const res = await fetch(`/api/articles?page=${currentPage}&limit=${limit}`)
       const json = await res.json()
 
       if (res.ok) {
         const newArticles = (json.articles || []).filter((a: Article) => !a.isFeatured)
-        setArticles((prev) => [...prev, ...newArticles])
-        const more = page < json.totalPages
-        setHasMore(more)
+        setArticles((prev) => {
+          const existingSlugs = new Set(prev.map((a) => a.slug))
+          return [...prev, ...newArticles.filter((a: Article) => !existingSlugs.has(a.slug))]
+        })
+        setHasMore(currentPage < (json.totalPages || 1))
       }
     } catch (err) {
       console.error('Pagination fetch error:', err)
+    } finally {
+      setIsInitialLoading(false)
+      setIsPaginating(false)
     }
   }
 
@@ -42,19 +55,21 @@ export default function MoreHeadlinesSection() {
     setPage((prev) => prev + 1)
   }
 
-  return (
-    <section className="px-4 py-6">
-      <h2 className="text-lg font-bold mb-4">More Headlines</h2>
+  if (isInitialLoading) return <MoreHeadlinesSkeleton />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {articles.map((item, idx) => (
+  return (
+    <section className="px-4 py-6 max-w-7xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">More Headlines</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {articles.map((item) => (
           <Link
-            key={idx}
+            key={item.slug}
             href={`/news/${item.slug}`}
-            className="card card-compact bg-base-100 border rounded-md shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-200 ease-in-out cursor-pointer"
+            className="card card-compact bg-base-100 border rounded-md shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-200 ease-in-out cursor-pointer group"
           >
             <div className="card-body flex-row items-center space-x-3 p-2">
-              <div className="w-12 h-12 rounded overflow-hidden relative flex-shrink-0">
+              <div className="w-14 h-14 rounded-md overflow-hidden relative flex-shrink-0">
                 <Image
                   src={item.imageUrl}
                   alt={item.title}
@@ -63,10 +78,10 @@ export default function MoreHeadlinesSection() {
                 />
               </div>
               <div className="flex flex-col justify-center">
-                <h3 className="text-sm font-semibold leading-snug line-clamp-2">
+                <h3 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground mt-1">
                   {new Date(item.createdAt).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
@@ -77,14 +92,25 @@ export default function MoreHeadlinesSection() {
             </div>
           </Link>
         ))}
+
+        {/* Inline pagination skeletons */}
+        {isPaginating && Array.from({ length: 2 }).map((_, i) => (
+          <div key={`skeleton-${i}`} className="flex items-center space-x-4 p-3 border rounded-lg">
+            <Skeleton className="w-14 h-14 rounded-md flex-shrink-0" />
+            <div className="space-y-2 w-full">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-3 w-24 mt-1" />
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Load More Button */}
-      {hasMore && (
-        <div className="mt-6 text-center">
-          <button onClick={loadMore} className="btn btn-primary">
-            Load More →
-          </button>
+      {hasMore && !isPaginating && (
+        <div className="mt-8 text-center">
+          <Button onClick={loadMore} variant="secondary">
+            Load More Headlines
+          </Button>
         </div>
       )}
     </section>
