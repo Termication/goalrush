@@ -16,9 +16,8 @@ import { redirect } from 'next/navigation';
 
 export default function EditArticlePage() {
   const { data: session, status } = useSession();
-  const params = useParams();
   const router = useRouter();
-  const { id } = params;
+  const { slug } = useParams() as { slug: string };
 
   const [formData, setFormData] = useState({
     title: '',
@@ -34,11 +33,12 @@ export default function EditArticlePage() {
   const [success, setSuccess] = useState<string | null>(null);
   const featuredImageRef = useRef<HTMLInputElement | null>(null);
 
-  // Fetch article data by ID
   useEffect(() => {
+    if (!slug) return;
+
     const fetchArticle = async () => {
       try {
-        const res = await fetch(`/api/articles/${id}`);
+        const res = await fetch(`/api/articles/${slug}`);
         if (!res.ok) throw new Error('Failed to fetch article');
         const json = await res.json();
         const { title, summary, body, imageUrl, category, isFeatured } = json.article;
@@ -48,8 +48,8 @@ export default function EditArticlePage() {
       }
     };
 
-    if (id) fetchArticle();
-  }, [id]);
+    fetchArticle();
+  }, [slug]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -106,7 +106,7 @@ export default function EditArticlePage() {
     setSuccess(null);
 
     try {
-      const response = await fetch(`/api/articles/${id}`, {
+      const response = await fetch(`/api/articles/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -118,7 +118,7 @@ export default function EditArticlePage() {
       }
 
       setSuccess('Article updated successfully!');
-      router.push('/admin/articles'); // Go back to list
+      router.push('/admin/articles');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -128,7 +128,6 @@ export default function EditArticlePage() {
 
   if (status === 'loading') return <main className="p-8">Checking session...</main>;
   if (status === 'unauthenticated') redirect('/login');
-
   return (
     <main className="bg-slate-100 dark:bg-slate-900 min-h-screen p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
