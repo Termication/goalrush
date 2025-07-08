@@ -38,7 +38,7 @@ export default function RootLayout({
       >
         <Navbar />
         <NextAuthProvider>
-          <Toaster position="top-center" reverseOrder={false} />
+          <Toaster position="top-right" reverseOrder={false} />
           {/* The {children} prop will be the content of our pages */}
           {children}
         </NextAuthProvider>
