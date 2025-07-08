@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
+
 
 export async function GET(
   request: Request,
@@ -46,5 +47,22 @@ export async function PUT(
   } catch (error) {
     console.error('Error updating article:', error);
     return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
+  }
+}
+
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  await dbConnect();
+  const { id } = params;
+
+  try {
+    const deleted = await Article.findByIdAndDelete(id);
+    if (!deleted) {
+      return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ success: false, error: 'Failed to delete article' }, { status: 500 });
   }
 }
