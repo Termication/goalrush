@@ -4,9 +4,18 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Trash2, Pencil, Tag } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 // --- TYPES ---
 interface Article {
@@ -24,6 +33,8 @@ export default function AdminArticlesPage() {
 
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // --- Fetch articles ---
   useEffect(() => {
@@ -45,35 +56,33 @@ export default function AdminArticlesPage() {
   }, []);
 
   // --- Delete article ---
-  const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this article?');
-    if (!confirmDelete) return;
+  const handleDelete = async () => {
+    if (!selectedId) return;
 
     try {
-      const res = await fetch(`/api/articles/by-id/${id}`, {
+      const res = await fetch(`/api/articles/by-id/${selectedId}`, {
         method: 'DELETE',
       });
       const json = await res.json();
       if (json.success) {
-        setArticles(prev => prev.filter(article => article._id !== id));
+        toast.success('Article deleted');
+        setArticles(prev => prev.filter(article => article._id !== selectedId));
+      } else {
+        toast.error(json.error || 'Failed to delete article');
       }
     } catch (err) {
+      toast.error('Unexpected error while deleting article');
       console.error('Error deleting article:', err);
+    } finally {
+      setDialogOpen(false);
+      setSelectedId(null);
     }
   };
 
   // --- Session protection ---
-  if (status === 'loading') {
-    return <main className="p-8 text-center">Checking session...</main>;
-  }
-
-  if (status === 'unauthenticated') {
-    redirect('/login');
-  }
-
-  if (loading) {
-    return <p className="text-center mt-10">Loading articles...</p>;
-  }
+  if (status === 'loading') return <main className="p-8 text-center">Checking session...</main>;
+  if (status === 'unauthenticated') redirect('/login');
+  if (loading) return <p className="text-center mt-10">Loading articles...</p>;
 
   return (
     <main className="p-6 max-w-6xl mx-auto">
@@ -112,14 +121,43 @@ export default function AdminArticlesPage() {
                   </Button>
                 </Link>
 
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(article._id)}
-                  className="transition-all duration-200 hover:scale-105 hover:bg-destructive/90"
-                >
-                  <Trash2 className="w-4 h-4 mr-2" /> Delete
-                </Button>
+                <Dialog open={dialogOpen && selectedId === article._id} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => {
+                        setSelectedId(article._id);
+                        setDialogOpen(true);
+                      }}
+                      className="transition-all duration-200 hover:scale-105 hover:bg-destructive/90"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" /> Delete
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Delete this article?</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-sm">
+                      Are you sure you want to delete <strong>{article.title}</strong>? This action cannot be undone.
+                    </p>
+                    <div className="flex justify-end gap-2 mt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => setDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={handleDelete}
+                      >
+                        Confirm Delete
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
                 <Button
                   size="sm"
