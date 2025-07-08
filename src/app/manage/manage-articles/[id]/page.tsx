@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, ChangeEvent, FormEvent, useRef } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, redirect } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal, UploadCloud } from 'lucide-react';
 import { RichTextEditor } from '@/components/common/RichTextEditor';
-import { redirect } from 'next/navigation';
 
 export default function EditArticlePage() {
   const { data: session, status } = useSession();
@@ -34,9 +33,9 @@ export default function EditArticlePage() {
   const [success, setSuccess] = useState<string | null>(null);
   const featuredImageRef = useRef<HTMLInputElement | null>(null);
 
-  // Fetch the article details
+  // Fetch article once authenticated and ID is available
   useEffect(() => {
-    if (!id) return;
+    if (status !== 'authenticated' || !id) return;
 
     const fetchArticle = async () => {
       setLoadingArticle(true);
@@ -54,7 +53,7 @@ export default function EditArticlePage() {
     };
 
     fetchArticle();
-  }, [id]);
+  }, [status, id]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -94,9 +93,7 @@ export default function EditArticlePage() {
 
   const onFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      handleFeaturedImageUpload(file);
-    }
+    if (file) handleFeaturedImageUpload(file);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -131,9 +128,18 @@ export default function EditArticlePage() {
     }
   };
 
-  if (status === 'loading') return <main className="p-8">Checking session...</main>;
-  if (status === 'unauthenticated') redirect('/login');
-  if (loadingArticle) return <main className="p-8">Loading article...</main>;
+  // --- AUTH STATE HANDLING ---
+  if (status === 'loading') {
+    return <main className="flex items-center justify-center min-h-screen">Checking session...</main>;
+  }
+
+  if (status === 'unauthenticated') {
+    redirect('/login');
+  }
+
+  if (loadingArticle) {
+    return <main className="flex items-center justify-center min-h-screen">Loading article...</main>;
+  }
 
   return (
     <main className="bg-slate-100 dark:bg-slate-900 min-h-screen p-4 md:p-8">
@@ -154,12 +160,10 @@ export default function EditArticlePage() {
                 <Textarea id="summary" name="summary" value={formData.summary} onChange={handleInputChange} required />
               </div>
 
-              {formData.body !== '' && (
-                <div className="space-y-2">
-                  <Label>Body</Label>
-                  <RichTextEditor content={formData.body} onChange={handleBodyChange} />
-                </div>
-              )}
+              <div className="space-y-2">
+                <Label>Body</Label>
+                <RichTextEditor content={formData.body} onChange={handleBodyChange} />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
