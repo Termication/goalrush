@@ -73,7 +73,7 @@ export default function AdminArticlesPage() {
               <p className="text-muted-foreground text-sm">{article.summary}</p>
               <p className="text-xs text-gray-400">Category: {article.category}</p>
               <div className="flex gap-2 mt-2">
-                <Link href={`/admin/articles/edit/${article._id}`}>
+                <Link href={`/manage/manage-articles/${article._id}`}>
                   <Button size="sm" variant="secondary">
                     <Pencil className="w-4 h-4 mr-2" /> Edit
                   </Button>

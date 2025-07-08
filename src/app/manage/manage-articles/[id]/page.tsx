@@ -17,7 +17,7 @@ import { redirect } from 'next/navigation';
 export default function EditArticlePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { slug } = useParams() as { slug: string };
+  const { id } = useParams() as { id: string };
 
   const [formData, setFormData] = useState({
     title: '',
@@ -29,27 +29,32 @@ export default function EditArticlePage() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingArticle, setLoadingArticle] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const featuredImageRef = useRef<HTMLInputElement | null>(null);
 
+  // Fetch the article details
   useEffect(() => {
-    if (!slug) return;
+    if (!id) return;
 
     const fetchArticle = async () => {
+      setLoadingArticle(true);
       try {
-        const res = await fetch(`/api/articles/${slug}`);
+        const res = await fetch(`/api/articles/by-id/${id}`);
         if (!res.ok) throw new Error('Failed to fetch article');
         const json = await res.json();
         const { title, summary, body, imageUrl, category, isFeatured } = json.article;
         setFormData({ title, summary, body, imageUrl, category, isFeatured });
       } catch (err: any) {
         setError(err.message || 'Error loading article data.');
+      } finally {
+        setLoadingArticle(false);
       }
     };
 
     fetchArticle();
-  }, [slug]);
+  }, [id]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -106,7 +111,7 @@ export default function EditArticlePage() {
     setSuccess(null);
 
     try {
-      const response = await fetch(`/api/articles/${slug}`, {
+      const response = await fetch(`/api/articles/by-id/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -128,6 +133,8 @@ export default function EditArticlePage() {
 
   if (status === 'loading') return <main className="p-8">Checking session...</main>;
   if (status === 'unauthenticated') redirect('/login');
+  if (loadingArticle) return <main className="p-8">Loading article...</main>;
+
   return (
     <main className="bg-slate-100 dark:bg-slate-900 min-h-screen p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
@@ -141,14 +148,19 @@ export default function EditArticlePage() {
                 <Label htmlFor="title">Title</Label>
                 <Input id="title" name="title" value={formData.title} onChange={handleInputChange} required />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="summary">Summary</Label>
                 <Textarea id="summary" name="summary" value={formData.summary} onChange={handleInputChange} required />
               </div>
-              <div className="space-y-2">
-                <Label>Body</Label>
-                <RichTextEditor content={formData.body} onChange={handleBodyChange} />
-              </div>
+
+              {formData.body !== '' && (
+                <div className="space-y-2">
+                  <Label>Body</Label>
+                  <RichTextEditor content={formData.body} onChange={handleBodyChange} />
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label>Featured Image</Label>
@@ -167,11 +179,13 @@ export default function EditArticlePage() {
                     )}
                   </div>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="category">Category</Label>
                   <Input id="category" name="category" value={formData.category} onChange={handleInputChange} required />
                 </div>
               </div>
+
               <div className="flex items-center space-x-2">
                 <Checkbox id="isFeatured" name="isFeatured" checked={formData.isFeatured} onCheckedChange={handleCheckboxChange} />
                 <Label htmlFor="isFeatured">Feature on homepage</Label>
@@ -184,6 +198,7 @@ export default function EditArticlePage() {
                   <AlertDescription>{success}</AlertDescription>
                 </Alert>
               )}
+
               {error && (
                 <Alert variant="destructive">
                   <Terminal className="h-4 w-4" />
@@ -192,6 +207,7 @@ export default function EditArticlePage() {
                 </Alert>
               )}
             </CardContent>
+
             <CardFooter>
               <Button type="submit" disabled={isLoading} className="w-full md:w-auto ml-auto">
                 {isLoading ? 'Updating...' : 'Update Article'}
