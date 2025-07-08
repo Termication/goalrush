@@ -4,12 +4,14 @@ import Article from '@/models/Article';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { id } = context.params;
+
   try {
     await dbConnect();
 
-    const article = await Article.findById(params.id);
+    const article = await Article.findById(id);
     if (!article) {
       return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
     }
@@ -23,13 +25,15 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { id } = context.params;
+
   try {
     await dbConnect();
     const body = await request.json();
 
-    const updated = await Article.findByIdAndUpdate(params.id, body, {
+    const updated = await Article.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
     });

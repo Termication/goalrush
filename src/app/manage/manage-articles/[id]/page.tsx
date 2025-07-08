@@ -123,7 +123,7 @@ export default function EditArticlePage() {
       }
 
       setSuccess('Article updated successfully!');
-      router.push('/admin/articles');
+      router.push('/news_page');
     } catch (err: any) {
       setError(err.message);
     } finally {
