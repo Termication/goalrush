@@ -25,7 +25,7 @@ export default function NewsPage() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const res = await fetch(`/api/articles/${slug}`)
+        const res = await fetch(`/api/articles/by-slug/${slug}`)
         const json = await res.json()
         if (res.ok) {
           setArticle(json.data)

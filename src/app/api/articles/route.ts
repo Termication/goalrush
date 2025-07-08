@@ -31,9 +31,14 @@ export async function POST(request: Request) {
     }
 
     // ✅ Generate a slug manually
-    const slug = slugify(title, { lower: true, strict: true });
+  let slug = slugify(title, { lower: true, strict: true });
+  let count = 1;
+  const ArticleModel = (Article as any).default || Article;
 
-    const ArticleModel = (Article as any).default || Article;
+  while (await ArticleModel.findOne({ slug })) {
+    slug = `${slug}-${count++}`;
+  }
+
 
     const newArticle = await new ArticleModel({
       title,
