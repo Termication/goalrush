@@ -10,6 +10,7 @@ export interface IArticle extends Document {
   category: string;
   isFeatured: boolean;
   slug: string;
+  seoTags?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,7 +48,12 @@ const ArticleSchema: Schema = new Schema({
     type: String,
     unique: true,
   },
-}, {
+  seoTags: {
+    type: [String],
+    default: [],
+  },
+},
+ {
   timestamps: true,
 });
 

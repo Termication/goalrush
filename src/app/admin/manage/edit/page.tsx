@@ -65,7 +65,7 @@ export default function AdminArticlesPage() {
       });
       const json = await res.json();
       if (json.success) {
-        toast.success('Article deleted');
+        toast.success('Article Deleted');
         setArticles(prev => prev.filter(article => article._id !== selectedId));
       } else {
         toast.error(json.error || 'Failed to delete article');
