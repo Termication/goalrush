@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
 
-
+// === GET Article by ID ===
 export async function GET(
   request: Request,
   context: { params: { id: string } }
@@ -24,6 +24,7 @@ export async function GET(
   }
 }
 
+// === UPDATE Article by ID ===
 export async function PUT(
   request: Request,
   context: { params: { id: string } }
@@ -32,26 +33,47 @@ export async function PUT(
 
   try {
     await dbConnect();
-    const body = await request.json();
+    const reqBody = await request.json();
+    const article = await Article.findById(id);
 
-    const updated = await Article.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!updated) {
+    if (!article) {
       return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, article: updated });
+    // Update editable fields
+    if ('title' in reqBody) article.title = reqBody.title;
+    if ('summary' in reqBody) article.summary = reqBody.summary;
+    if ('body' in reqBody) article.body = reqBody.body;
+    if ('imageUrl' in reqBody) article.imageUrl = reqBody.imageUrl;
+    if ('category' in reqBody) article.category = reqBody.category;
+    if ('isFeatured' in reqBody) article.isFeatured = reqBody.isFeatured;
+
+    // Handle SEO tags safely
+    if ('seoTags' in reqBody && Array.isArray(reqBody.seoTags)) {
+      const tagsString = reqBody.seoTags.join(', ');
+      if (tagsString.length > 300) {
+        return NextResponse.json(
+          { success: false, error: 'SEO tags exceed 300 characters' },
+          { status: 400 }
+        );
+      }
+      article.seoTags = reqBody.seoTags;
+    }
+
+    await article.save();
+
+    return NextResponse.json({ success: true, article });
   } catch (error) {
     console.error('Error updating article:', error);
     return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
   }
 }
 
-
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+// === DELETE Article by ID ===
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   await dbConnect();
   const { id } = params;
 
