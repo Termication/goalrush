@@ -159,13 +159,62 @@ export default function AdminArticlesPage() {
                   </DialogContent>
                 </Dialog>
 
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="transition-all duration-200 hover:scale-105 hover:border-primary hover:text-primary"
-                >
-                  <Tag className="w-4 h-4 mr-2" /> SEO
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="transition-all duration-200 hover:scale-105 hover:border-primary hover:text-primary"
+                    >
+                      <Tag className="w-4 h-4 mr-2" /> SEO
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Update SEO Tags</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-sm text-muted-foreground mb-2">Enter comma-separated SEO keywords (max 300 characters).</p>
+                    <textarea
+                      className="w-full border rounded p-2 text-sm"
+                      rows={3}
+                      maxLength={300}
+                      defaultValue={article.seoTags?.join(', ') || ''}
+                      onChange={(e) => {
+                        article.seoTags = e.target.value.split(',').map(tag => tag.trim()).filter(Boolean);
+                      }}
+                    />
+                    <div className="flex justify-end mt-4 gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(`/api/articles/by-id/${article._id}`, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ seoTags: article.seoTags }),
+                            });
+                            const json = await res.json();
+                            if (json.success) {
+                              toast.success('SEO tags updated');
+                            } else {
+                              toast.error(json.error || 'Failed to update SEO tags');
+                            }
+                          } catch (err) {
+                            toast.error('Unexpected error while updating SEO tags');
+                          }
+                        }}
+                      >
+                        Save Tags
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
               </div>
             </CardContent>
           </Card>
