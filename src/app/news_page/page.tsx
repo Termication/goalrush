@@ -97,9 +97,9 @@ export default function NewsPage() {
               <h3 className="text-lg font-bold text-gray-900">{nextArticle.title}</h3>
               <p className="text-sm text-gray-600 mt-1 line-clamp-3">{nextArticle.summary}</p>
               <div className="mt-4">
-                <Button variant="link" className="text-indigo-600 hover:text-indigo-900 px-0">
+                {/* <Button variant="link" className="text-indigo-600 hover:text-indigo-900 px-0">
                   Read Now →
-                </Button>
+                </Button> */}
               </div>
             </div>
           </Link>
