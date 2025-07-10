@@ -107,8 +107,8 @@ export default function MoreHeadlinesSection() {
 
       {hasMore && !isPaginating && (
         <div className="mt-6 text-center">
-          <Button onClick={loadMore} variant="secondary">
-            Load More Headlines
+          <Button onClick={loadMore} variant="secondary" className="bg-gray-800 hover:bg-gray-600 transition-colors px-6 py-2 text-white">
+            Load More
           </Button>
         </div>
       )}
