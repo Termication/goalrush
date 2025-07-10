@@ -45,8 +45,8 @@ export default function MoreHeadlinesSection() {
   if (loading) return <MoreHeadlinesSkeleton />
 
   return (
-    <section className="px-4 py-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">More Headlines</h2>
+    <section className="px-4 py-0 max-w-7xl mx-auto">
+      <h2 className="text-2xl font-bold">More Headlines</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {articles.map((item) => (

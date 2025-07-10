@@ -127,7 +127,7 @@ export default function HomePage() {
 
   // Desktop layout
   return (
-    <div className="min-h-screen px-4 py-5">
+    <div className="min-h-screen px-2 py-3">
       <Link href={`/news/${featured.slug}`} className="group max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 mb-12 cursor-pointer">
         <div className="flex flex-col justify-center">
           <Badge className="mb-4 px-4 py-1 text-sm bg-red-600 text-white w-fit">
