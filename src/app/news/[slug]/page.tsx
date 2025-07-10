@@ -140,9 +140,13 @@ export default function NewsPage() {
         />
       </div> */}
       
-      <article className="prose dark:prose-invert max-w-none prose-lg">
-        <div dangerouslySetInnerHTML={{ __html: article.body }} />
-      </article>
+      <article
+        className="prose prose-lg dark:prose-invert max-w-none
+          prose-p:mb-4 prose-h2:mt-10 prose-h2:mb-4
+          prose-img:rounded-md prose-img:my-4
+          prose-ul:list-disc prose-ul:pl-6 prose-li:mb-2"
+        dangerouslySetInnerHTML={{ __html: article.body }}
+      />
 
       {/* --- Read Next Section --- */}
       {relatedArticles.length > 0 && (
