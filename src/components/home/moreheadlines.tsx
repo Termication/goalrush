@@ -18,35 +18,46 @@ interface Article {
 
 export default function MoreHeadlinesSection() {
   const [articles, setArticles] = useState<Article[]>([])
-  const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [isPaginating, setIsPaginating] = useState(false)
   const limit = 12
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const res = await fetch(`/api/articles?page=1&limit=${limit}`)
-        const json = await res.json()
+  const fetchArticles = async (currentPage: number) => {
+    currentPage === 1 ? setIsInitialLoading(true) : setIsPaginating(true)
 
-        if (res.ok) {
-          // Exclude featured and limit to 12
-          const nonFeatured = (json.articles || []).filter((a: Article) => !a.isFeatured).slice(0, limit)
-          setArticles(nonFeatured)
+    try {
+      const res = await fetch(`/api/articles?page=${currentPage}&limit=${limit}`)
+      const json = await res.json()
+
+    const newArticles = (json.articles || []) as Article[];
+
+    setArticles((prev) => {
+      const existingSlugs = new Set(prev.map((a) => a.slug));
+      return [...prev, ...newArticles.filter((a) => !existingSlugs.has(a.slug))];
+    });
+        } catch (err) {
+          console.error('Pagination fetch error:', err)
+        } finally {
+          setIsInitialLoading(false)
+          setIsPaginating(false)
         }
-      } catch (err) {
-        console.error('Error fetching more headlines:', err)
-      } finally {
-        setLoading(false)
       }
-    }
 
-    fetchArticles()
-  }, [])
+  useEffect(() => {
+    fetchArticles(page)
+  }, [page])
 
-  if (loading) return <MoreHeadlinesSkeleton />
+  const loadMore = () => {
+    setPage((prev) => prev + 1)
+  }
+
+  if (isInitialLoading) return <MoreHeadlinesSkeleton />
 
   return (
-    <section className="px-4 py-0 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold">More Headlines</h2>
+    <section className="px-4 pt-2 pb-2 max-w-7xl mx-auto">
+      <h2 className="text-2xl font-bold mb-2">More Headlines</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {articles.map((item) => (
@@ -79,7 +90,28 @@ export default function MoreHeadlinesSection() {
             </div>
           </Link>
         ))}
+
+        {/* Inline pagination skeletons */}
+        {isPaginating &&
+          Array.from({ length: 2 }).map((_, i) => (
+            <div key={`skeleton-${i}`} className="flex items-center space-x-4 p-3 border rounded-lg">
+              <Skeleton className="w-14 h-14 rounded-md flex-shrink-0" />
+              <div className="space-y-2 w-full">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-3 w-24 mt-1" />
+              </div>
+            </div>
+          ))}
       </div>
+
+      {hasMore && !isPaginating && (
+        <div className="mt-6 text-center">
+          <Button onClick={loadMore} variant="secondary">
+            Load More Headlines
+          </Button>
+        </div>
+      )}
     </section>
   )
 }
