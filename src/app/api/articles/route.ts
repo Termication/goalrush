@@ -4,16 +4,32 @@ import Article from '@/models/Article';
 import slugify from 'slugify';
 
 // Handle GET requests — fetch all articles
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await dbConnect();
 
-    const articles = await Article.find({}).sort({ createdAt: -1 });
+    const { searchParams } = new URL(request.url);
 
-    return NextResponse.json({ success: true, articles });
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '12', 10);
+    const skip = (page - 1) * limit;
+
+    const [articles, total] = await Promise.all([
+      Article.find({})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Article.countDocuments(),
+    ]);
+
+    return NextResponse.json({ success: true, articles, total });
   } catch (error) {
-    console.error('Error fetching articles:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch articles' }, { status: 500 });
+    console.error('Error fetching paginated articles:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch articles' },
+      { status: 500 }
+    );
   }
 }
 

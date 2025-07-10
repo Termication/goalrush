@@ -168,6 +168,7 @@ export default function AdminArticlesPage() {
                     >
                       <Tag className="w-4 h-4 mr-2" /> SEO
                     </Button>
+
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
@@ -184,12 +185,12 @@ export default function AdminArticlesPage() {
                       }}
                     />
                     <div className="flex justify-end mt-4 gap-2">
-                      <Button
+                      {/* <Button
                         variant="outline"
                         onClick={() => setDialogOpen(false)}
                       >
                         Cancel
-                      </Button>
+                      </Button> */}
                       <Button
                         onClick={async () => {
                           try {
