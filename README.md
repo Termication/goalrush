@@ -89,3 +89,16 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
+
+## Authors
+
+<details>
+    <summary>Innocent Karabo Mohlala</summary>
+    <ul>
+    <li><a href="https://www.github.com/termication">Github</a></li>
+    <li><a href="https://www.twitter.com/Termication_">Twitter</a></li>
+    <li><a href="mailto:terminalkarabo@gmail.com">e-mail</a></li>
+    </ul>
+
+
+
