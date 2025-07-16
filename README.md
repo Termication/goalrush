@@ -30,7 +30,7 @@
 - **ORM**: [Mongoose](https://mongoosejs.com/)
 - **Authentication**: [NextAuth.js (Auth.js)](https://next-auth.js.org/)
 - **Image Hosting**: [Cloudinary](https://cloudinary.com/)
-- **Deployment**: [Vercel](https://vercel.com/)
+- **Deployment**: [Upcoming](https://)
 
 ---
 
