@@ -44,6 +44,7 @@ export default function CreateArticlePage() {
     setFormData(prev => ({ ...prev, isFeatured: Boolean(checked) }));
   };
   
+  // --- FEATURED IMAGE UPLOAD ---
   const handleFeaturedImageUpload = async (file: File) => {
     const uploadFormData = new FormData();
     uploadFormData.append('file', file);
@@ -84,6 +85,7 @@ export default function CreateArticlePage() {
     setError(null);
     setSuccess(null);
 
+    // Prepare the data to send
     try {
       const response = await fetch('/api/articles', {
         method: 'POST',
