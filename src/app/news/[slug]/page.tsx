@@ -130,21 +130,9 @@ export default function NewsPage() {
         </div>
       </header>
       
-      {/* <div className="relative w-full h-64 md:h-96 mb-8 rounded-lg overflow-hidden shadow-lg">
-        <Image
-          src={article.imageUrl}
-          alt={article.title}
-          fill
-          className="object-cover"
-          priority
-        />
-      </div> */}
       
       <article
-        className="prose prose-lg dark:prose-invert max-w-none
-          prose-p:mb-4 prose-h2:mt-10 prose-h2:mb-4
-          prose-img:rounded-md prose-img:my-4
-          prose-ul:list-disc prose-ul:pl-6 prose-li:mb-2"
+        className="max-w-none"
         dangerouslySetInnerHTML={{ __html: article.body }}
       />
 
