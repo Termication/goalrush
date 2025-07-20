@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/common/navbar";
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/common/footer";
 
 
 const inter =
@@ -42,6 +43,7 @@ export default function RootLayout({
           {/* The {children} prop will be the content of our pages */}
           {children}
         </NextAuthProvider>
+        <Footer />
       </body>
     </html>
   );

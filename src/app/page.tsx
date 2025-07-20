@@ -1,3 +1,4 @@
+import Footer from "@/components/common/footer"
 import HomePage from "@/components/home/hero-section"
 import MoreHeadlinesSection from "@/components/home/moreheadlines"
 
