@@ -98,14 +98,21 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
       },
     },
     onUpdate({ editor }) {
-      onChange(editor.getHTML());
-    },
-  });
+      let html = editor.getHTML();
+
+      // html = html.replace(/<p>(\s|&nbsp;)*<\/p>/g, '');
+
+      onChange(html);
+    }
+      });
 
   return (
     <div className="rounded-md border border-input bg-background">
       <MenuBar editor={editor} />
-      <EditorContent editor={editor} />
+      <EditorContent
+        editor={editor}
+        className="prose dark:prose-invert max-w-none prose-sm sm:prose-base p-4 focus:outline-none min-h-[400px] [&>*]:mb-4"
+      />
     </div>
   );
 };
