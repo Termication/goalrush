@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
   }
 
-  // ✅ Create JWT token
+  // Create JWT token
   const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
 
   const response = NextResponse.json({ success: true });
