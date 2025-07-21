@@ -4,7 +4,7 @@ import Article from '@/models/Article';
 
 // === GET Article by ID ===
 export async function GET(
-  request: Request,
+  req: NextRequest,
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
@@ -26,14 +26,14 @@ export async function GET(
 
 // === UPDATE Article by ID ===
 export async function PUT(
-  request: Request,
+  req: NextRequest,
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
 
   try {
     await dbConnect();
-    const reqBody = await request.json();
+    const reqBody = await req.json();
     const article = await Article.findById(id);
 
     if (!article) {
@@ -72,12 +72,13 @@ export async function PUT(
 // === DELETE Article by ID ===
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  await dbConnect();
-  const { id } = params;
+  const { id } = context.params;
 
   try {
+    await dbConnect();
+
     const deleted = await Article.findByIdAndDelete(id);
     if (!deleted) {
       return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
@@ -85,6 +86,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    console.error('Error deleting article:', err);
     return NextResponse.json({ success: false, error: 'Failed to delete article' }, { status: 500 });
   }
 }
