@@ -5,9 +5,9 @@ import Article from '@/models/Article';
 // === GET Article by ID ===
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   try {
     await dbConnect();
@@ -27,9 +27,9 @@ export async function GET(
 // === UPDATE Article by ID ===
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   try {
     await dbConnect();
@@ -72,9 +72,9 @@ export async function PUT(
 // === DELETE Article by ID ===
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   try {
     await dbConnect();
