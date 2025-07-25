@@ -79,6 +79,7 @@ export async function DELETE(
   try {
     await dbConnect();
 
+    // Check if article exists
     const deleted = await Article.findByIdAndDelete(id);
     if (!deleted) {
       return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
