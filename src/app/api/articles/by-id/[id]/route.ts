@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
 
 // === GET Article by ID ===
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
@@ -24,9 +26,9 @@ export async function GET(
   }
 }
 
-// === UPDATE Article by ID ===
+// === PUT: Update Article ===
 export async function PUT(
-  req: Request,
+  req: NextRequest,
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
@@ -69,9 +71,9 @@ export async function PUT(
   }
 }
 
-// === DELETE Article by ID ===
+// === DELETE: Remove Article ===
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
@@ -79,7 +81,6 @@ export async function DELETE(
   try {
     await dbConnect();
 
-    // Check if article exists
     const deleted = await Article.findByIdAndDelete(id);
     if (!deleted) {
       return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
