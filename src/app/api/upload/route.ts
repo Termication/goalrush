@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
+
 
 // The Cloudinary config is automatically read from the CLOUDINARY_URL
 // environment variable. No manual parsing or configuration is needed.
