@@ -21,7 +21,6 @@
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.5.0",
-    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.522.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.0",
