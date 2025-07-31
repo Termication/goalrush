@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MoveLeft, Calendar, Tag } from 'lucide-react';
+import { parseEmbeds } from '@/components/parseLink/parseEmbeds';
 
 // Define the structure of an article
 interface Article {
@@ -133,8 +134,9 @@ export default function NewsPage() {
       
       <article
         className="max-w-none"
-        dangerouslySetInnerHTML={{ __html: article.body }}
+        dangerouslySetInnerHTML={{ __html: parseEmbeds(article.body) }}
       />
+
 
       {/* --- Read Next Section --- */}
       {relatedArticles.length > 0 && (
