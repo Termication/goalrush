@@ -14,13 +14,20 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '12', 10);
     const skip = (page - 1) * limit;
 
+    const category = searchParams.get('category');
+    const query: any = {};
+
+    if (category) {
+      query.category = decodeURIComponent(category);
+    }
+
     const [articles, total] = await Promise.all([
-      Article.find({})
+      Article.find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
-      Article.countDocuments(),
+      Article.countDocuments(query),
     ]);
 
     return NextResponse.json({ success: true, articles, total });
@@ -32,6 +39,7 @@ export async function GET(request: Request) {
     );
   }
 }
+
 
 // Handle POST requests — create a new article
 export async function POST(request: Request) {

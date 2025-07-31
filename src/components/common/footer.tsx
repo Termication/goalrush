@@ -26,10 +26,10 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold text-white mb-3">Categories</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/tags/premier-league" className="hover:text-white">Premier League</Link></li>
-            <li><Link href="/tags/transfers" className="hover:text-white">Transfers</Link></li>
-            <li><Link href="/tags/analysis" className="hover:text-white">Analysis</Link></li>
-            <li><Link href="/tags/international" className="hover:text-white">International</Link></li>
+            <li><Link href="/news_by_category/Premier-league" className="hover:text-white">Premier League</Link></li>
+            <li><Link href="/news_by_category/laliga" className="hover:text-white">Laliga</Link></li>
+            <li><Link href="/news_by_category/transfers" className="hover:text-white">Transfers</Link></li>
+            <li><Link href="/news_by_category/international" className="hover:text-white">International</Link></li>
           </ul>
         </div>
 
