@@ -43,12 +43,12 @@ export default function Footer() {
             <Link href="https://x.com/GOAL__RUSH" aria-label="Twitter" className="hover:text-white">
               <Twitter className="h-5 w-5" />
             </Link>
-            {/* <Link href="#" aria-label="Instagram" className="hover:text-white">
+            <Link href="#" aria-label="Instagram" className="hover:text-white">
               <Instagram className="h-5 w-5" />
-            </Link> */}
-            {/* <Link href="#" aria-label="LinkedIn" className="hover:text-white">
+            </Link>
+            <Link href="#" aria-label="LinkedIn" className="hover:text-white">
               <Linkedin className="h-5 w-5" />
-            </Link> */}
+            </Link>
           </div>
         </div>
       </div>
