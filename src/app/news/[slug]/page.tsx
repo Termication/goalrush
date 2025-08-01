@@ -10,6 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MoveLeft, Calendar, Tag } from 'lucide-react';
 import { parseEmbeds } from '@/components/parseLink/parseEmbeds';
+import parse, { domToReact } from 'html-react-parser';
+import TweetCard from '@/components/parseLink/xPostCard';
+
 
 // Define the structure of an article
 interface Article {
@@ -49,49 +52,47 @@ export default function NewsPage() {
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchArticleData = async () => {
-      if (!slug) return;
-      setLoading(true);
+useEffect(() => {
+  const fetchArticleData = async () => {
+    if (!slug) return;
+    setLoading(true);
 
-      try {
-        const [articleRes, relatedRes] = await Promise.all([
-          fetch(`/api/articles/by-slug/${slug}`),
-          fetch(`/api/articles?limit=4`)
-        ]);
+    try {
+      const [articleRes, relatedRes] = await Promise.all([
+        fetch(`/api/articles/by-slug/${slug}`),
+        fetch(`/api/articles?limit=4`)
+      ]);
 
-        // --- Handle the main article response ---
-        if (articleRes.ok) {
-          const articleJson = await articleRes.json();
-          if (articleJson.success) {
-            setArticle(articleJson.data);
-          }
+      // --- Handle the main article response ---
+      if (articleRes.ok) {
+        const articleJson = await articleRes.json();
+        if (articleJson.success) {
+          setArticle(articleJson.data);
         }
-
-        // --- FIX: Handle the related articles response robustly ---
-        if (relatedRes.ok) {
-          const relatedJson = await relatedRes.json();
-          if (relatedJson.success) {
-            // Check for articles under 'data' (new API) or 'articles' (old API)
-            const articlesList = relatedJson.data || relatedJson.articles || [];
-            
-            const filteredRelated = articlesList.filter(
-              (a: Article) => a.slug !== slug
-            ).slice(0, 3);
-            setRelatedArticles(filteredRelated);
-          }
-        }
-
-      } catch (err) {
-        console.error('Fetch operation failed:', err);
-        setArticle(null);
-      } finally {
-        setLoading(false);
       }
-    };
 
-    fetchArticleData();
-  }, [slug]);
+      // --- Handle related articles response robustly ---
+      if (relatedRes.ok) {
+        const relatedJson = await relatedRes.json();
+        if (relatedJson.success) {
+          const articlesList = relatedJson.data || relatedJson.articles || [];
+          const filteredRelated = articlesList
+            .filter((a: Article) => a.slug !== slug)
+            .slice(0, 3);
+          setRelatedArticles(filteredRelated);
+        }
+      }
+
+    } catch (err) {
+      console.error('Fetch operation failed:', err);
+      setArticle(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchArticleData();
+}, [slug]);
 
   if (loading) {
     return <ArticlePageSkeleton />;
@@ -108,6 +109,8 @@ export default function NewsPage() {
       </main>
     );
   }
+
+  console.log(parseEmbeds(article.body));
 
   return (
     <main className="max-w-4xl mx-auto p-4 md:p-6">
@@ -131,11 +134,60 @@ export default function NewsPage() {
         </div>
       </header>
       
+
+      <div className="prose dark:prose-invert max-w-none prose-lg">
+        {parse(parseEmbeds(article.body), {
+          replace: (domNode: any) => {
+            if (domNode.name === 'tweet-embed' && domNode.attribs?.['data-id']) {
+              return <TweetCard tweetId={domNode.attribs['data-id']} />;
+            }
       
-      <article
-        className="max-w-none"
-        dangerouslySetInnerHTML={{ __html: parseEmbeds(article.body) }}
-      />
+            if (domNode.name === 'iframe' && domNode.attribs?.src?.includes('youtube.com/embed')) {
+              return (
+                <div className="my-6 w-full aspect-video">
+                  <iframe
+                    src={domNode.attribs.src}
+                    frameBorder="0"
+                    allowFullScreen
+                    className="w-full h-full rounded-lg"
+                  />
+                </div>
+              );
+            }
+      
+            if (domNode.name === 'iframe' && domNode.attribs?.src?.includes('player.vimeo.com/video')) {
+              return (
+                <div className="my-6 aspect-w-16 aspect-h-9">
+                  <iframe
+                    src={domNode.attribs.src}
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                </div>
+              );
+            }
+      
+            if (domNode.name === 'a' && domNode.attribs?.href?.includes('instagram.com/p/')) {
+              return (
+                <div className="my-4">
+                  <a
+                    href={domNode.attribs.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    {domToReact(domNode.children)}
+                  </a>
+                </div>
+              );
+            }
+          },
+        })}
+      </div>
+
+
 
 
       {/* --- Read Next Section --- */}
