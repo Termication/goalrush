@@ -1,4 +1,5 @@
 export function parseEmbeds(html: string): string {
+
   // YouTube
   const youtubeRegex =
     /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/g;
@@ -34,14 +35,17 @@ export function parseEmbeds(html: string): string {
     return `<tweet-embed data-id="${tweetId}"></tweet-embed>`;
   });
 
-  // This is the crucial fix. We find all <p> tags and inspect their content.
+  // Instagram
+  const instaRegex = /(https?:\/\/(?:www\.)?instagram\.com\/p\/[A-Za-z0-9_-]+\/?)/g;
+  html = html.replace(instaRegex, (match) => {
+    return `<instagram-embed data-url="${match}"></instagram-embed>`;
+  });
+
   html = html.replace(/<p>([\s\S]*?)<\/p>/g, (match, content) => {
-    if (content.includes('<iframe') || content.includes('<tweet-embed')) {
+ 
+    if (content.includes('<iframe') || content.includes('<tweet-embed') || content.includes('<instagram-embed')) {
       return `<div>${content}</div>`;
     }
-    
-
-    
     // Otherwise, if it's just a normal paragraph, we leave it as is.
     return match;
   });

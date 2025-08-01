@@ -12,6 +12,7 @@ import { MoveLeft, Calendar, Tag } from 'lucide-react';
 import { parseEmbeds } from '@/components/parseLink/parseEmbeds';
 import parse, { domToReact } from 'html-react-parser';
 import TweetCard from '@/components/parseLink/xPostCard';
+import InstagramEmbed from '@/components/parseLink/instagramEmbed'; 
 
 
 // Define the structure of an article
@@ -134,7 +135,6 @@ useEffect(() => {
         </div>
       </header>
       
-
       <div className="prose dark:prose-invert max-w-none prose-lg">
         {parse(parseEmbeds(article.body), {
           replace: (domNode: any) => {
@@ -169,20 +169,10 @@ useEffect(() => {
               );
             }
       
-            if (domNode.name === 'a' && domNode.attribs?.href?.includes('instagram.com/p/')) {
-              return (
-                <div className="my-4">
-                  <a
-                    href={domNode.attribs.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline"
-                  >
-                    {domToReact(domNode.children)}
-                  </a>
-                </div>
-              );
+            if (domNode.name === 'instagram-embed' && domNode.attribs?.['data-url']) {
+              return <InstagramEmbed url={domNode.attribs['data-url']} />;
             }
+
           },
         })}
       </div>
