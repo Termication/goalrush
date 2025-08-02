@@ -8,6 +8,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import HomePageSkeleton from "@/components/skeletons/HomePageSkeleton"
+import { formatDistanceToNow } from "date-fns";
 
 interface Article {
   title: string
@@ -16,6 +17,7 @@ interface Article {
   slug: string
   category?: string
   isFeatured?: boolean
+  createdAt: string
 }
 
 export default function HomePage() {
@@ -61,7 +63,7 @@ export default function HomePage() {
   if (isLoading) return <HomePageSkeleton />
 
   const featured = articles.find((article) => article.isFeatured) || articles[0]
-  const headlines = articles.filter((a) => a.slug !== featured?.slug).slice(0, 3)
+  const headlines = articles.filter((a) => a.slug !== featured?.slug).slice(0, 4)
 
   if (!featured) return null
 
@@ -84,7 +86,7 @@ export default function HomePage() {
 
             <div className="absolute bottom-0 left-0 p-6 text-white lg:static lg:col-start-1 lg:col-span-3 lg:row-start-1 lg:bg-black/60 lg:backdrop-blur-sm lg:m-6 lg:rounded-xl lg:self-center">
               <Badge className="mb-3 px-3 py-1 text-xs bg-red-600 text-white rounded-full border-none">
-                Breaking News
+                <span className="animate-typing">Breaking News</span>
               </Badge>
               <h1 className="text-3xl lg:text-4xl font-bold font-poppins leading-tight drop-shadow-md">
                 {featured.title}
@@ -100,27 +102,35 @@ export default function HomePage() {
         </Link>
 
         {/* Headlines grid */}
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
-          {headlines.map((item, idx) => (
-            <Link href={`/news/${item.slug}`} key={idx} className="block group">
-              <Card className="overflow-hidden h-full group-hover:shadow-2xl transition-shadow duration-300">
-                <div className="relative w-full h-48">
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <Badge variant="secondary" className="mb-2">{item.category}</Badge>
-                  <h3 className="text-lg font-semibold leading-tight h-20 group-hover:text-primary transition-colors">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{item.summary}</p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
+<div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
+  {headlines.map((item, idx) => (
+    <Link href={`/news/${item.slug}`} key={idx} className="block group">
+      <Card className="overflow-hidden h-full group-hover:shadow-2xl transition-shadow duration-300 relative min-h-[300px]">
+        <Image
+          src={item.imageUrl}
+          alt={item.title}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+        {/* Text content at bottom of image */}
+        <CardContent className="p-4 absolute bottom-0 left-0 w-full text-white">
+          <Badge variant="secondary" className="mb-2 bg-white/20 text-white border-none">
+            {item.category}
+          </Badge>
+          <h3 className="text-lg font-semibold leading-tight drop-shadow-md line-clamp-2">
+            {item.title}
+          </h3>
+          <p className="text-sm text-white/70 mt-1 ml-1">
+            {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+          </p>
+        </CardContent>
+      </Card>
+    </Link>
+  ))}
+</div>
       </div>
     )
   }
@@ -128,7 +138,7 @@ export default function HomePage() {
   // Desktop layout
   return (
     <div className="min-h-screen px-2 py-3">
-      <Link href={`/news/${featured.slug}`} className="group max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 mb-12 cursor-pointer">
+      <Link href={`/news/${featured.slug}`} className="group max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 mb-12 cursor-pointer">
         <div className="flex flex-col justify-center">
           <Badge className="mb-4 px-4 py-1 text-sm bg-red-600 text-white w-fit">
             <span className="animate-typing">Breaking News</span>
@@ -153,26 +163,38 @@ export default function HomePage() {
         </div>
       </Link>
 
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto">
         {headlines.map((item, idx) => (
-          <Link href={`/news/${item.slug}`} key={idx} className="block group">
-            <Card className="overflow-hidden h-full group-hover:shadow-2xl transition-shadow duration-300">
-              <div className="relative w-full h-40">
+          <div key={idx}>
+            <Link href={`/news/${item.slug}`} className="block group">
+              <Card className="overflow-hidden h-full group-hover:shadow-2xl transition-shadow duration-300 relative min-h-[300px]">
                 <Image
                   src={item.imageUrl}
                   alt={item.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{item.title}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{item.summary}</p>
-              </CardContent>
-            </Card>
-          </Link>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <CardContent className="p-4 absolute bottom-0 left-0 w-full text-white">
+                  <Badge variant="secondary" className="mb-2 bg-white/20 text-white border-none">
+                    {item.category}
+                  </Badge>
+                  <h3 className="text-lg font-semibold leading-tight drop-shadow-md">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-sm text-muted-foreground mt-1 ml-1">
+                    {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+          </div>
         ))}
       </div>
+      
     </div>
   )
 }
