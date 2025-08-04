@@ -15,6 +15,7 @@ interface Article {
   slug: string
   category?: string
   createdAt: string
+  isFeatured?: boolean
 }
 
 export default function LaligaSection() {
@@ -22,21 +23,42 @@ export default function LaligaSection() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const fetchLaLigaArticles = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch('/api/articles?category=laliga&limit=4')
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`)
+        // 1. Fetch articles displayed in hero section
+        const heroRes = await fetch('/api/articles')
+        if (!heroRes.ok) throw new Error(`Hero articles fetch failed: ${heroRes.status}`)
+        const heroData = await heroRes.json()
+        const heroArticles: Article[] = heroData.articles || []
         
-        const data = await res.json()
-        setArticles(data.articles?.slice(0, 4) || [])
+        // 2. Identify articles currently displayed in hero section
+        const featured = heroArticles.find(article => article.isFeatured) || heroArticles[0]
+        const headlines = heroArticles.filter(a => a.slug !== featured?.slug).slice(0, 4)
+        const displayedSlugs = [
+          featured?.slug, 
+          ...headlines.map(a => a.slug)
+        ].filter(slug => slug) as string[]
+
+        // 3. Fetch all La Liga articles
+        const laligaRes = await fetch('/api/articles?category=laliga&limit=10')
+        if (!laligaRes.ok) throw new Error(`La Liga articles fetch failed: ${laligaRes.status}`)
+        const laligaData = await laligaRes.json()
+        const allLaLigaArticles: Article[] = laligaData.articles || []
+
+        // 4. Filter out articles currently displayed in hero section
+        const filteredArticles = allLaLigaArticles.filter(
+          article => !displayedSlugs.includes(article.slug)
+        ).slice(0, 4)
+
+        setArticles(filteredArticles)
       } catch (err) {
-        console.error('Failed to fetch La Liga articles:', err)
+        console.error('Failed to fetch articles:', err)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchLaLigaArticles()
+    fetchData()
   }, [])
 
   if (isLoading) {
@@ -52,7 +74,7 @@ export default function LaligaSection() {
             <Skeleton className="h-80 rounded-xl" />
           </div>
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[1,2,3].map((i) => (
+            {[1,2,3].map((i: number) => (
               <Skeleton key={i} className="h-48 rounded-xl" />
             ))}
           </div>
@@ -70,7 +92,7 @@ export default function LaligaSection() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900">La Liga News</h2>
         <Link 
-          href="/news/category/laliga"
+          href="/news_by_category/laliga"
           className="text-sm font-medium text-primary hover:underline"
         >
           View All
@@ -79,7 +101,7 @@ export default function LaligaSection() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Featured Article */}
-        {articles.slice(0, 1).map((article) => (
+        {articles.slice(0, 1).map((article: Article) => (
           <Link 
             href={`/news/${article.slug}`} 
             key={`featured-${article.slug}`}
@@ -112,14 +134,13 @@ export default function LaligaSection() {
 
         {/* Secondary Articles */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {articles.slice(1, 4).map((article) => (
+          {articles.slice(1, 4).map((article: Article) => (
             <Link 
               href={`/news/${article.slug}`} 
               key={article.slug}
               className="group"
             >
               <Card className="h-full overflow-hidden relative">
-                
                 <div className="absolute inset-0">
                   <Image
                     src={article.imageUrl}

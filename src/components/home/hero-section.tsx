@@ -59,6 +59,8 @@ export default function HomePage() {
     fetchArticles()
   }, [])
 
+  
+
   // Show skeleton while loading
   if (isLoading) return <HomePageSkeleton />
 
