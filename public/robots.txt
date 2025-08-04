@@ -1,4 +1,9 @@
+# *
 User-agent: *
 Allow: /
 
+# Host
+Host: https://www.goal-rush.live
+
+# Sitemaps
 Sitemap: https://www.goal-rush.live/sitemap.xml
