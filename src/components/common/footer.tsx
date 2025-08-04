@@ -28,8 +28,9 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link href="/news_by_category/Premier-league" className="hover:text-white">Premier League</Link></li>
             <li><Link href="/news_by_category/laliga" className="hover:text-white">Laliga</Link></li>
-            <li><Link href="/news_by_category/transfers" className="hover:text-white">Transfers</Link></li>
+            <li><Link href="/news_by_category/Transfers" className="hover:text-white">Transfers</Link></li>
             <li><Link href="/news_by_category/international" className="hover:text-white">International</Link></li>
+            {/* <li><Link href="/news_by_category/MTN8" className="hover:text-white">South Africa MTN8</Link></li> */}
           </ul>
         </div>
 

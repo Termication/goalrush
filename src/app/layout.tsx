@@ -23,9 +23,98 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.goal-rush.live"),
   title: "GoalRush - Your Daily Football Fix",
-  description: "The latest football news, live scores, and in-depth analysis from around the world. Your home for everything football.",
+  description:
+    "Stay updated with the latest football news, live scores, match highlights, transfer rumors, and expert analysis from all leagues around the world.",
+  keywords: [
+    "football news",
+    "soccer news",
+    "live scores",
+    "match highlights",
+    "football analysis",
+    "Premier League",
+    "La Liga",
+    "Champions League",
+    "Serie A",
+    "Bundesliga",
+    "Ligue 1",
+    "psl",
+    "south africa football",
+    "football updates",
+    "football scores",
+    "south africa mtn8",
+    "football transfers",
+    "football updates",
+    "football articles",
+    "football blog",
+    "sports news",
+    "live football updates",
+    "football commentary",
+    "football highlights",
+    "football scores",
+    "football fixtures",
+    "football results",
+    "football standings",
+    "football stats",
+    "football teams",
+    "football players",
+    "football clubs",
+    "football leagues",
+    "football tournaments",
+    "football competitions",
+    "football events",
+    "football highlights videos",
+    "football news website",
+    "football news portal",
+    "football news site",
+    "football news online",
+    "football news updates",
+    "football news articles",
+    "football news blog",
+    "GoalRush"
+  ],
+  authors: [{ name: "GoalRush Team", url: "https://www.goal-rush.live" }],
+  openGraph: {
+    title: "GoalRush - Your Daily Football Fix",
+    description:
+      "Breaking football news, live match updates, and expert commentary. Join GoalRush for your daily dose of world football.",
+    url: "https://www.goal-rush.live",
+    siteName: "GoalRush",
+    locale: "en_ZA",
+    type: "website",
+    images: [
+      {
+        url: "https://www.goal-rush.live/OG-image.png",
+        height: 630,
+        alt: "GoalRush - Football News and Highlights",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GoalRush - Your Daily Football Fix",
+    description:
+      "All the latest football news, results, and expert insights on GoalRush.",
+    images: ["https://www.goal-rush.live/"],
+    site: "@GOAL__RUSH",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
+
 
 export default function RootLayout({
   children,
