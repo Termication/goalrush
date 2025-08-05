@@ -18,7 +18,7 @@ interface Article {
   isFeatured?: boolean
 }
 
-export default function LaligaSection() {
+export default function PremierLeagueSection() {
   const [articles, setArticles] = useState<Article[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -39,14 +39,14 @@ export default function LaligaSection() {
           ...headlines.map(a => a.slug)
         ].filter(slug => slug) as string[]
 
-        // 3. Fetch all La Liga articles
-        const laligaRes = await fetch('/api/articles?category=laliga&limit=10')
-        if (!laligaRes.ok) throw new Error(`La Liga articles fetch failed: ${laligaRes.status}`)
-        const laligaData = await laligaRes.json()
-        const allLaLigaArticles: Article[] = laligaData.articles || []
+        // 3. Fetch all Premier League articles
+        const plRes = await fetch('/api/articles?category=Premier League&limit=10')
+        if (!plRes.ok) throw new Error(`Premier League articles fetch failed: ${plRes.status}`)
+        const plData = await plRes.json()
+        const allPLArticles: Article[] = plData.articles || []
 
         // 4. Filter out articles currently displayed in hero section
-        const filteredArticles = allLaLigaArticles.filter(
+        const filteredArticles = allPLArticles.filter(
           article => !displayedSlugs.includes(article.slug)
         ).slice(0, 4)
 
@@ -64,17 +64,17 @@ export default function LaligaSection() {
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 py-6 sm:py-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
-          <Skeleton className="h-8 w-36 sm:w-40" />
-          <Skeleton className="h-6 w-20" />
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <Skeleton className="h-8 w-36 sm:w-44" />
+          <Skeleton className="h-6 w-20 sm:w-24" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="lg:col-span-2">
-            <Skeleton className="h-56 sm:h-80 rounded-xl" />
+            <Skeleton className="h-56 sm:h-80 rounded-2xl" />
           </div>
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {[1,2,3].map((i: number) => (
-              <Skeleton key={i} className="h-32 sm:h-48 rounded-xl" />
+              <Skeleton key={i} className="h-32 sm:h-48 rounded-2xl" />
             ))}
           </div>
         </div>
@@ -89,10 +89,13 @@ export default function LaligaSection() {
   return (
     <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 py-6 sm:py-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">La Liga News</h2>
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#37003c] flex items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 28 28" fill="none" className="w-7 h-7 sm:w-8 sm:h-8"><circle cx="14" cy="14" r="14" fill="#37003c"/><path d="M14 7l2.09 6.26H22l-5.18 3.76L18.18 21 14 17.27 9.82 21l1.36-3.98L6 13.26h5.91z" fill="#fff"/></svg>
+          Premier League News
+        </h2>
         <Link 
-          href="/news_by_category/laliga"
-          className="text-xs sm:text-sm font-medium text-primary hover:underline"
+          href="/news_by_category/premierleague"
+          className="text-xs sm:text-sm font-semibold text-[#37003c] border-b-2 border-[#37003c] hover:text-[#a626aa] hover:border-[#a626aa] transition"
         >
           View All
         </Link>
@@ -106,7 +109,7 @@ export default function LaligaSection() {
             key={`featured-${article.slug}`}
             className="lg:col-span-2 group"
           >
-            <Card className="h-56 sm:h-80 overflow-hidden relative">
+            <Card className="h-56 sm:h-80 overflow-hidden relative shadow-xl rounded-2xl border-2 border-[#37003c]">
               <div className="absolute inset-0">
                 <Image
                   src={article.imageUrl}
@@ -115,16 +118,16 @@ export default function LaligaSection() {
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#37003c]/80 to-transparent" />
               </div>
-              <CardContent className="p-4 sm:p-6 absolute bottom-0 w-full z-10">
-                <Badge className="mb-2 sm:mb-3 bg-red-600 text-white text-xs sm:text-base">
-                  {article.category || 'La Liga'}
+              <CardContent className="p-4 sm:p-7 absolute bottom-0 w-full z-10">
+                <Badge className="mb-2 sm:mb-3 bg-[#a626aa] text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-lg text-xs sm:text-base font-bold tracking-wide">
+                  {article.category || 'Premier League'}
                 </Badge>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">
+                <h3 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-white mb-1 sm:mb-2 drop-shadow">
                   {article.title}
                 </h3>
-                <p className="text-gray-200 line-clamp-2 text-xs sm:text-base">
+                <p className="text-gray-200 line-clamp-2 text-xs sm:text-lg">
                   {article.summary}
                 </p>
               </CardContent>
@@ -140,7 +143,7 @@ export default function LaligaSection() {
               key={article.slug}
               className="group"
             >
-              <Card className="h-32 sm:h-48 overflow-hidden relative">
+              <Card className="h-32 sm:h-48 overflow-hidden relative rounded-2xl border border-[#a626aa] shadow-md hover:shadow-xl transition-shadow">
                 <div className="absolute inset-0">
                   <Image
                     src={article.imageUrl}
@@ -149,13 +152,13 @@ export default function LaligaSection() {
                     sizes="(max-width: 1024px) 100vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#a626aa]/70 to-transparent" />
                 </div>
-                <CardContent className="p-3 sm:p-4 relative z-10">
-                  <Badge className="mb-1 sm:mb-2 bg-red-600 text-white text-[10px] sm:text-xs">
-                    {article.category || 'La Liga'}
+                <CardContent className="p-3 sm:p-5 relative z-10">
+                  <Badge className="mb-1 sm:mb-2 bg-[#37003c] text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-semibold tracking-wide">
+                    {article.category || 'Premier League'}
                   </Badge>
-                  <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base">
+                  <h3 className="font-bold text-[#37003c] line-clamp-2 group-hover:text-[#a626aa] transition-colors text-sm sm:text-lg">
                     {article.title}
                   </h3>
                 </CardContent>
