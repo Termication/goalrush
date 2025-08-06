@@ -4,14 +4,14 @@ import { parseEmbeds } from '@/components/parseLink/parseEmbeds';
 import parse, { domToReact } from 'html-react-parser';
 import TweetCard from '@/components/parseLink/xPostCard';
 import InstagramEmbed from '@/components/parseLink/instagramEmbed'; 
-import Quote from "@/components/parseLink/quotes"
+
 
 
 // This component takes the raw HTML body of an article and renders it,
 // replacing any embed links with their corresponding React components.
 export default function ArticleBody({ body }: { body: string }) {
   return (
-    <div className="prose dark:prose-invert max-w-none prose-lg">
+    <div className="prose dark:prose-invert max-w-none prose-lg [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:border-muted">
       {parse(parseEmbeds(body), {
         replace: (domNode: any) => {
           if (domNode.name === 'tweet-embed' && domNode.attribs?.['data-id']) {
@@ -49,26 +49,6 @@ export default function ArticleBody({ body }: { body: string }) {
             return <InstagramEmbed url={domNode.attribs['data-url']} />;
           }
 
-          // ✅ Blockquote to <Quote> component
-          if (domNode.name === 'blockquote') {
-            const children = domToReact(domNode.children);
-
-            // Look for a <figcaption> child to extract author
-            const authorNode = domNode.children.find(
-              (child: any) =>
-                child.name === 'figcaption' || // <figcaption>
-                (child.type === 'tag' &&
-                  child.name === 'p' &&
-                  child.children?.[0]?.data?.startsWith('—')) // Optional fallback
-            );
-
-            let author;
-            if (authorNode) {
-              author = authorNode.children?.[0]?.data?.replace(/^—\s*/, '');
-            }
-
-            return <Quote author={author}>{children}</Quote>;
-          }
         },
       })}
     </div>

@@ -7,7 +7,7 @@ import Image from '@tiptap/extension-image';
 import { Button } from '@/components/ui/button';
 import {
   Bold, Italic, Strikethrough, Heading1, Heading2,
-  List, ListOrdered, ImageIcon
+  List, ListOrdered, ImageIcon, Quote
 } from 'lucide-react';
 
 // --- MenuBar Component ---
@@ -70,6 +70,15 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       <Button type="button" onClick={triggerFileSelect} variant="ghost" size="icon">
         <ImageIcon className="h-4 w-4" />
       </Button>
+      <Button
+        type="button"
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        variant="ghost"
+        size="icon"
+        className={buttonClass('blockquote')}
+      >
+        <Quote className="h-4 w-4" />
+      </Button>
     </div>
   );
 };
@@ -94,7 +103,7 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     content,
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert max-w-none prose-sm sm:prose-base p-4 focus:outline-none min-h-[400px]',
+        class: 'prose dark:prose-invert max-w-none prose-sm sm:prose-base p-4 focus:outline-none min-h-[400px] [&>*]:mb-4 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:border-muted',
       },
     },
     onUpdate({ editor }) {
