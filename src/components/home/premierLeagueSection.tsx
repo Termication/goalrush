@@ -101,7 +101,7 @@ export default function PremierLeagueSection() {
           Headlines
         </div>
         <Link 
-          href="/news_by_category/premierleague"
+          href="/news_by_category/Premier League"
           className="text-xs sm:text-sm font-semibold text-[#37003c] border-b-2 border-[#37003c] hover:text-[#a626aa] hover:border-[#a626aa] transition"
         >
           View All
@@ -165,7 +165,7 @@ export default function PremierLeagueSection() {
                   <Badge className="mb-1 sm:mb-2 bg-[#37003c] text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-semibold tracking-wide">
                     {article.category || 'Premier League'}
                   </Badge>
-                  <h3 className="font-bold text-[#37003c] line-clamp-2 group-hover:text-[#a626aa] transition-colors text-sm sm:text-lg">
+                  <h3 className="font-bold text-[#ffffff] line-clamp-2 group-hover:text-[#a626aa] transition-colors text-sm sm:text-lg">
                     {article.title}
                   </h3>
                 </CardContent>

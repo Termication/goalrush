@@ -102,8 +102,8 @@ export default function LaligaSection() {
           Headlines
         </div>
         <Link 
-          href="/news_by_category/laliga"
-          className="text-xs sm:text-sm font-medium text-primary hover:underline"
+          href="/news_by_category/Premier League"
+          className="text-xs sm:text-sm font-semibold text-[#0f0d0f] border-b-2 border-[#141213] hover:text-[#ff6464] hover:border-[#fa8787] transition"
         >
           View All
         </Link>
@@ -166,7 +166,7 @@ export default function LaligaSection() {
                   <Badge className="mb-1 sm:mb-2 bg-red-600 text-white text-[10px] sm:text-xs">
                     {article.category || 'La Liga'}
                   </Badge>
-                  <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base">
+                  <h3 className="font-bold text-yellow-500 line-clamp-2 group-hover:text-primary transition-colors text-sm sm:text-base">
                     {article.title}
                   </h3>
                 </CardContent>
