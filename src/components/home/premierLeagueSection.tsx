@@ -102,7 +102,7 @@ export default function PremierLeagueSection() {
         </div>
         <Link 
           href="/news_by_category/Premier League"
-          className="text-xs sm:text-sm font-semibold text-[#37003c] border-b-2 border-[#37003c] hover:text-[#a626aa] hover:border-[#a626aa] transition"
+          className="text-xs sm:text-sm font-semibold text-[#37003c] hover:text-[#a626aa] hover:border-[#a626aa] transition"
         >
           View All
         </Link>

@@ -103,7 +103,7 @@ export default function LaligaSection() {
         </div>
         <Link 
           href="/news_by_category/Premier League"
-          className="text-xs sm:text-sm font-semibold text-[#0f0d0f] border-b-2 border-[#141213] hover:text-[#ff6464] hover:border-[#fa8787] transition"
+          className="text-xs sm:text-sm font-semibold text-[#0f0d0f]  hover:text-[#ff6464] hover:border-[#fa8787] transition"
         >
           View All
         </Link>
