@@ -89,10 +89,17 @@ export default function PremierLeagueSection() {
   return (
     <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 py-6 sm:py-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#37003c] flex items-center gap-2">
-          <svg width="24" height="24" viewBox="0 0 28 28" fill="none" className="w-7 h-7 sm:w-8 sm:h-8"><circle cx="14" cy="14" r="14" fill="#37003c"/><path d="M14 7l2.09 6.26H22l-5.18 3.76L18.18 21 14 17.27 9.82 21l1.36-3.98L6 13.26h5.91z" fill="#fff"/></svg>
-          Premier League News
-        </h2>
+        <div className="group text-xl sm:text-2xl md:text-3xl font-extrabold text-[#5a255f] flex items-center gap-3">
+          <Image
+            src="/premier-league.png"
+            alt="Premier League Logo"
+            width={128}
+            height={128}
+            className="w-24 h-24 sm:w-32 sm:h-32 object-contain transition-transform duration-300 group-hover:scale-120"
+            priority
+          />
+          Headlines
+        </div>
         <Link 
           href="/news_by_category/premierleague"
           className="text-xs sm:text-sm font-semibold text-[#37003c] border-b-2 border-[#37003c] hover:text-[#a626aa] hover:border-[#a626aa] transition"

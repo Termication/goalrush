@@ -39,7 +39,7 @@ export default function HomePageSkeleton() {
         {Array.from({ length: 4 }).map((_, index) => (
           <Card key={index} className="overflow-hidden h-full relative min-h-[300px]">
             <Skeleton className="w-full h-full absolute inset-0 bg-zinc-700" />
-            <CardContent className="p-4 absolute bottom-0 left-0 w-full">
+            <CardContent className="p-1 absolute bottom-0 left-0 w-full">
               <Skeleton className="h-6 w-24 mb-2 rounded-full bg-zinc-700" />
               <Skeleton className="h-6 w-full mb-1 bg-zinc-700" />
               <Skeleton className="h-6 w-3/4 mt-2 bg-zinc-700" />
