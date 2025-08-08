@@ -20,7 +20,7 @@ export default function Navbar() {
     <nav className="w-full border-b bg-background px-4 py-2 shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         
-        {/* Logo + Brand */}
+        {/* Logo and Brand Name */}
         <Link
         href="/"
         className="group flex items-center space-x-2 rounded-md transition-all duration-200"
