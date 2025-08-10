@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
   eslint: {
     ignoreDuringBuilds: true,
   },
   
   images: {
-
     remotePatterns: [
       {
         protocol: 'https',
@@ -21,6 +19,20 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+  },
+
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "script-src 'self' https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://www.ezojs.com",
+          },
+        ],
+      },
+    ];
   },
 };
 
