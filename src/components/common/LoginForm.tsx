@@ -17,7 +17,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const error = searchParams.get('error');
+  const error = searchParams?.get('error');
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -22,7 +22,10 @@ const PAGE_SIZE = 12;
 
 export default function NewsByCategoryPage() {
   const params = useParams();
-  const category = decodeURIComponent(params.category as string);
+  const category = params?.category
+  ? decodeURIComponent(params.category as string)
+  : '';
+
   const formattedCategory = category.replace(/-/g, ' ');
 
   const [articles, setArticles] = useState<Article[]>([]);
