@@ -45,7 +45,9 @@ const ArticlePageSkeleton = () => (
 );
 
 export default function NewsPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const params = useParams<{ slug: string }>();
+  const slug = params?.slug;
+
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
