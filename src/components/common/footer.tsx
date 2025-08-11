@@ -57,6 +57,7 @@ export default function Footer() {
       {/* Bottom section */}
       <div className="mt-10 border-t border-gray-800 pt-6 text-center text-sm text-gray-500">
         &copy; {new Date().getFullYear()} GoalRush. All rights reserved.
+          <Link href="/privacy-policy" className=" text-blue-200 no-underline hover:text-blue-600"> Privacy policy</Link>
       </div>
     </footer>
   );
