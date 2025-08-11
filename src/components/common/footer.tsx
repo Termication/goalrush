@@ -16,7 +16,7 @@ export default function Footer() {
           <h3 className="text-lg font-semibold text-white mb-3">Explore</h3>
           <ul className="space-y-2 text-sm">
             <li><Link href="/" className="hover:text-white">Home</Link></li>
-            <li><Link href="/news" className="hover:text-white">Articles</Link></li>
+            <li><Link href="/news_page" className="hover:text-white">Articles</Link></li>
             <li><Link href="/about" className="hover:text-white">About</Link></li>
             <li><Link href="/support" className="hover:text-white">Support</Link></li>
           </ul>
@@ -44,12 +44,12 @@ export default function Footer() {
             <Link href="https://x.com/GOAL__RUSH" aria-label="Twitter" className="hover:text-white">
               <Twitter className="h-5 w-5" />
             </Link>
-            <Link href="#" aria-label="Instagram" className="hover:text-white">
+            {/* <Link href="#" aria-label="Instagram" className="hover:text-white">
               <Instagram className="h-5 w-5" />
             </Link>
             <Link href="#" aria-label="LinkedIn" className="hover:text-white">
               <Linkedin className="h-5 w-5" />
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
