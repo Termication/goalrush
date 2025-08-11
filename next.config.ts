@@ -20,20 +20,6 @@ const nextConfig = {
       },
     ],
   },
-
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: "script-src 'self' https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://www.ezojs.com",
-          },
-        ],
-      },
-    ];
-  },
 };
 
 export default nextConfig;
