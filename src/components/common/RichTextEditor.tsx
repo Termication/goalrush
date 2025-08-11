@@ -5,9 +5,10 @@ import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import { Button } from '@/components/ui/button';
+import Link from '@tiptap/extension-link';
 import {
   Bold, Italic, Strikethrough, Heading1, Heading2,
-  List, ListOrdered, ImageIcon, Quote
+  List, ListOrdered, ImageIcon, Quote, Link as LinkIcon
 } from 'lucide-react';
 
 // --- MenuBar Component ---
@@ -48,6 +49,26 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
     fileInputRef.current?.click();
   };
 
+  // New function to handle adding a link
+  const handleAddLink = () => {
+    const previousUrl = editor.getAttributes('link').href;
+    const url = window.prompt('Enter URL', previousUrl);
+
+    // If the user cancels the prompt, we do nothing
+    if (url === null) {
+      return;
+    }
+
+    // If the user clears the URL, we'll remove the link
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
+    }
+
+    // Otherwise, we set the link
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  };
+
   const buttonClass = (type: string, options?: {}) =>
     `p-2 rounded-lg ${editor.isActive(type, options) ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'}`;
 
@@ -79,6 +100,17 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       >
         <Quote className="h-4 w-4" />
       </Button>
+
+      <Button
+        type="button"
+        onClick={handleAddLink}
+        variant="ghost"
+        size="icon"
+        className={buttonClass('link')}
+      >
+        <LinkIcon className="h-4 w-4" />
+      </Button>
+
     </div>
   );
 };
@@ -99,11 +131,15 @@ export const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
         },
       }),
       Image.configure({ inline: false }),
+      Link.configure({
+        openOnClick: false, 
+        autolink: true,
+      }),
     ],
     content,
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert max-w-none prose-sm sm:prose-base p-4 focus:outline-none min-h-[400px] [&>*]:mb-4 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:border-muted',
+        class: 'prose dark:prose-invert max-w-none prose-sm sm:prose-base p-4 focus:outline-none min-h-[400px] [&>*]:mb-4 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:border-muted [&_a]:text-blue-600 [&_a:hover]:underline',
       },
     },
     onUpdate({ editor }) {

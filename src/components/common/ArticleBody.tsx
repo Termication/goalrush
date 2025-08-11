@@ -11,7 +11,7 @@ import InstagramEmbed from '@/components/parseLink/instagramEmbed';
 // replacing any embed links with their corresponding React components.
 export default function ArticleBody({ body }: { body: string }) {
   return (
-    <div className="prose dark:prose-invert max-w-none prose-lg [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:border-muted">
+    <div className="prose dark:prose-invert max-w-none prose-lg [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:border-muted [&_a]:text-blue-600 [&_a:hover]:underline">
       {parse(parseEmbeds(body), {
         replace: (domNode: any) => {
           if (domNode.name === 'tweet-embed' && domNode.attribs?.['data-id']) {
