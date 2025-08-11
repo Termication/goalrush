@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy | GoalRush",
   description: "Read the Privacy Policy for GoalRush to understand how we collect, use, and protect your personal information.",
   robots: {
-    index: false, // It's good practice to no-index privacy policies
+    index: false,
     follow: true,
   }
 };
@@ -70,6 +70,12 @@ export default function PrivacyPolicyPage() {
           </p>
           <p>
             Note that GoalRush has no access to or control over these cookies that are used by third-party advertisers. For more information on Ezoic's privacy policy, please visit their website.
+          </p>
+          
+          {/* Ezoic Privacy Policy Embed */}
+          <p>
+            Please see the following for Ezoic's privacy policy disclosures:
+            <span id="ezoic-privacy-policy-embed"></span>
           </p>
 
           <h2>Your Privacy Rights (POPIA, GDPR, etc.)</h2>
