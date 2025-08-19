@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main className="w-full min-h-screen flex flex-col pt-0">
       <HomePage />
-      <PremierLeagueTable />
+      {/* <PremierLeagueTable /> */}
       <LaligaSection />
       <PremierLeagueSection />
       <MoreHeadlinesSection />

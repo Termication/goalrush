@@ -24,7 +24,11 @@ export default function ArticleBody({ body }: { body: string }) {
       [&_blockquote]:text-muted-foreground 
       [&_blockquote]:border-muted 
       [&_a]:text-blue-600 
-      [&_a:hover]:underline">
+      [&_a:hover]:underline
+      [&_ul]:list-disc
+      [&_ol]:list-decimal
+      [&_li]:my-2
+      [&_li]:ml-6">
 
       {parse(processedHtml, {
         replace: (domNode) => {
