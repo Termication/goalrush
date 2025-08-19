@@ -3,7 +3,7 @@ import HomePage from "@/components/home/hero-section"
 import MoreHeadlinesSection from "@/components/home/moreheadlines"
 import LaligaSection from "@/components/home/laligaSection"
 import PremierLeagueSection from "@/components/home/premierLeagueSection"
-import PremierLeagueTable from "@/components/home/PremierLeagueTable";
+// import PremierLeagueTable from "@/components/home/PremierLeagueTable";
 
 
 export default function Home() {
