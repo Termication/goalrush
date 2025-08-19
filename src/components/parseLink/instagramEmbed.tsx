@@ -18,8 +18,6 @@ export default function InstagramEmbed({ url }: { url: string }) {
       document.body.appendChild(script);
     }
 
-    // When the script is loaded, it looks for elements with the class 'instagram-media'
-    // and processes them. We need to tell it to re-process whenever a new embed is added.
     script.onload = () => {
       if (window.instgrm) {
         window.instgrm.Embeds.process();
