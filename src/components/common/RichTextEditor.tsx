@@ -2,7 +2,7 @@
 
 import { Editor } from '@tinymce/tinymce-react';
 import { useRef } from 'react';
-import type { Editor as TinyMCEEditor } from 'tinymce'; // Import the editor type
+import type { Editor as TinyMCEEditor } from 'tinymce';
 
 // This is the RichTextEditor component powered by TinyMCE.
 export const RichTextEditor = ({ content, onChange }: { content: string, onChange: (html: string) => void }) => {
@@ -46,21 +46,19 @@ export const RichTextEditor = ({ content, onChange }: { content: string, onChang
           'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
           'insertdatetime', 'media', 'table', 'help', 'wordcount'
         ],
-        // FIX: Added 'modelquote' to the toolbar
         toolbar: 'undo redo | blocks | ' +
-          'bold italic forecolor | alignleft aligncenter ' +
+          'bold italic forecolor backcolor | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | ' +
           'removeformat | image link modelquote | help',
         
-        // FIX: Added styles for the model quote directly here
         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } blockquote.model-quote { border-left: 4px solid #4f46e5; margin: 1.5em 0; padding: 0.5em 1em; background-color: #f1f5f9; border-radius: 4px; } blockquote.model-quote footer { margin-top: 1em; font-style: italic; text-align: right; }',
         
+
         images_upload_handler: imageUploadHandler,
         automatic_uploads: true,
         file_picker_types: 'image',
         
         setup: (editor: TinyMCEEditor) => {
-            // This updates the parent component's state when you click out of the editor.
             editor.on('blur', () => {
                 const content = editor.getContent();
                 onChange(content);
