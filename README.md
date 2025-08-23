@@ -26,11 +26,12 @@
 - **Framework**: [Next.js](https://nextjs.org/) (React)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/) & [DaisyUI](https://daisyui.com/) (for the FAQ accordion)
-- **Rich Text Editor**: [Tiptap](https://tiptap.dev/)
+- **Rich Text Editor**: [TimyMCE](https://TimyMCE.com/)
 - **Database**: [MongoDB](https://www.mongodb.com/) (via [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
 - **ORM**: [Mongoose](https://mongoosejs.com/)
 - **Authentication**: [NextAuth.js (Auth.js)](https://next-auth.js.org/)
 - **Image Hosting**: [Cloudinary](https://cloudinary.com/)
+- **RichEditorThis is the RichTextEditor component powered by TinyMCE.
 - **Deployment**: [Upcoming](https://)
 
 ---
