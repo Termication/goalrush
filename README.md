@@ -13,7 +13,7 @@
 - **Individual Article Pages**: Dynamically generated pages for each news story using slugs for clean, SEO-friendly URLs.
 - **"Read Next" Suggestions**: Keeps users engaged by showing related articles at the bottom of each news page.
 - **Secure Admin Panel**: A protected route at `/admin/create-article` for content creation, secured by NextAuth.js.
-- **Rich Text Editor**: A WordPress-like Tiptap editor for writing articles with formatting options like headings, lists, bold, and italics.
+- **Rich Text Editor**: Component powered by TinyMCE for writing articles with formatting options like headings, lists, bold, and italics.
 - **Image Uploading**: Seamlessly upload featured images and images within the article body directly to Cloudinary.
 - **Skeleton Loading States**: Improves user experience by showing a content skeleton while data is being fetched.
 - **Email & Password Authentication**: A simple but secure login system for the admin panel.
