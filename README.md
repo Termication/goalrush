@@ -76,7 +76,7 @@ Follow these instructions to get a local copy of the project up and running.
     ADMIN_EMAIL=admin@goalrush.com
     ADMIN_PASSWORD=your_secure_password
     ```
-
+    
 4.  **Run the development server:**
     ```bash
     npm run dev
@@ -92,7 +92,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 
 ## Authors
-
 
 <details>
     <summary>Innocent Karabo Mohlala</summary>
