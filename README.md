@@ -31,7 +31,7 @@
 - **Authentication**: [NextAuth.js (Auth.js)](https://next-auth.js.org/)
 - **Image Hosting**: [Cloudinary](https://cloudinary.com/)
 - **RichEditorThis is the RichTextEditor component powered by TinyMCE.
-- **Deployment**: [Upcoming](https://)
+- **Deployment**: [Vercel](https://goal-rush.live)
 
 ---
 
