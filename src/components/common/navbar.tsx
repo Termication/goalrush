@@ -65,7 +65,7 @@ export default function Navbar() {
           <NavigationMenuList>
             {/* News Link */}
             <NavigationMenuItem>
-              {/* FIX: Removed legacyBehavior and adopted modern 'asChild' pattern */}
+              {/* adopted modern 'asChild' pattern */}
               <NavigationMenuLink asChild active={isActive(pathname, "/news_page")}>
                 <Link href="/news_page" className={navigationMenuTriggerStyle()}>
                   News
@@ -122,7 +122,7 @@ export default function Navbar() {
   )
 }
 
-// --- Reusable ListItem component for NavigationMenu (FIXED) ---
+// --- Reusable ListItem component for NavigationMenu ---
 const ListItem = React.forwardRef<
   React.ElementRef<typeof Link>,
   React.ComponentPropsWithoutRef<typeof Link> & { active?: boolean; title: string }
