@@ -90,7 +90,7 @@ export default function Navbar() {
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {/* Betting Link */}
+            {/* Betting  Link */}
             <NavigationMenuItem>
               {/*adopted modern 'asChild' pattern */}
               <NavigationMenuLink asChild active={isActive(pathname, "/betting")}>
