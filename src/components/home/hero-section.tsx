@@ -20,6 +20,7 @@ interface Article {
   createdAt: string
 }
 
+// Main HomePage Component
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
   const [articles, setArticles] = useState<Article[]>([])
