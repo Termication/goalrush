@@ -96,7 +96,7 @@ export default function NewsPage() {
 
   if (!article) {
     return (
-      <main className="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4">
+      <main className="bg-[#191a1a] text-white min-h-screen flex flex-col items-center justify-center p-4">
         <h1 className="text-2xl font-bold text-gray-100">Article Not Found</h1>
         <p className="text-gray-400">
           The article you are looking for does not exist or may have been moved.
@@ -109,7 +109,7 @@ export default function NewsPage() {
   }
 
   return (
-    <main className="bg-black text-white min-h-screen">
+    <main className="bg-[#191a1a] text-white min-h-screen">
       <div className="max-w-4xl mx-auto p-4 md:p-6">
         <div className="mb-6">
           <Button
