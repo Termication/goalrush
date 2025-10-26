@@ -15,6 +15,7 @@ interface Article {
 
 const PAGE_SIZE = 12;
 
+// This sets the page's <title> tag and meta description
 export default function NewsPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);

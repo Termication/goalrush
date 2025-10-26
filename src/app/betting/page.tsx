@@ -16,9 +16,11 @@ export const metadata = {
   description: "Our new football betting section is launching soon!",
 }
 
+
+// Betting Page Component
 export default function BettingPage() {
   return (
-    
+
     <div className="flex min-h-[calc(100vh-10rem)] items-center justify-center p-4">
       
       <Card className="w-full max-w-lg text-center shadow-lg">
