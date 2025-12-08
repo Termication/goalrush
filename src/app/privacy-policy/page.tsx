@@ -63,37 +63,9 @@ export default function PrivacyPolicyPage() {
 
           <h2>Advertising Partners Privacy Policies</h2>
           <p>
-            You may consult this list to find the Privacy Policy for each of the advertising partners of GoalRush. Our primary advertising partner is Ezoic.
-          </p>
-          <p>
-            Third-party ad servers or ad networks like Ezoic use technologies like cookies, JavaScript, or Web Beacons that are used in their respective advertisements and links that appear on GoalRush, which are sent directly to users' browser. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see on websites that you visit.
-          </p>
-          <p>
-            Note that GoalRush has no access to or control over these cookies that are used by third-party advertisers. For more information on Ezoic's privacy policy, please visit their website.
+            You may consult this list to find the Privacy Policy for each of the advertising partners of GoalRush.
           </p>
           
-          {/* Ezoic Privacy Policy Embed */}
-          <p>
-            Please see the following for Ezoic's privacy policy disclosures:
-            <span id="ezoic-privacy-policy-embed"></span>
-          </p>
-
-          <h2>Your Privacy Rights (POPIA, GDPR, etc.)</h2>
-          <p>
-            We are a company based in South Africa and comply with the Protection of Personal Information Act (POPIA). We also make efforts to comply with international regulations like GDPR. Under these regulations, you have certain data protection rights. We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:
-          </p>
-          <ul>
-            <li>The right to access – You have the right to request copies of your personal data.</li>
-            <li>The right to rectification – You have the right to request that we correct any information you believe is inaccurate.</li>
-            <li>The right to erasure – You have the right to request that we erase your personal data, under certain conditions.</li>
-            <li>The right to restrict processing – You have the right to request that we restrict the processing of your personal data, under certain conditions.</li>
-            <li>The right to object to processing – You have the right to object to our processing of your personal data, under certain conditions.</li>
-            <li>The right to data portability – You have the right to request that we transfer the data that we have collected to another organization, or directly to you, under certain conditions.</li>
-          </ul>
-          <p>
-            If you make a request, we have one month to respond to you. If you would like to exercise any of these rights, please contact us.
-          </p>
-
           <h2>Children's Information</h2>
           <p>
             Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
