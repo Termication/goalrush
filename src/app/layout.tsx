@@ -72,30 +72,7 @@ export default function RootLayout({
     <html lang="en" data-theme="light">
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-neutral-100 via-neutral-200 to-white`}
-      >
-        {/* Ezoic Scripts */}
-        <Script
-          src="https://cmp.gatekeeperconsent.com/min.js"
-          data-cfasync="false"
-          strategy="beforeInteractive"
-        />
-        <Script
-          src="https://the.gatekeeperconsent.com/cmp.min.js"
-          data-cfasync="false"
-          strategy="beforeInteractive"
-        />
-        <Script
-          async
-          src="//www.ezojs.com/ezoic/sa.min.js"
-          strategy="afterInteractive"
-        />
-        <Script id="ezoic-inline-script" strategy="afterInteractive">
-          {`
-            window.ezstandalone = window.ezstandalone || {};
-            ezstandalone.cmd = ezstandalone.cmd || [];
-          `}
-        </Script>
-        
+      >        
         <NextAuthProvider>
           <Navbar />
           <Toaster />
