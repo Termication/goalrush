@@ -6,6 +6,7 @@ import Footer from "@/components/common/footer";
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
 import { Toaster } from "react-hot-toast";
 import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -78,6 +79,7 @@ export default function RootLayout({
           <Toaster />
           {children}
           <Footer />
+          <Analytics />
         </NextAuthProvider>
       </body>
     </html>
