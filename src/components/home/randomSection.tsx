@@ -19,11 +19,11 @@ interface Article {
 }
 
 // 1. Define Categories and Icons
-const CATEGORIES = ["UEFA", "World Cup 2026", "International", "Transfers"]
+const CATEGORIES = ["UEFA", "World Cup 2026", "international", "Transfers"]
 const CATEGORY_ICONS: Record<string, string> = {
   "UEFA": "/uefa-logo.png", 
   "World Cup 2026": "/world-cup.png",
-  "International": "/international.png",
+  "international": "/international.png",
   "Transfers": "/transfers.png"
 }
 
@@ -50,7 +50,7 @@ const CATEGORY_THEMES: Record<string, Theme> = {
     darkBorder: "#004225",
     overlayStart: "rgba(0, 66, 37, 0.85)"
   },
-  "International": {
+  "international": {
     // Bold Red and Classic Blue theme
     primary: "#CE1126", 
     accent: "#3B82F6",  
@@ -123,7 +123,7 @@ export default function RandomCategorySection() {
   }, [currentCategory]);
 
   if (isLoading) {
-    // (Skeleton loader remains the same)
+    // Show skeleton while loading
     return (
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 py-6 sm:py-8">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
@@ -151,14 +151,13 @@ export default function RandomCategorySection() {
             style={{ color: theme.primary }}
         >
           <Image
-            src={CATEGORY_ICONS[currentCategory] || "/premier-league.png"} 
+            src={CATEGORY_ICONS[currentCategory] || '/default-category.png'} 
             alt={`${currentCategory} Logo`}
             width={128}
             height={128}
             className="w-24 h-24 sm:w-32 sm:h-32 object-contain transition-transform duration-300 group-hover:scale-120"
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
-          {currentCategory} News
         </div>
         
         <Link 
