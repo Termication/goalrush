@@ -160,7 +160,7 @@ export default function NewsPage() {
                   key={related._id}
                   className="block group"
                 >
-                  <Card className="overflow-hidden h-full bg-gray-900 border-gray-800 group-hover:border-indigo-500 transition-all duration-300">
+                  <Card className="overflow-hidden h-full bg-gray-900 border-gray-800 group-hover:border-indigo-500 transition-all duration-30">
                     <div className="relative w-full h-40">
                       <Image
                         src={related.imageUrl}

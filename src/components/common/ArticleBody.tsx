@@ -28,12 +28,23 @@ export default function ArticleBody({ body }: { body: string }) {
       [&_ul]:list-disc
       [&_ol]:list-decimal
       [&_li]:my-2
-      [&_li]:ml-6">
+      [&_li]:ml-6
+      ">
 
       {parse(processedHtml, {
         replace: (domNode) => {
           if (domNode instanceof Element) {
             const { name, attribs } = domNode;
+
+            if (name === 'img') {
+              return (
+                <img
+                  {...attribs}
+                  className="rounded-2xl shadow-xl mx-auto border border-gray-800 my-6 w-auto h-auto max-h-[600px] object-cover"
+                  loading="lazy"
+                />
+              );
+            }
 
             // Twitter/X embed
             if (name === 'tweet-embed' && attribs?.['data-id']) {
