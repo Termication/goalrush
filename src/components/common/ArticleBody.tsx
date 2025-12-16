@@ -16,6 +16,7 @@ export default function ArticleBody({ body }: { body: string }) {
     setProcessedHtml(parseEmbeds(body));
   }, [body]);
 
+  // Render the processed HTML with custom components for embeds
   return (
     <div className="prose dark:prose-invert max-w-none prose-lg 
       [&_blockquote]:border-l-4 
