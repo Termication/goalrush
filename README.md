@@ -73,10 +73,6 @@ Follow these instructions to get a local copy of the project up and running.
 
     # NextAuth.js secret key (generate with `openssl rand -base64 32`)
     NEXTAUTH_SECRET=your_super_secret_key
-
-    # Admin credentials for the login page
-    ADMIN_EMAIL=admin@goalrush.com
-    ADMIN_PASSWORD=your_secure_password
     ```
     
 4.  **Run the development server:**
