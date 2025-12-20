@@ -32,7 +32,6 @@ export default function ArticleBody({ body }: { body: string }) {
       [&_li]:ml-6
       ">
 
-      // Parse the processed HTML and replace specific tags with custom components
       {parse(processedHtml, {
         replace: (domNode) => {
           if (domNode instanceof Element) {
