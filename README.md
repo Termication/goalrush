@@ -1,6 +1,6 @@
 # ⚽ GoalRush - Football News Website
 
-[![Screenshot-2025-07-10-at-19-08-21-Goal-Rush-Your-Daily-Football-Fix.png](https://i.postimg.cc/Ghj5FhD9/Screenshot-2025-07-10-at-19-08-21-Goal-Rush-Your-Daily-Football-Fix.png)](https://postimg.cc/ZCCHZmVh)
+[![Screenshot-Goal-Rush-2026.png](https://i.postimg.cc/9F9LnzZn/Screenshot-Goal-Rush-2026.png)](https://postimg.cc/rK8GdVh1)
 
 
 **GoalRush** is a full-stack, modern football news website built with Next.js and the TALL stack (Tailwind CSS, Alpine.js-like interactivity via React, Laravel-like API routes via Next.js, and Livewire-like components via React Server Components). It features a dynamic homepage, individual article pages, and a secure admin panel for creating and managing content, complete with a rich text editor and image uploading capabilities.
@@ -37,9 +37,6 @@
 
 ---
 
-## 🛠️ Getting Started
-
-Follow these instructions to get a local copy of the project up and running.
 
 ### Prerequisites
 
@@ -47,42 +44,8 @@ Follow these instructions to get a local copy of the project up and running.
 - npm or yarn
 - A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account
 - A free [Cloudinary](https://cloudinary.com/) account
+- A free [TinyMCE](https://www.tiny.cloud/) account
 
-### Installation
-
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/Termication/goalrush.git](https://github.com/Termication/goalrush.git)
-    cd goalrush
-    ```
-
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Set up environment variables:**
-    Create a file named `.env.local` in the root of your project and add the following variables.
-
-    ```env
-    # MongoDB Connection String from Atlas
-    MONGODB_URI=mongodb+srv://...
-
-    # Cloudinary URL from your dashboard
-    CLOUDINARY_URL=cloudinary://...
-
-    # NextAuth.js secret key (generate with `openssl rand -base64 32`)
-    NEXTAUTH_SECRET=your_super_secret_key
-    ```
-    
-4.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can access the admin panel at `/admin/create-article` and log in with the credentials you set in your `.env.local` file.
-
----
 
 ## 📄 License
 
