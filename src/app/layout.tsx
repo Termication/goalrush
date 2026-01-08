@@ -74,6 +74,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-neutral-100 via-neutral-200 to-white`}
       >        
+        {/* --- 🟢 GOOGLE ADSENSE SCRIPT --- */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6954056820104129"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        {/* ------------------------------------------- */}
         <NextAuthProvider>
           <Navbar />
           <Toaster />
