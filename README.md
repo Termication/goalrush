@@ -32,19 +32,10 @@
 - **ORM**: [Mongoose](https://mongoosejs.com/)
 - **Authentication**: [NextAuth.js (Auth.js)](https://next-auth.js.org/)
 - **Image Hosting**: [Cloudinary](https://cloudinary.com/)
-- **RichEditorThis is the RichTextEditor component powered by TinyMCE.
+- **RichEditorThis**: (RichTextEditor component powered by TinyMCE.)
 - **Deployment**: [Vercel](https://goal-rush.live)
 
 ---
-
-
-### Prerequisites
-
-- Node.js (v18.x or later)
-- npm or yarn
-- A free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account
-- A free [Cloudinary](https://cloudinary.com/) account
-- A free [TinyMCE](https://www.tiny.cloud/) account
 
 
 ## 📄 License
