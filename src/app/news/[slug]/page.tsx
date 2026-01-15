@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MoveLeft, Calendar } from 'lucide-react';
 import ArticleBody from '@/components/common/ArticleBody';
+import AdBanner from '@/components/ads/AdBanner';
 
 // Define the structure of an article
 interface Article {
@@ -146,6 +147,15 @@ export default function NewsPage() {
         </header>
 
         <ArticleBody body={article.body} />
+
+        {/* --- IN-ARTICLE AD --- */}
+        <div className="my-8">
+            <AdBanner 
+                dataAdSlot="3636114718" 
+                dataAdFormat="fluid" 
+                dataFullWidthResponsive={true} 
+            />
+        </div>
 
         {/* --- Read Next Section --- */}
         {relatedArticles.length > 0 && (
