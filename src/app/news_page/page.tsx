@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import AdBanner from '@/components/ads/AdBanner';
 
 interface Article {
   _id: string;
@@ -77,6 +78,7 @@ export default function NewsPage() {
         Latest Headlines
       </h1>
 
+
       {/* Next Article Suggestion */}
       {nextArticle && (
         <div className="mb-8 border rounded-lg overflow-hidden shadow-md bg-gradient-to-r from-indigo-50 to-white">
@@ -93,6 +95,8 @@ export default function NewsPage() {
                 className="object-cover"
               />
             </div>
+
+
             <div className="p-6 sm:w-2/3">
               <h2 className="text-xl font-semibold text-indigo-700 mb-2">Continue Reading</h2>
               <h3 className="text-lg font-bold text-gray-900">{nextArticle.title}</h3>
@@ -106,6 +110,11 @@ export default function NewsPage() {
           </Link>
         </div>
       )}
+
+      
+      {/* --- AD UNIT --- */}
+      <AdBanner dataAdSlot="9418924432" />
+      {/* ----------------------------- */}
 
       {/* Article Grid */}
       {loading ? (
