@@ -14,6 +14,7 @@ import ArticleBody from '@/components/common/ArticleBody';
 import AdBanner from '@/components/ads/AdBanner';
 import SocialShare from '@/components/social/SocialShare';
 import ArticleJsonLd from '@/components/seo/ArticleJsonLd';
+import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd';
 import NewsletterSubscribe from '@/components/newsletter/NewsletterSubscribe';
 
 // Define the structure of an article
@@ -138,6 +139,15 @@ export default function NewsPage() {
         imageUrl={article.imageUrl}
         datePublished={article.createdAt}
         slug={article.slug}
+      />
+      
+      {/* Breadcrumb Structured Data */}
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: 'https://www.goal-rush.live' },
+          { name: article.category || 'News', url: `https://www.goal-rush.live/news_by_category/${article.category?.toLowerCase()}` },
+          { name: article.title, url: `https://www.goal-rush.live/news/${article.slug}` },
+        ]}
       />
       
       <main className="bg-[#191a1a] text-white min-h-screen">

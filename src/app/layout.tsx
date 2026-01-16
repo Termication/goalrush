@@ -7,6 +7,8 @@ import NextAuthProvider from "@/components/providers/NextAuthProvider";
 import { Toaster } from "react-hot-toast";
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
+import OrganizationJsonLd from "@/components/seo/OrganizationJsonLd";
+import WebSiteJsonLd from "@/components/seo/WebSiteJsonLd";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -82,6 +84,11 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
         {/* ------------------------------------------- */}
+        
+        {/* Organization & WebSite Structured Data */}
+        <OrganizationJsonLd />
+        <WebSiteJsonLd />
+        
         <NextAuthProvider>
           <Navbar />
           <Toaster />
