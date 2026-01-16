@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import FAQJsonLd from "@/components/seo/FAQJsonLd";
 
 export default function SupportPage() {
   const [formData, setFormData] = useState({
@@ -40,8 +41,26 @@ export default function SupportPage() {
     setIsLoading(false);
   };
 
+  const faqs = [
+    {
+      question: "How do I report a correction or a news tip?",
+      answer: "We appreciate your help in keeping our news accurate! Please use the contact form above with the subject \"News Tip\" or \"Correction Request\" and provide as much detail as possible, including links to sources if available."
+    },
+    {
+      question: "Do you have a mobile app?",
+      answer: "A dedicated mobile app for GoalRush is currently in development. Stay tuned for announcements on our homepage and social media channels for its release on iOS and Android."
+    },
+    {
+      question: "Can I write for GoalRush?",
+      answer: "We are always looking for passionate football writers to join our team. Please send an email to careers@goalrush.com with your resume and a few writing samples."
+    }
+  ];
+
   return (
     <div className="bg-base-200/60">
+      {/* FAQ Structured Data for SEO */}
+      <FAQJsonLd faqs={faqs} />
+      
       {/* --- HERO SECTION --- */}
       <div className="hero h-80" style={{ backgroundImage: 'url(https://placehold.co/1600x600/1a2a3a/ffffff?text=Support+Center)' }}>
         <div className="hero-overlay bg-black bg-opacity-60"></div>
