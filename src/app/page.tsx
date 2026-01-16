@@ -33,17 +33,19 @@ export default function Home() {
 
       <PremierLeagueSection />
 
-      {/* --- NEWSLETTER SUBSCRIPTION --- */}
-      <div className="max-w-7xl mx-auto px-4 py-8 w-full">
-        <NewsletterSubscribe />
-      </div>
-      {/* ----------------------------- */}
 
       {/* --- AD UNIT --- */}
       <AdBanner dataAdSlot="7835214172" />
       {/* ----------------------------- */}
 
       <MoreHeadlinesSection />
+
+
+      {/* --- NEWSLETTER SUBSCRIPTION --- */}
+      <div className="max-w-7xl mx-auto px-4 py-8 w-full">
+        <NewsletterSubscribe />
+      </div>
+      {/* ----------------------------- */}
     </main>
   )
 }

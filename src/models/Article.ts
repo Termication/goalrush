@@ -13,6 +13,9 @@ export interface IArticle extends Document {
   seoTags?: string[];
   createdAt: Date;
   updatedAt: Date;
+  email?: string;
+  isTrending?: boolean;
+  imageAlt?: string;
 }
 
 // 2. SCHEMA
@@ -51,6 +54,18 @@ const ArticleSchema: Schema = new Schema({
   seoTags: {
     type: [String],
     default: [],
+  },
+  email: {
+    type: String,
+    default: null,
+  },
+  isTrending: {
+    type: Boolean,
+    default: false,
+  },
+  imageAlt: {
+    type: String,
+    default: '',
   },
 },
  {

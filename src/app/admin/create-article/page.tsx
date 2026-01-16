@@ -24,6 +24,8 @@ export default function CreateArticlePage() {
     imageUrl: '',
     category: '',
     isFeatured: false,
+    isTrending: false,
+    imageAlt: '',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +45,11 @@ export default function CreateArticlePage() {
   const handleCheckboxChange = (checked: boolean | 'indeterminate') => {
     setFormData(prev => ({ ...prev, isFeatured: Boolean(checked) }));
   };
+
+  const handleTrendingChange = (checked: boolean | 'indeterminate') => {
+    setFormData(prev => ({ ...prev, isTrending: Boolean(checked) }));
+  };
+
   
   // --- FEATURED IMAGE UPLOAD ---
   const handleFeaturedImageUpload = async (file: File) => {
@@ -100,7 +107,7 @@ export default function CreateArticlePage() {
       
       setSuccess('Article created successfully!');
       setFormData({
-        title: '', summary: '', body: '', imageUrl: '', category: '', isFeatured: false,
+        title: '', summary: '', body: '', imageUrl: '', category: '', isFeatured: false, isTrending: false, imageAlt: '',
       });
 
     } catch (err: any) {
@@ -187,6 +194,14 @@ export default function CreateArticlePage() {
                   Feature this article on the homepage?
                 </Label>
               </div>
+              
+              <div className="flex items-center space-x-2">
+                <Checkbox id="isTrending" name="isTrending" checked={formData.isTrending} onCheckedChange={handleTrendingChange} />
+                <Label htmlFor="isTrending" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Is this article trending?
+                </Label>
+              </div>
+
 
               {success && (
                 <Alert variant="default">
