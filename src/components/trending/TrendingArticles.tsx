@@ -18,6 +18,8 @@ interface Article {
   createdAt: string;
 }
 
+const TRENDING_ARTICLES_LIMIT = 5;
+
 export default function TrendingArticles() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,12 +27,12 @@ export default function TrendingArticles() {
   useEffect(() => {
     const fetchTrendingArticles = async () => {
       try {
-        const res = await fetch('/api/articles?limit=5');
+        const res = await fetch(`/api/articles?limit=${TRENDING_ARTICLES_LIMIT}`);
         if (res.ok) {
           const json = await res.json();
           if (json.success) {
             const articlesList = json.data || json.articles || [];
-            setArticles(articlesList.slice(0, 5));
+            setArticles(articlesList.slice(0, TRENDING_ARTICLES_LIMIT));
           }
         }
       } catch (err) {

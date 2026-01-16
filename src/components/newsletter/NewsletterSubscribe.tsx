@@ -12,14 +12,17 @@ export default function NewsletterSubscribe() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !email.includes('@')) {
+    // Improved email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
       toast.error('Please enter a valid email address');
       return;
     }
 
     setLoading(true);
     
-    // Simulate newsletter subscription (in production, this would call an API)
+    // TODO: Replace with actual API call in production
+    // Example: await fetch('/api/newsletter/subscribe', { method: 'POST', body: JSON.stringify({ email }) })
     setTimeout(() => {
       toast.success('Successfully subscribed to newsletter!');
       setEmail('');

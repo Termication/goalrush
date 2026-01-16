@@ -9,7 +9,7 @@ export default function WebSiteJsonLd() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://www.goal-rush.live/news_page?search={search_term_string}",
+        urlTemplate: "https://www.goal-rush.live/news_page?q={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
