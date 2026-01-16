@@ -34,7 +34,11 @@ const AdBanner = ({
   }, []);
 
   return (
-    <div className="my-8 mx-auto text-center overflow-hidden w-full">
+    <div 
+      className="my-8 mx-auto text-center overflow-hidden w-full"
+      // minHeight to reserve space on mobile so it doesn't collapse
+      style={{ minHeight: '100px' }} 
+    >
       <ins
         className="adsbygoogle"
         style={{ display: 'block', textAlign: 'center' }}
