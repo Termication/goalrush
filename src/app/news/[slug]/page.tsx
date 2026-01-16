@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Head from 'next/head';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MoveLeft, Calendar } from 'lucide-react';
 import ArticleBody from '@/components/common/ArticleBody';
 import AdBanner from '@/components/ads/AdBanner';
+import SocialShare from '@/components/social/SocialShare';
+import ArticleJsonLd from '@/components/seo/ArticleJsonLd';
+import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd';
+import NewsletterSubscribe from '@/components/newsletter/NewsletterSubscribe';
 
 // Define the structure of an article
 interface Article {
@@ -110,9 +115,44 @@ export default function NewsPage() {
   }
 
   return (
-    <main className="bg-[#191a1a] text-white min-h-screen">
-      <div className="max-w-4xl mx-auto p-4 md:p-6">
-        <div className="mb-6">
+    <>
+      {/* Dynamic Meta Tags */}
+      <Head>
+        <title>{article.title} | GoalRush</title>
+        <meta name="description" content={article.summary} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={article.summary} />
+        <meta property="og:image" content={article.imageUrl} />
+        <meta property="og:url" content={`https://www.goal-rush.live/news/${article.slug}`} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={article.summary} />
+        <meta name="twitter:image" content={article.imageUrl} />
+        <link rel="canonical" href={`https://www.goal-rush.live/news/${article.slug}`} />
+      </Head>
+      
+      {/* JSON-LD Structured Data for SEO */}
+      <ArticleJsonLd
+        title={article.title}
+        description={article.summary}
+        imageUrl={article.imageUrl}
+        datePublished={article.createdAt}
+        slug={article.slug}
+      />
+      
+      {/* Breadcrumb Structured Data */}
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: 'https://www.goal-rush.live' },
+          { name: article.category || 'News', url: `https://www.goal-rush.live/news_by_category/${article.category?.toLowerCase()}` },
+          { name: article.title, url: `https://www.goal-rush.live/news/${article.slug}` },
+        ]}
+      />
+      
+      <main className="bg-[#191a1a] text-white min-h-screen">
+        <div className="max-w-4xl mx-auto p-4 md:p-6">
+          <div className="mb-6">
           <Button
             asChild
             variant="outline"
@@ -132,17 +172,24 @@ export default function NewsPage() {
           <h1 className="text-4xl md:text-5xl font-poppins font-extrabold mb-3 leading-tight text-gray-100">
             {article.title}
           </h1>
-          <div className="flex items-center text-sm text-gray-400 space-x-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>
-                {new Date(article.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div className="flex items-center text-sm text-gray-400 space-x-4">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span>
+                  {new Date(article.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
+              </div>
             </div>
+            <SocialShare 
+              url={`https://www.goal-rush.live/news/${article.slug}`}
+              title={article.title}
+              description={article.summary}
+            />
           </div>
         </header>
 
@@ -155,6 +202,11 @@ export default function NewsPage() {
                 dataAdFormat="fluid" 
                 dataFullWidthResponsive={true} 
             />
+        </div>
+
+        {/* --- Newsletter Subscription --- */}
+        <div className="my-12">
+          <NewsletterSubscribe />
         </div>
 
         {/* --- Read Next Section --- */}
@@ -198,6 +250,7 @@ export default function NewsPage() {
         )}
       </div>
     </main>
+    </>
   );
 }
 
