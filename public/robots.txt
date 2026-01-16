@@ -1,6 +1,9 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /manage
 
 # Host
 Host: https://www.goal-rush.live

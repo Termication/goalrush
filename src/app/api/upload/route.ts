@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const uploadResult: any = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
-          // FIX: Removed the conflicting 'upload_preset' line.
+
           // The upload is already signed because this is a server-side route.
           tags: ['article-image'],
           folder: 'goalrush-articles',

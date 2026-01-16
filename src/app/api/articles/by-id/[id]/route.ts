@@ -35,6 +35,8 @@ export async function PUT(
   if ('imageUrl' in reqBody) article.imageUrl = reqBody.imageUrl;
   if ('category' in reqBody) article.category = reqBody.category;
   if ('isFeatured' in reqBody) article.isFeatured = reqBody.isFeatured;
+  if ('isTrending' in reqBody) article.isTrending = reqBody.isTrending;
+  if ('imageAlt' in reqBody) article.imageAlt = reqBody.imageAlt;
 
   if ('seoTags' in reqBody && Array.isArray(reqBody.seoTags)) {
     const tagsString = reqBody.seoTags.join(', ');
