@@ -6,6 +6,7 @@ import PremierLeagueSection from "@/components/home/premierLeagueSection"
 import RandomCategorySection from "@/components/home/randomSection"
 // import PremierLeagueTable from "@/components/home/PremierLeagueTable";
 import AdBanner from "@/components/ads/AdBanner"
+import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 
 
 export default function Home() {
@@ -25,6 +26,12 @@ export default function Home() {
       {/* ----------------------------- */}
 
       <PremierLeagueSection />
+
+      {/* --- NEWSLETTER SUBSCRIPTION --- */}
+      <div className="max-w-7xl mx-auto px-4 py-8 w-full">
+        <NewsletterSubscribe />
+      </div>
+      {/* ----------------------------- */}
 
       {/* --- AD UNIT --- */}
       <AdBanner dataAdSlot="7835214172" />
