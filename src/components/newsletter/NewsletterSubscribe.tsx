@@ -20,9 +20,8 @@ export default function NewsletterSubscribe() {
     }
 
     setLoading(true);
-    
     // TODO: Replace with actual API call in production
-    // Example: await fetch('/api/newsletter/subscribe', { method: 'POST', body: JSON.stringify({ email }) })
+
     setTimeout(() => {
       toast.success('Successfully subscribed to newsletter!');
       setEmail('');

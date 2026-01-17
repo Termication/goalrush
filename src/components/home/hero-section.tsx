@@ -46,11 +46,10 @@ export default function HomePage() {
 
         const data = JSON.parse(text)
 
-        // 3 second artificial delay
         setTimeout(() => {
           setArticles(data.articles || [])
           setIsLoading(false)
-        }, 3000)
+        }, 1)
       } catch (err) {
         console.error('Failed to fetch articles:', err)
         setIsLoading(false)
