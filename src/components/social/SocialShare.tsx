@@ -44,7 +44,7 @@ export default function SocialShare({ url, title, description }: SocialShareProp
         onClick={() => setShowShare(!showShare)}
         variant="outline"
         size="sm"
-        className="bg-gray-900 border-gray-700 hover:bg-gray-800 hover:border-indigo-500 text-gray-300"
+        className="bg-gray-900 border-gray-700 hover:bg-blue-300 hover:border-indigo-500 text-gray-300"
       >
         <Share2 className="h-4 w-4 mr-2" />
         Share
