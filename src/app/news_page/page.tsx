@@ -8,6 +8,8 @@ import AdBanner from '@/components/ads/AdBanner';
 import { Clock, BookOpen, TrendingUp, Sparkles, ArrowRight, Calendar, User, Eye, BookmarkPlus, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import Share_for from '@/components/social/SocialShare';
+import SocialShare from '@/components/social/SocialShare';
 
 interface Article {
   _id: string;
@@ -342,16 +344,14 @@ function ArticleCard({ article, index, markAsRead, gradientOverlay }: {
               )}
             </div>
             
-            <button 
-              className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                // logic here
-              }}
-            >
-              <Share2 className="h-4 w-4 text-white" />
-            </button>
+            <div className="absolute top-4 right-4 z-20">
+              <SocialShare
+                url={`https://www.goal-rush.live/news/${article.slug}`}
+                title={article.title}
+                description={article.summary}
+                className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors flex items-center justify-center"
+                  />
+            </div>
 
 
           </div>
