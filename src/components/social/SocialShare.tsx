@@ -48,7 +48,7 @@ export default function SocialShare({ url, title, description, className }: Soci
 
   return (
     <div className="flex items-center gap-2 flex-wrap relative z-20">
-      {/* 🟢 DYNAMIC BUTTON: Uses class if provided, else uses default */}
+      {/* DYNAMIC BUTTON: Uses class if provided, else uses default */}
       <button
         onClick={toggleShare}
         className={className || "flex items-center justify-center px-3 py-2 text-sm font-medium transition-colors bg-gray-900 border border-gray-700 rounded-md hover:bg-blue-900/50 hover:border-indigo-500 text-black-300"}
