@@ -8,7 +8,6 @@ import AdBanner from '@/components/ads/AdBanner';
 import { Clock, BookOpen, TrendingUp, Sparkles, ArrowRight, Calendar, User, Eye, BookmarkPlus, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import Share_for from '@/components/social/SocialShare';
 import SocialShare from '@/components/social/SocialShare';
 
 interface Article {

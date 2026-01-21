@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import NewsletterSubscribe from '@/components/newsletter/NewsletterSubscribe';
 
 interface Article {
   _id: string;
@@ -253,7 +254,6 @@ export default function NewsByCategoryPage() {
 
       {/* Category highlights */}
       <div className="bg-gray-50 rounded-2xl p-6 mb-12">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">More in {formattedCategory}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center p-4 bg-white rounded-lg border border-gray-100 hover:shadow-md transition-shadow">
             <div className="bg-indigo-100 text-indigo-800 rounded-lg p-3 mr-4">
@@ -280,23 +280,11 @@ export default function NewsByCategoryPage() {
         </div>
       </div>
 
-      {/* Newsletter CTA */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-8 text-center text-white">
-        <h3 className="text-2xl font-bold mb-2">Stay Updated</h3>
-        <p className="max-w-xl mx-auto mb-6 opacity-90">
-          Get the latest {formattedCategory.toLowerCase()} news delivered to your inbox
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-          <input 
-            type="email" 
-            placeholder="Your email address" 
-            className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white"
-          />
-          <Button className="bg-white text-indigo-600 hover:bg-gray-100 font-medium py-3">
-            Subscribe
-          </Button>
-        </div>
+      {/* --- NEWSLETTER SUBSCRIPTION --- */}
+      <div className="max-w-7xl mx-auto px-4 py-8 w-full">
+        <NewsletterSubscribe />
       </div>
+      {/* ----------------------------- */}
     </main>
   );
 }
