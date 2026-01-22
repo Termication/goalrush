@@ -126,7 +126,7 @@ function GradientCard({ article, index }: { article: Article; index: number }) {
         />
 
         {/* Image Overlay */}
-        <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500">
+        <div className="absolute inset-0 opacity-50 group-hover:opacity-30 transition-opacity duration-500">
           <Image
             src={article.imageUrl}
             alt={article.title}
