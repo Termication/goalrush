@@ -4,16 +4,26 @@ import MoreHeadlinesSection from "@/components/home/moreheadlines"
 import LaligaSection from "@/components/home/laligaSection"
 import PremierLeagueSection from "@/components/home/premierLeagueSection"
 import RandomCategorySection from "@/components/home/randomSection"
-// import PremierLeagueTable from "@/components/home/PremierLeagueTable";
+import PremierLeagueTable from "@/components/home/PremierLeagueTable";
 import AdBanner from "@/components/ads/AdBanner"
 import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
+import UefaTable from "@/components/home/eufaTable"
 
 
 export default function Home() {
   return (
     <main className="w-full min-h-screen flex flex-col pt-0">
       <HomePage />
+
+      {/* --- UEFA TABLE left --- */}
+      <UefaTable />
+      {/* ----------------------------- */}
+      
+
+      {/* --- PREMIER LEAGUE TABLE right --- */}
+      <PremierLeagueTable />
+      {/* ----------------------------- */}
       
       {/* --- TRENDING ARTICLES --- */}
       <TrendingArticles />
