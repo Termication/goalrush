@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from "@/components/ui/sheet"
 import { Menu, ChevronDown } from "lucide-react"
 import {
   NavigationMenu,
@@ -17,6 +17,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import React from "react"
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
+
 
 // --- Data for Navigation Links ---
 const leagueLinks = [
@@ -113,6 +115,10 @@ export default function Navbar() {
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="w-60">
+              <VisuallyHidden.Root>
+                <SheetTitle>Mobile Navigation Menu</SheetTitle>
+              </VisuallyHidden.Root>
+
               <MobileNavContent pathname={pathname} isLeagueActive={isLeagueActive} />
             </SheetContent>
           </Sheet>
