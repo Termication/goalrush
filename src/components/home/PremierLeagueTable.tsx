@@ -7,6 +7,7 @@ interface TeamStanding {
   team: { name: string; logo: string };
   points: number;
   played: number;
+  form?: string;
 }
 
 export default function PremierLeagueTable() {
@@ -51,6 +52,8 @@ export default function PremierLeagueTable() {
   };
 
   if (loading || standings.length === 0) return null;
+
+  
 
   return (
     <div 
