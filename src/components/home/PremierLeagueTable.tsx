@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 
 interface TeamStanding {
   rank: number;
@@ -63,11 +64,19 @@ export default function PremierLeagueTable() {
     >
       <div className="bg-[#38003c] text-white p-2 border-b border-gray-200">
         <h3 className="text-sm font-bold flex items-center gap-2">
-            <span className="text-xs">🦁</span>
+            <Image
+                src="/more_graphics/premier-league-logo.png"
+                alt="Premier League Logo"
+                width={100}
+                height={100}
+                className="w-24 h-24 sm:w-10 sm:h-10 object-contain transition-transform duration-300 group-hover:scale-120"
+                priority
+            />
             Premier League
         </h3>
       </div>
-      
+
+ 
       <div 
         ref={tableRef}
         // scrolling enabled, scrollbar hidden

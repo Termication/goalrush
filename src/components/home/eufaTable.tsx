@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 
 interface Team {
   rank: number;
@@ -58,11 +59,19 @@ export default function UefaTable() {
     >
       <div className="bg-[#1e3c72] text-white p-2 border-b border-blue-800">
         <h3 className="text-sm font-bold flex items-center gap-2">
-           <span className="text-xs">⚽</span>
+            <Image
+                src="/more_graphics/uefa-champions-league-logo.png"
+                alt="UEFA Logo"
+                width={100}
+                height={100}
+                className="w-24 h-24 sm:w-10 sm:h-10 object-contain transition-transform duration-300 group-hover:scale-120"
+                priority
+            />
            Champions League
         </h3>
       </div>
-      
+
+
       <div 
         ref={tableRef}
         // allow scrolling
