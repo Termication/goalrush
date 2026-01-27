@@ -388,7 +388,7 @@ function ArticleCard({ article, index, size = 'medium' }: {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 1. Full Background Image */}
+      {/* Full Background Image */}
       <div className="absolute inset-0">
         <Image
           src={article.imageUrl}
@@ -401,7 +401,7 @@ function ArticleCard({ article, index, size = 'medium' }: {
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
       </div>
 
-      {/* 2. Content Overlay */}
+      {/* Content Overlay */}
       <div className="absolute inset-0 p-5 flex flex-col justify-end">
         
         {/* Top Badges */}
