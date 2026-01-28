@@ -10,7 +10,7 @@ export async function GET() {
 
   const headers = { 'X-Auth-Token': API_KEY };
   
-  // Use parallel fetching for speed
+  // Uses parallel fetching for speed
   try {
     const [plRes, clRes] = await Promise.all([
       fetch('https://api.football-data.org/v4/competitions/PL/standings', { headers, next: { revalidate: 300 } }),
