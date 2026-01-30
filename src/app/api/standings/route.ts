@@ -11,14 +11,16 @@ export async function GET() {
   
   // Uses parallel fetching for speed
   try {
-    const [plRes, clRes] = await Promise.all([
+    const [plRes, clRes, pdRes] = await Promise.all([
       fetch('https://api.football-data.org/v4/competitions/PL/standings', { headers, next: { revalidate: 300 } }),
-      fetch('https://api.football-data.org/v4/competitions/CL/standings', { headers, next: { revalidate: 3600 } })
+      fetch('https://api.football-data.org/v4/competitions/CL/standings', { headers, next: { revalidate: 3600 } }),
+      fetch('https://api.football-data.org/v4/competitions/PD/standings', { headers, next: { revalidate: 300 } }),
     ]);
 
     // Check for errors in either request
     const plData = plRes.ok ? await plRes.json() : null;
     const clData = clRes.ok ? await clRes.json() : null;
+    const pdData = pdRes.ok ? await pdRes.json() : null;
 
     // --- Process Premier League ---
     const plTable = plData?.standings?.[0]?.table || [];
@@ -32,6 +34,8 @@ export async function GET() {
       played: item.playedGames,
       form: item.form,
     }));
+
+
 
     // --- Process Champions League ---
     const clStandings = clData?.standings?.find((s: any) => s.type === 'TOTAL');
