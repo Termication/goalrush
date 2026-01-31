@@ -9,6 +9,7 @@ import AdBanner from "@/components/ads/AdBanner"
 import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
 import UefaTable from "@/components/home/eufaTable"
+import LaLigaLeagueTable from "@/components/home/laligaLeagueTable"
 
 
 export default function Home() {
@@ -16,8 +17,13 @@ export default function Home() {
     <main className="w-full min-h-screen flex flex-col pt-0">
       <HomePage />
 
+      {/* --- LA LIGA TABLE left --- */}
+      <LaLigaLeagueTable />
+      {/* ----------------------------- */}
+
+
       {/* --- UEFA TABLE left --- */}
-      <UefaTable />
+ 
       {/* ----------------------------- */}
       
 
