@@ -37,6 +37,21 @@ export async function GET() {
 
 
 
+    // --- Process La Liga ---
+    const pdTable = pdData?.standings?.[0]?.table || [];
+    const formattedPD = pdTable.map((item: any) => ({
+      rank: item.position,
+      team: {
+        name: item.team.shortName || item.team.tla || item.team.name,
+        logo: item.team.crest,
+      },
+      points: item.points,
+      played: item.playedGames,
+      form: item.form,
+    }));
+
+
+
     // --- Process Champions League ---
     const clStandings = clData?.standings?.find((s: any) => s.type === 'TOTAL');
     const clTable = clStandings?.table || [];
@@ -54,7 +69,8 @@ export async function GET() {
 
     return NextResponse.json({
       premierLeague: formattedPL,
-      championsLeague: formattedCL
+      championsLeague: formattedCL,
+      laLiga: formattedPD,
     });
 
   } catch (error: any) {
