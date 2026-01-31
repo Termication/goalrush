@@ -68,7 +68,7 @@ export default function LaLigaLeagueTable() {
             alt="La Liga Logo"
             width={100}
             height={100}
-            className="w-8 h-8 object-contain transition-transform duration-300 group-hover:scale-110"
+            className="w-15 h-24 sm:h-10 object-contain transition-transform duration-300 group-hover:scale-110"
             priority
           />
           La Liga
