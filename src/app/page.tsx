@@ -8,8 +8,8 @@ import PremierLeagueTable from "@/components/home/PremierLeagueTable";
 import AdBanner from "@/components/ads/AdBanner"
 import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
-import UefaTable from "@/components/home/eufaTable"
-import LaLigaLeagueTable from "@/components/home/laligaLeagueTable"
+import RandomLeftTable from "@/components/home/RandomLeftTable"
+
 
 
 export default function Home() {
@@ -17,15 +17,9 @@ export default function Home() {
     <main className="w-full min-h-screen flex flex-col pt-0">
       <HomePage />
 
-      {/* --- LA LIGA TABLE left --- */}
-      <LaLigaLeagueTable />
+      {/* --- RANDOM LEFT TABLE (La Liga or UEFA) --- */}
+      <RandomLeftTable />
       {/* ----------------------------- */}
-
-
-      {/* --- UEFA TABLE left --- */}
- 
-      {/* ----------------------------- */}
-      
 
       {/* --- PREMIER LEAGUE TABLE right --- */}
       <PremierLeagueTable />
