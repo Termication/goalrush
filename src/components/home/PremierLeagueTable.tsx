@@ -55,7 +55,7 @@ export default function PremierLeagueTable() {
   if (loading || standings.length === 0) return null;
 
   
-
+// --- Table UI ---
   return (
     <div 
       className={`hidden xl:block fixed right-0 top-20 w-64 border border-gray-300 bg-white shadow-lg rounded-l-md z-40 transition-all duration-500 group ${
