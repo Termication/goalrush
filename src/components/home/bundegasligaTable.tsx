@@ -59,13 +59,16 @@ export default function BundesligaTable() {
         isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10 pointer-events-none'
       }`}
     >
-      {/* 🟢 Bundesliga Red Header */}
+
       <div className="bg-[#d20515] text-white p-2 border-b border-red-800">
         <h3 className="text-sm font-bold flex items-center gap-2">
-            <img
-                src="https://upload.wikimedia.org/wikipedia/en/d/df/Bundesliga_logo_%282017%29.svg"
-                alt="Bundesliga"
-                className="w-auto h-8 brightness-0 invert"
+            <Image
+                src="/more_graphics/bundesliga-logo.png"
+                alt="Bundesliga logo"
+                width={100}
+                height={100}
+                className="w-24 h-10 sm:w-10 object-contain transition-transform duration-300 group-hover:scale-120"
+                priority
             />
             Bundesliga
         </h3>
