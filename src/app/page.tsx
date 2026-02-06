@@ -9,6 +9,7 @@ import AdBanner from "@/components/ads/AdBanner"
 import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
 import RandomLeftTable from "@/components/home/RandomLeftTable"
+import BundesligaTable from "@/components/home/bundegasligaTable"
 
 
 
@@ -16,6 +17,8 @@ export default function Home() {
   return (
     <main className="w-full min-h-screen flex flex-col pt-0">
       <HomePage />
+
+      <BundesligaTable />
 
       {/* --- RANDOM LEFT TABLE (La Liga or UEFA) --- */}
       <RandomLeftTable />
