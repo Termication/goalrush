@@ -3,17 +3,21 @@
 import { useState, useEffect } from 'react';
 import PremierLeagueTable from './PremierLeagueTable';
 import BundesligaTable from './bundegasligaTable';
-
+import Ligue1Table from './ligue1Table';
 
 export default function RandomRightTable() {
-    const [showPremier, setShowPremier] = useState<boolean | null>(null);
+    const [selectedTable, setSelectedTable] = useState<number | null>(null);
 
     useEffect(() => {
-        // 50% chance
-        setShowPremier(Math.random() > 0.5);
+        const randomIndex = Math.floor(Math.random() * 3);
+        setSelectedTable(randomIndex);
     }, []);
 
-    if (showPremier === null) return null;
+    // Return null while waiting for client-side hydration
+    if (selectedTable === null) return null;
 
-    return showPremier ? <PremierLeagueTable /> : <BundesligaTable />;
+    // Render based on the random number
+    if (selectedTable === 0) return <PremierLeagueTable />;
+    if (selectedTable === 1) return <BundesligaTable />;
+    return <Ligue1Table />;
 }
