@@ -55,7 +55,7 @@ export default function Ligue1Table() {
 
   return (
     <div 
-      className={`hidden xl:block fixed right-0 top-20 w-64 border border-gray-300 bg-white shadow-lg rounded-l-md z-40 transition-all duration-500 group ${
+      className={`hidden 2xl:block fixed right-0 top-20 w-64 border border-gray-300 bg-white shadow-lg rounded-l-md z-40 transition-all duration-500 group ${
         isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10 pointer-events-none'
       }`}
     >

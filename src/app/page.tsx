@@ -4,7 +4,6 @@ import MoreHeadlinesSection from "@/components/home/moreheadlines"
 import LaligaSection from "@/components/home/laligaSection"
 import PremierLeagueSection from "@/components/home/premierLeagueSection"
 import RandomCategorySection from "@/components/home/randomSection"
-import PremierLeagueTable from "@/components/home/PremierLeagueTable";
 import AdBanner from "@/components/ads/AdBanner"
 import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
