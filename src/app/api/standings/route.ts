@@ -11,11 +11,12 @@ export async function GET() {
   
   // Uses parallel fetching for speed
   try {
-    const [plRes, clRes, pdRes, blRes] = await Promise.all([
+    const [plRes, clRes, pdRes, blRes, flRes] = await Promise.all([
       fetch('https://api.football-data.org/v4/competitions/PL/standings', { headers, next: { revalidate: 300 } }),
       fetch('https://api.football-data.org/v4/competitions/CL/standings', { headers, next: { revalidate: 3600 } }),
       fetch('https://api.football-data.org/v4/competitions/PD/standings', { headers, next: { revalidate: 300 } }),
       fetch('https://api.football-data.org/v4/competitions/BL1/standings', { headers, next: { revalidate: 500 } }),
+      fetch('https://api.football-data.org/v4/competitions/FL1/standings', { headers, next: { revalidate: 300 } }),
     ]);
 
     // Check for errors in either request
@@ -23,6 +24,7 @@ export async function GET() {
     const clData = clRes.ok ? await clRes.json() : null;
     const pdData = pdRes.ok ? await pdRes.json() : null;
     const blData = blRes.ok ? await blRes.json() : null;
+    const flData = flRes.ok ? await flRes.json() : null; 
 
     // --- Process Premier League ---
     const plTable = plData?.standings?.[0]?.table || [];
@@ -83,11 +85,26 @@ export async function GET() {
       form: item.form,
     }));
 
+    // --- Process Ligue 1 ---
+    const flTable = flData?.standings?.[0]?.table || [];
+    const formattedFL = flTable.map((item: any) => ({
+      rank: item.position,
+      team: {
+        name: item.team.shortName || item.team.tla || item.team.name,
+        logo: item.team.crest,
+      },
+      points: item.points,
+      played: item.playedGames,
+      form: item.form,
+    }));
+
+
     return NextResponse.json({
       premierLeague: formattedPL,
       championsLeague: formattedCL,
       laLiga: formattedPD,
       bundesliga: formattedBL,
+      franceLigue1: formattedFL,
     });
 
   } catch (error: any) {
