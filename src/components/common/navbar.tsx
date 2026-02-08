@@ -19,20 +19,19 @@ import {
 import React from "react"
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
 
-
 // --- Data for Navigation Links ---
 const leagueLinks = [
-    { name: "Premier League", href: "/news_by_category/Premier League" },
-    { name: "La Liga", href: "/news_by_category/laliga" },
-    { name: "Bundesliga", href: "/news_by_category/Bundesliga" },
-    { name: "Serie A", href: "/news_by_category/Serie A" },
-    { name: "Ligue 1", href: "/news_by_category/Ligue 1" },
-    { name: "World Cup", href: "/news_by_category/World Cup 2026" },
-    { name: "UEFA", href: "/news_by_category/UEFA" },
-    { name: "Saudi Pro League", href: "/news_by_category/Saudi Pro League" },
-    { name: "South African Premiership", href: "/news_by_category/South African Premiership" },
-    { name: "International", href: "/news_by_category/international" },
-    { name: "Transfers", href: "/news_by_category/Transfers" },
+  { name: "Premier League", href: "/news_by_category/Premier League" },
+  { name: "La Liga", href: "/news_by_category/laliga" },
+  { name: "Bundesliga", href: "/news_by_category/Bundesliga" },
+  { name: "Serie A", href: "/news_by_category/Serie A" },
+  { name: "Ligue 1", href: "/news_by_category/Ligue 1" },
+  { name: "World Cup", href: "/news_by_category/World Cup 2026" },
+  { name: "UEFA", href: "/news_by_category/UEFA" },
+  { name: "Saudi Pro League", href: "/news_by_category/Saudi Pro League" },
+  { name: "South African Premiership", href: "/news_by_category/South African Premiership" },
+  { name: "International", href: "/news_by_category/international" },
+  { name: "Transfers", href: "/news_by_category/Transfers" },
 ]
 
 // --- Helper function to check for active links ---
@@ -67,7 +66,6 @@ export default function Navbar() {
           <NavigationMenuList>
             {/* News Link */}
             <NavigationMenuItem>
-              {/* adopted modern 'asChild' pattern */}
               <NavigationMenuLink asChild active={isActive(pathname, "/news_page")}>
                 <Link href="/news_page" className={navigationMenuTriggerStyle()}>
                   News
@@ -92,9 +90,17 @@ export default function Navbar() {
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {/* Betting  Link */}
+            {/* 🟢 Standings Link */}
             <NavigationMenuItem>
-              {/*adopted modern 'asChild' pattern */}
+              <NavigationMenuLink asChild active={isActive(pathname, "/standings")}>
+                <Link href="/standings" className={navigationMenuTriggerStyle()}>
+                  Standings
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            {/* Betting Link */}
+            <NavigationMenuItem>
               <NavigationMenuLink asChild active={isActive(pathname, "/betting")}>
                 <Link href="/betting" className={navigationMenuTriggerStyle()}>
                   Betting
@@ -156,7 +162,6 @@ const ListItem = React.forwardRef<
 })
 ListItem.displayName = "ListItem"
 
-
 // --- Component for Mobile Navigation Content ---
 function MobileNavContent({ pathname, isLeagueActive }: { pathname: string, isLeagueActive: boolean }) {
   const [leagueOpen, setLeagueOpen] = useState(false)
@@ -190,7 +195,7 @@ function MobileNavContent({ pathname, isLeagueActive }: { pathname: string, isLe
               : "text-muted-foreground hover:text-primary hover:bg-muted"
           )}
         >
-          <span>League</span>
+          <span>Competitions</span>
           <ChevronDown className={cn("h-4 w-4 transition-transform", leagueOpen && "rotate-180")} />
         </button>
         {leagueOpen && (
@@ -214,6 +219,21 @@ function MobileNavContent({ pathname, isLeagueActive }: { pathname: string, isLe
         )}
       </div>
 
+      {/* 🟢 Standings Link */}
+      <SheetClose asChild>
+        <Link
+          href="/standings"
+          className={cn(
+            "text-sm font-medium px-3 py-2 rounded-md transition-colors",
+            isActive(pathname, "/standings")
+              ? "bg-muted text-primary font-semibold"
+              : "text-muted-foreground hover:text-primary hover:bg-muted"
+          )}
+        >
+          Standings
+        </Link>
+      </SheetClose>
+
       {/* Betting Link */}
       <SheetClose asChild>
         <Link
@@ -231,4 +251,3 @@ function MobileNavContent({ pathname, isLeagueActive }: { pathname: string, isLe
     </div>
   )
 }
-
