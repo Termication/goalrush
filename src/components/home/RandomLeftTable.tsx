@@ -3,16 +3,18 @@
 import { useState, useEffect } from 'react';
 import LaLigaLeagueTable from "@/components/home/laligaLeagueTable";
 import UefaTable from "@/components/home/eufaTable";
+import SerieALeagueTable from './serieATable';
 
 export default function RandomLeftTable() {
-  const [showLaLiga, setShowLaLiga] = useState<boolean | null>(null);
+  const [selectedTable, setSelectedTable] = useState<number | null>(null);
 
   useEffect(() => {
-    // 50% chance
-    setShowLaLiga(Math.random() > 0.5);
+    const randomIndex = Math.floor(Math.random() * 3);
+    setSelectedTable(randomIndex);
   }, []);
 
-  if (showLaLiga === null) return null;
+  if (selectedTable === 0) return <SerieALeagueTable />;
+  if (selectedTable === 1) return <UefaTable />;
 
-  return showLaLiga ? <LaLigaLeagueTable /> : <UefaTable />;
+  return <LaLigaLeagueTable />;
 }
