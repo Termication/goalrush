@@ -9,18 +9,17 @@ export async function GET() {
 
   const headers = { 'X-Auth-Token': API_KEY };
   
-  // Uses parallel fetching for speed
   try {
+    // Fetch all 6 leagues in parallel
     const [plRes, clRes, pdRes, blRes, flRes, saRes] = await Promise.all([
       fetch('https://api.football-data.org/v4/competitions/PL/standings', { headers, next: { revalidate: 300 } }),
       fetch('https://api.football-data.org/v4/competitions/CL/standings', { headers, next: { revalidate: 3600 } }),
       fetch('https://api.football-data.org/v4/competitions/PD/standings', { headers, next: { revalidate: 300 } }),
-      fetch('https://api.football-data.org/v4/competitions/BL1/standings', { headers, next: { revalidate: 500 } }),
+      fetch('https://api.football-data.org/v4/competitions/BL1/standings', { headers, next: { revalidate: 300 } }),
       fetch('https://api.football-data.org/v4/competitions/FL1/standings', { headers, next: { revalidate: 300 } }),
       fetch('https://api.football-data.org/v4/competitions/SA/standings', { headers, next: { revalidate: 300 } }),
     ]);
 
-    // Check for errors in either request
     const plData = plRes.ok ? await plRes.json() : null;
     const clData = clRes.ok ? await clRes.json() : null;
     const pdData = pdRes.ok ? await pdRes.json() : null;
@@ -28,98 +27,45 @@ export async function GET() {
     const flData = flRes.ok ? await flRes.json() : null;
     const saData = saRes.ok ? await saRes.json() : null;
 
-    // --- Process Premier League ---
-    const plTable = plData?.standings?.[0]?.table || [];
-    const formattedPL = plTable.map((item: any) => ({
-      rank: item.position,
-      team: {
-        name: item.team.shortName || item.team.tla || item.team.name,
-        logo: item.team.crest,
-      },
-      points: item.points,
-      played: item.playedGames,
-      form: item.form,
-    }));
+    // Processes raw table data into your frontend format
+    const formatTable = (data: any) => {
+        // If data is missing or empty, return empty array
+        if (!data || !data.standings) return [];
 
+  
+        let table = [];
+        if (data.competition?.code === 'CL') {
+             const totalStanding = data.standings.find((s: any) => s.type === 'TOTAL');
+             table = totalStanding?.table || [];
+        } else {
+             table = data.standings[0]?.table || [];
+        }
 
-
-    // --- Process La Liga ---
-    const pdTable = pdData?.standings?.[0]?.table || [];
-    const formattedPD = pdTable.map((item: any) => ({
-      rank: item.position,
-      team: {
-        name: item.team.shortName || item.team.tla || item.team.name,
-        logo: item.team.crest,
-      },
-      points: item.points,
-      played: item.playedGames,
-      form: item.form,
-    }));
-
-
-    // --- Process Bundesliga ---
-    const blTable = blData?.standings?.[0]?.table || [];
-    const formattedBL = blTable.map((item: any) => ({
-      rank: item.position,
-      team: {
-        name: item.team.shortName || item.team.tla || item.team.name,
-        logo: item.team.crest,
-      },
-      points: item.points,
-      played: item.playedGames,
-      form: item.form,
-    }));
-
-
-
-    // --- Process Champions League ---
-    const clStandings = clData?.standings?.find((s: any) => s.type === 'TOTAL');
-    const clTable = clStandings?.table || [];
-    
-    const formattedCL = clTable.map((item: any) => ({
-      rank: item.position,
-      team: {
-        name: item.team.shortName || item.team.tla || item.team.name,
-        logo: item.team.crest,
-      },
-      points: item.points,
-      played: item.playedGames,
-      form: item.form,
-    }));
-
-    // --- Process Ligue 1 ---
-    const flTable = flData?.standings?.[0]?.table || [];
-    const formattedFL = flTable.map((item: any) => ({
-      rank: item.position,
-      team: {
-        name: item.team.shortName || item.team.tla || item.team.name,
-        logo: item.team.crest,
-      },
-      points: item.points,
-      played: item.playedGames,
-      form: item.form,
-    }));
-
-    // --- Process Serie A ---
-    const saTable = saData?.standings?.[0]?.table || [];
-    const formattedSA = saTable.map((item: any) => ({
-      rank: item.position,
-      team: {
-        name: item.team.shortName || item.team.tla || item.team.name,
-        logo: item.team.crest,
-      },
-      points: item.points,
-      played: item.playedGames,
-      form: item.form,
-    }));
+        return table.map((item: any) => ({
+            rank: item.position,
+            team: {
+                name: item.team.shortName || item.team.tla || item.team.name,
+                logo: item.team.crest,
+            },
+            points: item.points,
+            played: item.playedGames,
+            win: item.won,          
+            draw: item.draw,       
+            lose: item.lost,        
+            gf: item.goalsFor,       
+            ga: item.goalsAgainst,   
+            gd: item.goalDifference,
+            form: item.form,
+        }));
+    };
 
     return NextResponse.json({
-      premierLeague: formattedPL,
-      championsLeague: formattedCL,
-      laLiga: formattedPD,
-      bundesliga: formattedBL,
-      franceLigue1: formattedFL,
-      serieA: formattedSA,
+      premierLeague: formatTable(plData),
+      championsLeague: formatTable(clData),
+      laLiga: formatTable(pdData),
+      bundesliga: formatTable(blData),
+      franceLigue1: formatTable(flData),
+      serieA: formatTable(saData),
     });
 
   } catch (error: any) {
