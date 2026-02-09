@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Loader2, Trophy } from 'lucide-react'; // Removed Check, X, Minus imports
+import { Loader2, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Define the data structure
