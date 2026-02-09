@@ -90,7 +90,7 @@ export default function Navbar() {
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {/* 🟢 Standings Link */}
+            {/* Standings Link */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild active={isActive(pathname, "/standings")}>
                 <Link href="/standings" className={navigationMenuTriggerStyle()}>
@@ -219,7 +219,7 @@ function MobileNavContent({ pathname, isLeagueActive }: { pathname: string, isLe
         )}
       </div>
 
-      {/* 🟢 Standings Link */}
+      {/* Standings Link */}
       <SheetClose asChild>
         <Link
           href="/standings"
