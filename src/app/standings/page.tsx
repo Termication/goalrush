@@ -31,7 +31,7 @@ interface AllStandings {
 const LEAGUES = [
   { id: 'premierLeague', name: 'Premier League', logo: '/more_graphics/Premier-League-transparent.png', color: 'bg-[#38003c]' },
   { id: 'laLiga', name: 'La Liga', logo: '/more_graphics/la-liga-logo-red.png', color: 'bg-[#ee161f]' },
-  { id: 'bundesliga', name: 'Bundesliga', logo: '/more_graphics/bundesliga-logo.png', color: 'bg-[#d20515]' },
+  { id: 'bundesliga', name: 'Bundesliga', logo: '/more_graphics/bundesliga-logo-black.png', color: 'bg-[#d20515]' },
   { id: 'serieA', name: 'Serie A', logo: '/more_graphics/serie-a-logo.png', color: 'bg-[#004D98]' },
   { id: 'championsLeague', name: 'Champions League', logo: '/more_graphics/uefa-champions-league-logo.png', color: 'bg-[#1e3c72]' },
 ];
