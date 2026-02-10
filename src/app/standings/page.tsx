@@ -34,6 +34,7 @@ const LEAGUES = [
   { id: 'bundesliga', name: 'Bundesliga', logo: '/more_graphics/bundesliga-logo-black.png', color: 'bg-[#d20515]' },
   { id: 'serieA', name: 'Serie A', logo: '/more_graphics/serie-a-logo.png', color: 'bg-[#004D98]' },
   { id: 'championsLeague', name: 'Champions League', logo: '/more_graphics/uefa-champions-league-logo.png', color: 'bg-[#1e3c72]' },
+  { id: 'franceLigue1', name: 'Ligue 1', logo: '/more_graphics/ligue1-logo.png', color: 'bg-[#0033a0]' },
 ];
 
 export default function StandingsPage() {
