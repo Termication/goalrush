@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Loader2, Calendar, Trophy, Globe } from 'lucide-react';
+import { Loader2, Calendar, Trophy, Globe, TrendingUp, TrendingDown } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
-// 🟢 ADDED: 'soccer_southafrica_psl'
+// --- CONFIGURATION ---
 const LEAGUES = [
   { key: 'soccer_epl', name: 'Premier League' },
   { key: 'soccer_spain_la_liga', name: 'La Liga' },
@@ -20,6 +21,7 @@ const LEAGUES = [
 interface Outcome {
   name: string;
   price: number;
+  trend?: 'up' | 'down' | 'neutral';
 }
 
 interface Match {
@@ -36,10 +38,139 @@ interface Match {
   }[];
 }
 
+
+function useLiveOdds(initialMatches: Match[]) {
+  const [liveMatches, setLiveMatches] = useState<Match[]>(initialMatches);
+
+  // Sync state when new API data arrives
+  useEffect(() => {
+    setLiveMatches(initialMatches);
+  }, [initialMatches]);
+
+  useEffect(() => {
+    if (liveMatches.length === 0) return;
+
+    const interval = setInterval(() => {
+      setLiveMatches((prevMatches) => {
+        const newMatches = [...prevMatches];
+
+        for (let attempt = 0; attempt < 5; attempt++) {
+          const randomMatchIndex = Math.floor(Math.random() * newMatches.length);
+          
+          const match = { ...newMatches[randomMatchIndex] };
+
+          if (match.bookmakers && match.bookmakers.length > 0) {
+            // Copy bookmakers
+            match.bookmakers = [...match.bookmakers];
+            
+
+            const bookieIndex = 0; 
+            const bookie = { ...match.bookmakers[bookieIndex] };
+            match.bookmakers[bookieIndex] = bookie;
+
+            // Copy markets
+            bookie.markets = [...bookie.markets];
+            const h2hIndex = bookie.markets.findIndex((m: any) => m.key === 'h2h');
+
+            if (h2hIndex !== -1) {
+              const h2h = { ...bookie.markets[h2hIndex] };
+              bookie.markets[h2hIndex] = h2h;
+              
+
+              h2h.outcomes = [...h2h.outcomes];
+
+              if (h2h.outcomes.length > 0) {
+                // Pick a random outcome (1, X, or 2)
+                const randomOutcomeIndex = Math.floor(Math.random() * h2h.outcomes.length);
+                const outcome = { ...h2h.outcomes[randomOutcomeIndex] };
+                h2h.outcomes[randomOutcomeIndex] = outcome;
+
+                const isUp = Math.random() > 0.5;
+                const change = 0.01;
+                let newPrice = isUp ? outcome.price + change : outcome.price - change;
+                
+  
+                newPrice = Math.round(newPrice * 100) / 100;
+
+                // Update Values
+                outcome.price = newPrice;
+                outcome.trend = isUp ? 'up' : 'down';
+
+                // Assign the updated match back to the array
+                newMatches[randomMatchIndex] = match;
+
+                // Return the new state immediately once an update is made
+                return newMatches; 
+              }
+            }
+          }
+        }
+        // If 5 attempts failed (rare), return state unchanged
+        return prevMatches;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [liveMatches]);
+
+  return liveMatches;
+}
+
+
+const LiveOdd = ({ label, value, trend }: { label: string, value: number | string, trend?: 'up' | 'down' | 'neutral' }) => {
+  const [activeTrend, setActiveTrend] = useState<'up' | 'down' | 'neutral' | null>(null);
+
+  useEffect(() => {
+    if (trend) {
+      setActiveTrend(trend);
+      const timer = setTimeout(() => setActiveTrend(null), 1500); // clear flash after 1.5s
+      return () => clearTimeout(timer);
+    }
+  }, [value, trend]); 
+
+  return (
+    <div 
+      className={cn(
+        "flex flex-col items-center p-2.5 rounded-xl border transition-all duration-300 cursor-pointer relative overflow-hidden",
+        "bg-gray-50 dark:bg-gray-700/30 border-gray-100 dark:border-gray-700",
+        activeTrend === 'up' && "bg-green-50 border-green-300 dark:bg-green-900/30 dark:border-green-700",
+        activeTrend === 'down' && "bg-red-50 border-red-300 dark:bg-red-900/30 dark:border-red-700",
+        !activeTrend && "hover:border-green-200 dark:group-hover:border-green-900"
+      )}
+    >
+      <span className="text-[10px] uppercase font-bold text-gray-400 mb-1">{label}</span>
+      
+      <div className="flex items-center gap-1">
+        <span className={cn(
+          "text-xl font-black transition-colors duration-300",
+          activeTrend === 'up' ? "text-green-600 dark:text-green-400" :
+          activeTrend === 'down' ? "text-red-600 dark:text-red-400" :
+          "text-gray-900 dark:text-white"
+        )}>
+          {typeof value === 'number' ? value.toFixed(2) : value}
+        </span>
+
+        {/* Animated Arrows */}
+        {activeTrend === 'up' && (
+          <TrendingUp className="h-4 w-4 text-green-600 animate-in slide-in-from-bottom-2 fade-in duration-300" />
+        )}
+        {activeTrend === 'down' && (
+          <TrendingDown className="h-4 w-4 text-red-600 animate-in slide-in-from-top-2 fade-in duration-300" />
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+
 export default function BettingPage() {
-  const [matches, setMatches] = useState<Match[]>([]);
+  const [rawMatches, setRawMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSport, setSelectedSport] = useState('soccer_epl');
+
+  // live simulator
+  const liveMatches = useLiveOdds(rawMatches);
 
   useEffect(() => {
     const fetchOdds = async () => {
@@ -48,9 +179,9 @@ export default function BettingPage() {
         const res = await fetch(`/api/odds?sport=${selectedSport}`);
         const data = await res.json();
         if (Array.isArray(data)) {
-          setMatches(data);
+          setRawMatches(data);
         } else {
-          setMatches([]); 
+          setRawMatches([]); 
         }
       } catch (err) {
         console.error('Failed to load odds');
@@ -63,7 +194,7 @@ export default function BettingPage() {
   }, [selectedSport]);
 
   const getOdds = (match: Match) => {
-    const preferredBookies = ['Unibet', 'Bet365', 'Betfair', 'Sunbet'];
+    const preferredBookies = ['Unibet', 'William Hill', 'Bet365', 'Betfair', 'Sunbet']; 
     const bookie = match.bookmakers.find(b => preferredBookies.includes(b.title)) || match.bookmakers[0];
 
     if (!bookie) return null;
@@ -78,7 +209,7 @@ export default function BettingPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         
-
+        {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
           <div className="flex items-center gap-4">
             <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-green-900/20">
@@ -89,8 +220,12 @@ export default function BettingPage() {
               <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                 Smart<span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Bet</span>
               </h1>
-              <p className="text-sm text-gray-500 font-medium">
-                Live odds from global bookmakers
+              <p className="text-sm text-gray-500 font-medium flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                Live Market Updates
               </p>
             </div>
           </div>
@@ -118,7 +253,7 @@ export default function BettingPage() {
             <Loader2 className="h-12 w-12 animate-spin text-green-600" />
             <p className="text-gray-500 text-sm font-medium animate-pulse">Scanning markets...</p>
           </div>
-        ) : matches.length === 0 ? (
+        ) : liveMatches.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 px-4 text-center bg-white dark:bg-gray-800 rounded-3xl border border-dashed border-gray-300 dark:border-gray-700">
             <div className="h-16 w-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                 <Calendar className="h-8 w-8 text-gray-400" />
@@ -128,7 +263,7 @@ export default function BettingPage() {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {matches.map((match) => {
+            {liveMatches.map((match) => {
               const oddsData = getOdds(match);
               if (!oddsData) return null;
 
@@ -162,29 +297,21 @@ export default function BettingPage() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
-                      {/* Home Win */}
-                      <div className="flex flex-col items-center p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700 group-hover:border-green-200 dark:group-hover:border-green-900 transition-colors">
-                        <span className="text-[10px] uppercase font-bold text-gray-400 mb-1">1</span>
-                        <span className="text-xl font-black text-gray-900 dark:text-white">
-                          {homeOutcome?.price.toFixed(2) || '-'}
-                        </span>
-                      </div>
-
-                      {/* Draw */}
-                      <div className="flex flex-col items-center p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700 group-hover:border-green-200 dark:group-hover:border-green-900 transition-colors">
-                        <span className="text-[10px] uppercase font-bold text-gray-400 mb-1">X</span>
-                        <span className="text-xl font-black text-gray-900 dark:text-white">
-                          {drawOutcome?.price.toFixed(2) || '-'}
-                        </span>
-                      </div>
-
-                      {/* Away Win */}
-                      <div className="flex flex-col items-center p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700 group-hover:border-green-200 dark:group-hover:border-green-900 transition-colors">
-                        <span className="text-[10px] uppercase font-bold text-gray-400 mb-1">2</span>
-                        <span className="text-xl font-black text-gray-900 dark:text-white">
-                          {awayOutcome?.price.toFixed(2) || '-'}
-                        </span>
-                      </div>
+                      <LiveOdd 
+                        label="1" 
+                        value={homeOutcome?.price || '-'} 
+                        trend={homeOutcome?.trend} 
+                      />
+                      <LiveOdd 
+                        label="X" 
+                        value={drawOutcome?.price || '-'} 
+                        trend={drawOutcome?.trend} 
+                      />
+                      <LiveOdd 
+                        label="2" 
+                        value={awayOutcome?.price || '-'} 
+                        trend={awayOutcome?.trend} 
+                      />
                     </div>
                   </div>
                 </div>
