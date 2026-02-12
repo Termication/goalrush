@@ -18,6 +18,8 @@ const LEAGUES = [
   { key: 'soccer_fifa_world_cup', name: 'World Cup 2026' },
 ];
 
+const PREFERRED_BOOKIES = ['Unibet', 'William Hill', 'Bet365', 'Betfair', 'Sunbet'];
+
 interface Outcome {
   name: string;
   price: number;
@@ -42,7 +44,6 @@ interface Match {
 function useLiveOdds(initialMatches: Match[]) {
   const [liveMatches, setLiveMatches] = useState<Match[]>(initialMatches);
 
-  // Sync state when new API data arrives
   useEffect(() => {
     setLiveMatches(initialMatches);
   }, [initialMatches]);
@@ -56,19 +57,17 @@ function useLiveOdds(initialMatches: Match[]) {
 
         for (let attempt = 0; attempt < 5; attempt++) {
           const randomMatchIndex = Math.floor(Math.random() * newMatches.length);
-          
           const match = { ...newMatches[randomMatchIndex] };
 
           if (match.bookmakers && match.bookmakers.length > 0) {
-            // Copy bookmakers
             match.bookmakers = [...match.bookmakers];
-            
 
-            const bookieIndex = 0; 
+            let bookieIndex = match.bookmakers.findIndex(b => PREFERRED_BOOKIES.includes(b.title));
+            if (bookieIndex === -1) bookieIndex = 0;
+
             const bookie = { ...match.bookmakers[bookieIndex] };
             match.bookmakers[bookieIndex] = bookie;
 
-            // Copy markets
             bookie.markets = [...bookie.markets];
             const h2hIndex = bookie.markets.findIndex((m: any) => m.key === 'h2h');
 
@@ -76,11 +75,9 @@ function useLiveOdds(initialMatches: Match[]) {
               const h2h = { ...bookie.markets[h2hIndex] };
               bookie.markets[h2hIndex] = h2h;
               
-
               h2h.outcomes = [...h2h.outcomes];
 
               if (h2h.outcomes.length > 0) {
-                // Pick a random outcome (1, X, or 2)
                 const randomOutcomeIndex = Math.floor(Math.random() * h2h.outcomes.length);
                 const outcome = { ...h2h.outcomes[randomOutcomeIndex] };
                 h2h.outcomes[randomOutcomeIndex] = outcome;
@@ -88,27 +85,20 @@ function useLiveOdds(initialMatches: Match[]) {
                 const isUp = Math.random() > 0.5;
                 const change = 0.01;
                 let newPrice = isUp ? outcome.price + change : outcome.price - change;
-                
-  
                 newPrice = Math.round(newPrice * 100) / 100;
 
-                // Update Values
                 outcome.price = newPrice;
                 outcome.trend = isUp ? 'up' : 'down';
 
-                // Assign the updated match back to the array
                 newMatches[randomMatchIndex] = match;
-
-                // Return the new state immediately once an update is made
                 return newMatches; 
               }
             }
           }
         }
-        // If 5 attempts failed (rare), return state unchanged
         return prevMatches;
       });
-    }, 1000);
+    }, 10000); 
 
     return () => clearInterval(interval);
   }, [liveMatches]);
@@ -123,7 +113,8 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
   useEffect(() => {
     if (trend) {
       setActiveTrend(trend);
-      const timer = setTimeout(() => setActiveTrend(null), 1500); // clear flash after 1.5s
+      // Keep the green/red highlight active for 3 seconds
+      const timer = setTimeout(() => setActiveTrend(null), 3000); 
       return () => clearTimeout(timer);
     }
   }, [value, trend]); 
@@ -131,7 +122,7 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
   return (
     <div 
       className={cn(
-        "flex flex-col items-center p-2.5 rounded-xl border transition-all duration-300 cursor-pointer relative overflow-hidden",
+        "flex flex-col items-center p-2.5 rounded-xl border transition-all duration-1000 cursor-pointer relative overflow-hidden",
         "bg-gray-50 dark:bg-gray-700/30 border-gray-100 dark:border-gray-700",
         activeTrend === 'up' && "bg-green-50 border-green-300 dark:bg-green-900/30 dark:border-green-700",
         activeTrend === 'down' && "bg-red-50 border-red-300 dark:bg-red-900/30 dark:border-red-700",
@@ -142,7 +133,7 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
       
       <div className="flex items-center gap-1">
         <span className={cn(
-          "text-xl font-black transition-colors duration-300",
+          "text-xl font-black transition-colors duration-1000",
           activeTrend === 'up' ? "text-green-600 dark:text-green-400" :
           activeTrend === 'down' ? "text-red-600 dark:text-red-400" :
           "text-gray-900 dark:text-white"
@@ -150,12 +141,11 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
           {typeof value === 'number' ? value.toFixed(2) : value}
         </span>
 
-        {/* Animated Arrows */}
         {activeTrend === 'up' && (
-          <TrendingUp className="h-4 w-4 text-green-600 animate-in slide-in-from-bottom-2 fade-in duration-300" />
+          <TrendingUp className="h-4 w-4 text-green-600 animate-in slide-in-from-bottom-2 fade-in duration-1000" />
         )}
         {activeTrend === 'down' && (
-          <TrendingDown className="h-4 w-4 text-red-600 animate-in slide-in-from-top-2 fade-in duration-300" />
+          <TrendingDown className="h-4 w-4 text-red-600 animate-in slide-in-from-top-2 fade-in duration-1000" />
         )}
       </div>
     </div>
@@ -163,13 +153,11 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
 };
 
 
-
 export default function BettingPage() {
   const [rawMatches, setRawMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSport, setSelectedSport] = useState('soccer_epl');
 
-  // live simulator
   const liveMatches = useLiveOdds(rawMatches);
 
   useEffect(() => {
@@ -194,8 +182,7 @@ export default function BettingPage() {
   }, [selectedSport]);
 
   const getOdds = (match: Match) => {
-    const preferredBookies = ['Unibet', 'William Hill', 'Bet365', 'Betfair', 'Sunbet']; 
-    const bookie = match.bookmakers.find(b => preferredBookies.includes(b.title)) || match.bookmakers[0];
+    const bookie = match.bookmakers.find(b => PREFERRED_BOOKIES.includes(b.title)) || match.bookmakers[0];
 
     if (!bookie) return null;
 
