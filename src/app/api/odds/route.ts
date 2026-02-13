@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDynamicRevalidation } from '@/lib/getRevalidateInterval';
 
-    // Ensuring our dynamic caching strategy works as intended.
+  // Ensuring our dynamic caching strategy works as intended.
 export const dynamic = 'force-dynamic'; 
 
 export async function GET(request: Request) {
