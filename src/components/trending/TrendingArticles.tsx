@@ -103,9 +103,9 @@ export default function TrendingArticles() {
 // Gradient Design 
 function GradientCard({ article, index }: { article: Article; index: number }) {
   const gradientColors = [
-    'from-indigo-500 via-purple-500 to-white-500',
+    'from-indigo-500 via-purple-500 to-pink-500',
     'from-blue-500 via-indigo-500 to-purple-500',
-    'from-purple-500 via-gray-500 to-black-500',
+    'from-purple-500 via-fuchsia-500 to-pink-500',
     'from-indigo-500 via-blue-500 to-cyan-500',
   ];
 
@@ -169,19 +169,19 @@ function GradientCard({ article, index }: { article: Article; index: number }) {
           <div className="flex items-center justify-between pt-4 sm:pt-6 border-t border-white/20">
             <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm">
               <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                <Clock className="h-3 w-3 sm:h-4 sm:4" />
                 {article.readTime || 5} min
               </div>
               {article.author && (
                 <div className="flex items-center gap-1">
-                  <User className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <User className="h-3 w-3 sm:h-4 sm:4" />
                   <span className="hidden sm:inline">{article.author}</span>
                 </div>
               )}
             </div>
             
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-white/30 group-hover:w-11 group-hover:h-11 sm:group-hover:w-14 sm:group-hover:h-14 transition-all duration-300">
-              <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" />
+              <ArrowUpRight className="h-4 w-4 sm:h-5 sm:5" />
             </div>
           </div>
         </div>
@@ -190,82 +190,70 @@ function GradientCard({ article, index }: { article: Article; index: number }) {
   );
 }
 
-// Dark Gradient Skeleton Loader
-function DarkGradientSkeletonLoader() {
-  const gradients = [
-    'from-zinc-800 to-white-900',
-    'from-zinc-800 to-white-900',
-    'from-zinc-800 to-white-900',
-    'from-zinc-800 to-white-900',
-  ];
 
+function DarkGradientSkeletonLoader() {
   return (
     <section className="max-w-7xl mx-auto px-4 py-12">
       {/* Header Skeleton */}
       <div className="flex items-end justify-between mb-8">
         <div className="flex items-center gap-3">
-          <Skeleton className="h-10 w-10 rounded-2xl bg-gradient-to-r from-gray-800 to-gray-900" />
-          <div>
-            <Skeleton className="h-8 w-40 mb-2 bg-gradient-to-r from-gray-800 to-gray-900" />
-            <Skeleton className="h-4 w-60 bg-gradient-to-r from-gray-800 to-gray-900" />
+          <Skeleton className="h-10 w-10 rounded-2xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
         </div>
-        <Skeleton className="hidden sm:block h-4 w-20 bg-gradient-to-r from-gray-800 to-gray-900" />
+        <Skeleton className="hidden sm:block h-5 w-20" />
       </div>
       
-      {/* Cards Skeleton */}
+      {/* Cards Skeleton Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[0, 1, 2, 3].map((index) => (
           <div
             key={index}
-            className={cn(
-              "relative h-[380px] sm:h-[420px] w-full overflow-hidden rounded-3xl border-0",
-              "bg-gradient-to-br",
-              gradients[index % gradients.length]
-            )}
+            className="relative h-[380px] sm:h-[420px] w-full overflow-hidden rounded-3xl bg-gray-100 dark:bg-gray-800/50"
           >
-            {/* Pattern Overlay Skeleton */}
-            <div 
-              className="absolute inset-0 opacity-5"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                backgroundSize: '20px 20px'
-              }}
-            />
-
-            {/* Content Skeleton */}
             <div className="relative h-full p-6 sm:p-8 flex flex-col justify-between">
+              {/* Top Section */}
               <div>
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <div className="flex items-start justify-between mb-6">
                   <div className="space-y-2">
-                    <Skeleton className="h-6 w-24 bg-gradient-to-r from-gray-700 to-gray-800" />
-                    <Skeleton className="h-4 w-16 bg-gradient-to-r from-gray-700 to-gray-800" />
+                    {/* Badge Skeleton */}
+                    <Skeleton className="h-6 w-20 rounded-full bg-gray-200 dark:bg-gray-700" />
+                    {/* Trending Label Skeleton */}
+                    <Skeleton className="h-3 w-16 bg-gray-200 dark:bg-gray-700" />
                   </div>
-                  <Skeleton className="h-12 w-12 bg-gradient-to-r from-gray-700 to-gray-800" />
+                  {/* Number Index Skeleton */}
+                  <Skeleton className="h-10 w-12 bg-gray-200 dark:bg-gray-700" />
                 </div>
 
-                <Skeleton className="h-6 w-full mb-2 bg-gradient-to-r from-gray-700 to-gray-800" />
-                <Skeleton className="h-6 w-4/5 mb-2 bg-gradient-to-r from-gray-700 to-gray-800" />
-                <Skeleton className="h-6 w-3/5 mb-4 bg-gradient-to-r from-gray-700 to-gray-800" />
-                
+                {/* Title Skeleton lines */}
+                <div className="space-y-3 mb-6">
+                  <Skeleton className="h-6 w-full bg-gray-300 dark:bg-gray-600" />
+                  <Skeleton className="h-6 w-[90%] bg-gray-300 dark:bg-gray-600" />
+                  <Skeleton className="h-6 w-[60%] bg-gray-300 dark:bg-gray-600" />
+                </div>
+
+                {/* Summary Skeleton lines */}
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-full bg-gradient-to-r from-gray-700 to-gray-800" />
-                  <Skeleton className="h-4 w-2/3 bg-gradient-to-r from-gray-700 to-gray-800" />
+                  <Skeleton className="h-4 w-full bg-gray-200 dark:bg-gray-700" />
+                  <Skeleton className="h-4 w-[80%] bg-gray-200 dark:bg-gray-700" />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 sm:pt-6 border-t border-gray-700">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <Skeleton className="h-4 w-16 bg-gradient-to-r from-gray-700 to-gray-800" />
-                  <Skeleton className="h-4 w-12 bg-gradient-to-r from-gray-700 to-gray-800" />
+              {/* Bottom Section */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-4">
+                  {/* Read Time */}
+                  <Skeleton className="h-4 w-12 bg-gray-200 dark:bg-gray-700" />
+                  {/* Author */}
+                  <Skeleton className="h-4 w-20 bg-gray-200 dark:bg-gray-700" />
                 </div>
                 
-                <Skeleton className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gradient-to-r from-gray-700 to-gray-800" />
+                {/* Arrow Circle Skeleton */}
+                <Skeleton className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gray-200 dark:bg-gray-700" />
               </div>
             </div>
-
-            {/* Shimmer Effect */}
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
           </div>
         ))}
       </div>
