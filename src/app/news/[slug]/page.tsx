@@ -17,6 +17,7 @@ import ArticleJsonLd from '@/components/seo/ArticleJsonLd';
 import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd';
 import NewsletterSubscribe from '@/components/newsletter/NewsletterSubscribe';
 import LeftTrendingWidget from '@/components/widgets/LeftTrendingWidget';
+import RightOddsWidget from '@/components/widgets/RightOddsWidget';
 
 // Define the structure of an article
 interface Article {
@@ -198,6 +199,7 @@ export default function NewsPage() {
         <ArticleBody body={article.body} />
 
         <LeftTrendingWidget />
+        <RightOddsWidget />
 
         {/* --- IN-ARTICLE AD --- */}
         <div className="my-8">

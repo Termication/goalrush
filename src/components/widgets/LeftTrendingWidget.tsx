@@ -39,7 +39,7 @@ export default function LeftTrendingWidget() {
     fetchTrending();
   }, []);
 
-  if (loading) return <WidgetSkeleton />;
+  if (loading) return null; 
   if (articles.length === 0) return null;
 
   return (
@@ -121,31 +121,6 @@ export default function LeftTrendingWidget() {
           >
             View Top 50 Charts
           </Link>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-
-function WidgetSkeleton() {
-  return (
-    <aside className="hidden xl:block fixed top-24 z-30 left-2 w-56 2xl:left-6 2xl:w-72">
-      <div className="bg-gray-200 dark:bg-gray-900 rounded-2xl p-3 2xl:p-5 border border-gray-200 dark:border-gray-700 shadow-xl">
-        <div className="flex items-center gap-2 2xl:gap-3 mb-3 2xl:mb-5">
-          <Skeleton className="h-6 w-6 2xl:h-8 2xl:w-8 rounded-lg" />
-          <Skeleton className="h-4 2xl:h-5 w-20 2xl:w-24" />
-        </div>
-        <div className="space-y-3 2xl:space-y-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex gap-2 2xl:gap-3">
-              <Skeleton className="w-10 h-10 2xl:w-14 2xl:h-14 rounded-lg flex-shrink-0" />
-              <div className="flex-1 space-y-2 py-1">
-                <Skeleton className="h-2 2xl:h-3 w-full" />
-                <Skeleton className="h-2 2xl:h-3 w-2/3" />
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </aside>
