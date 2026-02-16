@@ -17,7 +17,6 @@ export default function RightOddsWidget() {
   const [activeLeague, setActiveLeague] = useState('laLiga');
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<'loading' | 'visible' | 'hidden'>('loading');
-
   const currentUrl = WIDGETS[activeLeague as keyof typeof WIDGETS];
 
   useEffect(() => {
