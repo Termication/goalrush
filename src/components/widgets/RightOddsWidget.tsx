@@ -50,10 +50,14 @@ export default function RightOddsWidget() {
   return (
     <aside 
       className={cn(
-        "hidden 2xl:block fixed right-6 top-24 w-[320px] z-30",
-        // Only animate in when confirmed visible
-        status === 'visible' ? "animate-in slide-in-from-right-6 fade-in duration-700" : "opacity-0"
-      )}
+              // Position & Visibility
+              "hidden xl:block fixed top-24 z-30",
+              // Laptop (XL): Left-4, Width-60 (Compact)
+              // Desktop (2XL):
+              "right-4 w-45 2xl:right-6 2xl:w-72",
+              // Animation
+              "animate-in slide-in-from-right-6 fade-in duration-700"
+            )}
     >
       <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-1 border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden">
         

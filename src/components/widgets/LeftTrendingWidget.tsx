@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { TrendingUp, CalendarDays, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
+
 
 interface Article {
   _id: string;
