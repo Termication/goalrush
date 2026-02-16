@@ -11,6 +11,11 @@ const WIDGETS = {
   premierLeague: "https://widget.the-odds-api.com/v1/sports/soccer_epl/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betfair_ex_uk&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
   UEFA: "https://widget.the-odds-api.com/v1/sports/soccer_uefa_champs_league/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3AHead%20To%20Head%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
   laLiga: "https://widget.the-odds-api.com/v1/sports/soccer_spain_la_liga/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3AMoneyline%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
+  Bundesliga: "https://widget.the-odds-api.com/v1/sports/soccer_germany_bundesliga/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
+  SeriaA: "https://widget.the-odds-api.com/v1/sports/soccer_italy_serie_a/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
+  Ligue1: "https://widget.the-odds-api.com/v1/sports/soccer_france_ligue_one/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
+  World_Cup: "https://widget.the-odds-api.com/v1/sports/soccer_fifa_world_cup/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
+  UEFA_Europa_League: "https://widget.the-odds-api.com/v1/sports/soccer_uefa_europa_league/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
 };
 
 export default function RightOddsWidget() {
@@ -81,6 +86,11 @@ export default function RightOddsWidget() {
             <option value="premierLeague">EPL</option>
             <option value="UEFA">UEFA CL</option>
             <option value="laLiga">La Liga</option>
+            <option value="Bundesliga">Bundesliga</option>
+            <option value="SeriaA">Serie A</option>
+            <option value="Ligue1">Ligue 1</option>
+            <option value="World_Cup">World Cup</option>
+            <option value="UEFA_Europa_League">UEFA EL</option>
           </select>
         </div>
 
