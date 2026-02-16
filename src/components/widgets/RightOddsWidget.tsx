@@ -8,7 +8,8 @@ import { checkWidgetHealth } from '@/lib/checkWidgets';
 
 // Configuration
 const WIDGETS = {
-  premierLeague: "https://widget.the-odds-api.com/v1/sports/soccer_epl/events/?accessKey=YOUR_KEY_HERE&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3AMoneyline%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
+  premierLeague: "https://widget.the-odds-api.com/v1/sports/soccer_epl/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betfair_ex_uk&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
+  UEFA: "https://widget.the-odds-api.com/v1/sports/soccer_uefa_champs_league/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3AHead%20To%20Head%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
   laLiga: "https://widget.the-odds-api.com/v1/sports/soccer_spain_la_liga/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3AMoneyline%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
 };
 
@@ -79,6 +80,7 @@ export default function RightOddsWidget() {
             className="text-xs bg-gray-700 dark:bg-gray-800 border-none rounded-md px-2 py-1 cursor-pointer focus:ring-2 focus:ring-green-500"
           >
             <option value="premierLeague">EPL</option>
+            <option value="UEFA">UEFA CL</option>
             <option value="laLiga">La Liga</option>
           </select>
         </div>
