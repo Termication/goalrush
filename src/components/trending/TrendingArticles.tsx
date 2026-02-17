@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, ArrowUpRight, Clock, User, Sparkles, ChevronRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+
 
 interface Article {
   _id: string;

@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
 import NewsletterSubscribe from '@/components/newsletter/NewsletterSubscribe';
 
 interface Article {
