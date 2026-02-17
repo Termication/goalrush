@@ -18,22 +18,6 @@ const WIDGETS = {
   UEFA_Europa_League: "https://widget.the-odds-api.com/v1/sports/soccer_uefa_europa_league/events/?accessKey=wk_f37d9987b57628aeb0cb1e5b3c16cc28&bookmakerKeys=betway&oddsFormat=decimal&markets=h2h&marketNames=h2h%3A%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder",
 };
 
-//  Helper to map Article Categories to Widget Keys
-const getLeagueFromCategory = (category: string = ''): string => {
-  const cat = category.toLowerCase();
-  
-  if (cat.includes('champion') || cat.includes('uefa') || cat.includes('cl')) return 'UEFA';
-  if (cat.includes('europa')) return 'UEFA_Europa_League';
-  if (cat.includes('premier') || cat.includes('epl') || cat.includes('england')) return 'premierLeague';
-  if (cat.includes('liga') || cat.includes('spain')) return 'laLiga';
-  if (cat.includes('bundesliga') || cat.includes('germany')) return 'Bundesliga';
-  if (cat.includes('serie') || cat.includes('italy')) return 'SeriaA';
-  if (cat.includes('ligue') || cat.includes('france')) return 'Ligue1';
-  if (cat.includes('world') || cat.includes('fifa')) return 'World_Cup';
-  
-  return 'premierLeague'; // Default Fallback
-};
-
 export default function RightOddsWidget() {
   const [activeLeague, setActiveLeague] = useState('laLiga');
   const [loaded, setLoaded] = useState(false);
