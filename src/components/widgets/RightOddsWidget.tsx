@@ -57,8 +57,8 @@ export default function RightOddsWidget() {
       className={cn(
               // Position & Visibility
               "hidden xl:block fixed top-24 z-30",
-              // Laptop (XL): Left-4, Width-60 (Compact)
-              // Desktop (2XL):
+              // Laptop (XL): Left-4, Width-60 (Compact)  Desktop (2XL):
+
               "right-4 w-45 2xl:right-6 2xl:w-72",
               // Animation
               "animate-in slide-in-from-right-6 fade-in duration-700"
