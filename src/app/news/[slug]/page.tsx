@@ -116,6 +116,7 @@ export default function NewsPage() {
     );
   }
 
+
   return (
     <>
       {/* Dynamic Meta Tags */}
@@ -199,7 +200,8 @@ export default function NewsPage() {
         <ArticleBody body={article.body} />
 
         <LeftTrendingWidget />
-        <RightOddsWidget />
+        
+        <RightOddsWidget category={article.category} />
 
         {/* --- IN-ARTICLE AD --- */}
         <div className="my-8">
