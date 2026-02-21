@@ -24,20 +24,26 @@ export default function ArticleBody({ body }: { body: string }) {
 
         // --- Custom Image Render ---
         if (name === 'img') {
+          // Extract 'style' and 'class' to prevent React string/object runtime crashes
+          const { style, class: originalClass, ...safeAttribs } = attribs;
+          
           return (
             <img
-              {...attribs}
+              {...safeAttribs}
               className="rounded-2xl shadow-xl mx-auto border border-gray-800 my-6 w-auto h-auto max-h-[600px] object-cover"
               loading="lazy"
             />
           );
         }
 
-        // --- Custom Table Render (Mobile Responsive & Beautiful) ---
+        // --- Custom Table Render ---
         if (name === 'table') {
+          // Extract 'style' and 'class' from tables as well
+          const { style, class: originalClass, ...safeAttribs } = attribs;
+
           return (
             <div className="overflow-x-auto w-full my-8 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#151515] shadow-sm">
-              <table {...attribs} className="w-full text-left border-collapse min-w-[600px] m-0">
+              <table {...safeAttribs} className="w-full text-left border-collapse min-w-[600px] m-0">
                 {/* We pass 'options' to domToReact so child rows/cells process properly */}
                 {domToReact(domNode.children as any, options)}
               </table>
@@ -113,13 +119,15 @@ export default function ArticleBody({ body }: { body: string }) {
       [&_li]:ml-6
       
       /* Beautiful Table Styling */
-      [&_th]:bg-slate-50 dark:[&_th]:bg-gray-900/50 
-      [&_th]:p-4 [&_th]:font-semibold [&_th]:text-slate-700 dark:[&_th]:text-gray-200 
+      [&_th]:bg-gray-900 dark:[&_th]:bg-gray-900
+      [&_th]:p-4 [&_th]:font-semibold [&_th]:text-blue-700 dark:[&_th]:text-blue-700 
       [&_th]:border-b dark:[&_th]:border-gray-800
       
+      [&_td]:bg-gray-900 dark:[&_td]:bg-gray-900
+      [&_td]:text-white dark:[&_td]:text-white
       [&_td]:p-4 [&_td]:border-b dark:[&_td]:border-gray-800
       [&_tr:last-child_td]:border-b-0
-      [&_tr:hover]:bg-slate-50/50 dark:[&_tr:hover]:bg-gray-800/30
+      [&_tr:hover]:bg-gray-900 dark:[&_tr:hover]:bg-gray-900
       [&_tr]:transition-colors
       ">
       {parse(processedHtml, options)}
