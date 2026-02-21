@@ -49,14 +49,26 @@ export const RichTextEditor = ({ content, onChange }: { content: string, onChang
         toolbar: 'undo redo | blocks | ' +
           'bold italic forecolor backcolor | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | ' +
-          'removeformat | image link modelquote | help',
+          'removeformat | table image link modelquote | help',
         
         content_style: `
                   body { font-family:Helvetica,Arial,sans-serif; font-size:14px } 
                   img { border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 100%; height: auto; }
                   blockquote.model-quote { border-left: 4px solid #4f46e5; margin: 1.5em 0; padding: 0.5em 1em; background-color: #f1f5f9; border-radius: 4px; } 
-                  blockquote.model-quote footer { margin-top: 1em; font-style: italic; text-align: right; }
+                  blockquote.model-quote footer { margin-top: 1em; font-style: italic; text-align: right;
+                  
+                  
+                  table { border-collapse: collapse; width: 100%; min-width: 400px; margin: 1.5em 0; }
+                  th, td { border: 1px solid #cbd5e1; padding: 12px; text-align: left; }
+                  th { background-color: #f1f5f9; font-weight: bold;}
                 `,
+
+        table_default_attributes: {
+          border: '0'
+        },
+        table_default_styles: {
+          width: '100%',
+        },
 
         images_upload_handler: imageUploadHandler,
         automatic_uploads: true,
