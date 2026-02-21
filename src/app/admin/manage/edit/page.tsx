@@ -59,12 +59,12 @@ export default function AdminArticlesPage() {
 
   // State for Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 10;
 
   // --- Fetch articles ---
   const fetchArticles = async () => {
     try {
-      const res = await fetch('/api/articles');
+      const res = await fetch('/api/articles?limit=5000');
       const json = await res.json();
       if (json.success) {
         setArticles(json.articles || []);
