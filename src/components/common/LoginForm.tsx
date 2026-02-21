@@ -59,7 +59,7 @@ export default function LoginForm() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@goalrush.com"
+                placeholder="valid@goalrush.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

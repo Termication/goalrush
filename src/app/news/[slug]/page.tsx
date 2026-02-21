@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MoveLeft, Calendar } from 'lucide-react';
+import { MoveLeft, Calendar, Clock } from 'lucide-react';
 import ArticleBody from '@/components/common/ArticleBody';
 import AdBanner from '@/components/ads/AdBanner';
 import SocialShare from '@/components/social/SocialShare';
@@ -18,6 +18,15 @@ import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd';
 import NewsletterSubscribe from '@/components/newsletter/NewsletterSubscribe';
 import LeftTrendingWidget from '@/components/widgets/LeftTrendingWidget';
 import RightOddsWidget from '@/components/widgets/RightOddsWidget';
+
+// Define the structure of a thread update
+interface ArticleUpdate {
+  _id?: string;
+  title?: string;
+  summary?: string;
+  body: string;
+  createdAt: string;
+}
 
 // Define the structure of an article
 interface Article {
@@ -29,6 +38,7 @@ interface Article {
   category: string;
   slug: string;
   createdAt: string;
+  updates?: ArticleUpdate[];
 }
 
 // --- Skeleton Component for this page (Dark Theme) ---
@@ -79,7 +89,6 @@ export default function NewsPage() {
         if (relatedRes.ok) {
           const relatedJson = await relatedRes.json();
           if (relatedJson.success) {
-        
             const articlesList = relatedJson.data || relatedJson.articles || [];
             const filteredRelated = articlesList
               .filter((a: Article) => a.slug !== slug)
@@ -115,7 +124,6 @@ export default function NewsPage() {
       </main>
     );
   }
-
 
   return (
     <>
@@ -155,110 +163,169 @@ export default function NewsPage() {
       
       <main className="bg-[#191a1a] text-white min-h-screen">
         <div className="max-w-4xl mx-auto p-4 md:p-6">
-          <div className="mb-6">
-          <Button
-            asChild
-            variant="outline"
-            className="group bg-gray-900 border-gray-700 hover:bg-gray-800 hover:border-gray-600"
-          >
-            <Link href="/">
-              <MoveLeft className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
-              Back to News
-            </Link>
-          </Button>
-        </div>
+          <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <Button
+              asChild
+              variant="outline"
+              className="group bg-gray-900 border-gray-700 hover:bg-gray-800 hover:border-gray-600"
+            >
+              <Link href="/">
+                <MoveLeft className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+                Back to News
+              </Link>
+            </Button>
 
-        <header className="mb-6">
-          <Badge className="mb-4 bg-indigo-500 text-white">
-            {article.category || 'News'}
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-poppins font-extrabold mb-3 leading-tight text-gray-100">
-            {article.title}
-          </h1>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-            <div className="flex items-center text-sm text-gray-400 space-x-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>
-                  {new Date(article.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
+            <div className="w-full sm:w-auto flex justify-start sm:justify-end">
+              <SocialShare 
+                url={`https://www.goal-rush.live/news/${article.slug}`}
+                title={article.title}
+                description={article.summary}
+              />
+            </div>
+          </div>
+
+
+          <header className="mb-6">
+            <Badge className="mb-4 bg-indigo-500 text-white">
+              {article.category || 'News'}
+            </Badge>
+          </header>
+
+          {/* Pulsating Live Updates Indicator (Only shows if updates exist) */}
+          {article.updates && article.updates.length > 0 && (
+            <h3 className="text-2xl font-bold mb-8 flex items-center gap-3 text-white">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              </span>
+              Updates
+            </h3>
+          )}
+
+          {/* CONTINUOUS UNIFIED THREAD TIMELINE */}
+          <div className="relative border-l-2 border-indigo-500/30 pl-6 md:pl-8 ml-3 md:ml-4 space-y-16 pb-8">
+            
+            {/* 1. The Thread Updates (Rendered FIRST and REVERSED so newest is at the top) */}
+            {article.updates && article.updates.length > 0 && 
+              article.updates.slice().reverse().map((update, index) => (
+              <div key={update._id || index} className="relative">
+                {/* Timeline Dot */}
+                <div className="absolute -left-[33px] md:-left-[41px] top-1 w-4 h-4 rounded-full bg-indigo-500 border-4 border-[#191a1a]" />
+                
+                <div className="flex items-center text-sm text-indigo-400 font-semibold mb-4">
+                  <Clock className="w-4 h-4 mr-2" />
+                  {new Date(update.createdAt).toLocaleString('en-US', {
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                   })}
-                </span>
+                </div>
+
+                {/* Optional Update Title and Summary */}
+                {(update.title) && (
+                  <div className="mb-4">
+                    {update.title && (
+                      <h1 className="text-4xl md:text-5xl font-poppins font-extrabold mb-3 leading-tight text-gray-100">
+                        {update.title}
+                      </h1>
+                    )}
+                  </div>
+                )}
+                  
+
+                <div className="text-gray-200">
+                  <ArticleBody body={update.body} />
+                </div>
+              </div>
+            ))}
+
+            {/* 2. Original Main Article (Anchored at the bottom of the timeline) */}
+            <div className="relative">
+              {/* Timeline Dot for the Main Article */}
+              <div className="absolute -left-[33px] md:-left-[41px] top-2 w-4 h-4 rounded-full bg-indigo-500 border-4 border-[#191a1a]" />
+              
+              <header className="mb-6">
+                
+                <div className="flex items-center text-sm text-indigo-400 font-semibold mb-4">
+                  <Clock className="w-4 h-4 mr-2" />
+                  {new Date(article.createdAt).toLocaleString('en-US', {
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                  })}
+                </div>
+                <h1 className="text-4xl md:text-5xl font-poppins font-extrabold mb-3 leading-tight text-gray-100">
+                  {article.title}
+                </h1>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                  <div className="flex items-center text-sm text-gray-400 space-x-4">
+                  </div>
+                </div>
+              </header>
+
+              <div className="text-gray-200">
+                <ArticleBody body={article.body} />
               </div>
             </div>
-            <SocialShare 
-              url={`https://www.goal-rush.live/news/${article.slug}`}
-              title={article.title}
-              description={article.summary}
-            />
+
           </div>
-        </header>
+          {/* END CONTINUOUS TIMELINE */}
 
+          <LeftTrendingWidget />
+          
+          <RightOddsWidget category={article.category} />
 
-        <ArticleBody body={article.body} />
+          {/* --- IN-ARTICLE AD --- */}
+          <div className="my-8">
+              <AdBanner 
+                  dataAdSlot="3636114718" 
+                  dataAdFormat="fluid" 
+                  dataFullWidthResponsive={true} 
+              />
+          </div>
 
-        <LeftTrendingWidget />
-        
-        <RightOddsWidget category={article.category} />
+          {/* --- Newsletter Subscription --- */}
+          <div className="my-12">
+            <NewsletterSubscribe />
+          </div>
 
-        {/* --- IN-ARTICLE AD --- */}
-        <div className="my-8">
-            <AdBanner 
-                dataAdSlot="3636114718" 
-                dataAdFormat="fluid" 
-                dataFullWidthResponsive={true} 
-            />
+          {/* --- Read Next Section --- */}
+          {relatedArticles.length > 0 && (
+            <section className="mt-16 pt-8 border-t border-gray-800">
+              <h2 className="text-2xl font-poppins font-bold mb-6 text-gray-100">
+                Read Next
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedArticles.map((related) => (
+                  <Link
+                    href={`/news/${related.slug}`}
+                    key={related._id}
+                    className="block group"
+                  >
+                    <Card className="overflow-hidden h-full bg-gray-900 border-gray-800 group-hover:border-indigo-500 transition-all duration-30">
+                      <div className="relative w-full h-40">
+                        <Image
+                          src={related.imageUrl}
+                          alt={related.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <CardContent className="p-4">
+                        <Badge
+                          variant="secondary"
+                          className="mb-2 bg-gray-800 text-gray-300"
+                        >
+                          {related.category}
+                        </Badge>
+                        <h3 className="text-md font-semibold leading-tight h-16 text-gray-100 group-hover:text-indigo-400 transition-colors">
+                          {related.title}
+                        </h3>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
-
-        {/* --- Newsletter Subscription --- */}
-        <div className="my-12">
-          <NewsletterSubscribe />
-        </div>
-
-        {/* --- Read Next Section --- */}
-        {relatedArticles.length > 0 && (
-          <section className="mt-16 pt-8 border-t border-gray-800">
-            <h2 className="text-2xl font-poppins font-bold mb-6 text-gray-100">
-              Read Next
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedArticles.map((related) => (
-                <Link
-                  href={`/news/${related.slug}`}
-                  key={related._id}
-                  className="block group"
-                >
-                  <Card className="overflow-hidden h-full bg-gray-900 border-gray-800 group-hover:border-indigo-500 transition-all duration-30">
-                    <div className="relative w-full h-40">
-                      <Image
-                        src={related.imageUrl}
-                        alt={related.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <CardContent className="p-4">
-                      <Badge
-                        variant="secondary"
-                        className="mb-2 bg-gray-800 text-gray-300"
-                      >
-                        {related.category}
-                      </Badge>
-                      <h3 className="text-md font-semibold leading-tight h-16 text-gray-100 group-hover:text-indigo-400 transition-colors">
-                        {related.title}
-                      </h3>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-      </div>
-    </main>
+      </main>
     </>
   );
 }
-

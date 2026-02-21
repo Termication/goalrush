@@ -77,7 +77,7 @@ export default function RightOddsWidget({ category }: { category?: string }) {
     <aside 
       className={cn(
         "hidden xl:block fixed top-24 z-30",
-        "right-4 w-60 2xl:right-6 2xl:w-72",
+        "right-4 w-45 2xl:right-6 2xl:w-72",
         status === 'visible' ? "animate-in slide-in-from-right-6 fade-in duration-700" : "opacity-0"
       )}
     >
@@ -98,7 +98,7 @@ export default function RightOddsWidget({ category }: { category?: string }) {
               setLoaded(false); 
               setActiveLeague(e.target.value as WidgetKey);
             }}
-            className="text-xs bg-gray-700 dark:bg-gray-800 text-white border-none rounded-md px-2 py-1 cursor-pointer focus:ring-2 focus:ring-green-500 max-w-[100px]"
+            className="text-xs bg-gray-700 dark:bg-gray-800 text-white border-none rounded-md px-1 py-1 cursor-pointer focus:ring-2 focus:ring-green-500 max-w-[65px]"
           >
             <option value="premierLeague">EPL</option>
             <option value="UEFA">UEFA CL</option>
