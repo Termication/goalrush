@@ -16,6 +16,7 @@ export interface IArticle extends Document {
   email?: string;
   isTrending?: boolean;
   imageAlt?: string;
+  updates?: { body: string; createdAt: Date }[];
 }
 
 // 2. SCHEMA
@@ -66,6 +67,15 @@ const ArticleSchema: Schema = new Schema({
   imageAlt: {
     type: String,
     default: '',
+  },
+  updates: {
+    type: [{
+      title: { type: String },
+      summary: { type: String },
+      body: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now }
+    }],
+    default: [],
   },
 },
  {
