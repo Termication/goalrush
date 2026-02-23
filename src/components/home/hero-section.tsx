@@ -86,9 +86,6 @@ export default function HomePage() {
         <Link href={`/news/${featured.slug}`} className="block group max-w-7xl mx-auto">
           <div className="relative overflow-hidden rounded-xl shadow-lg lg:grid lg:grid-cols-5 lg:gap-1">
             <div className="relative h-[60vh] lg:h-[60vh] lg:col-span-5">
-              
-              {/* Live Updates Badge on Featured Mobile */}
-              {featured.updates && featured.updates.length > 0 && <LiveUpdateBadge />}
 
               <Image
                 src={featured.imageUrl}
@@ -101,7 +98,7 @@ export default function HomePage() {
             </div>
 
             <div className="absolute bottom-0 left-0 p-6 text-white lg:static lg:col-start-1 lg:col-span-3 lg:row-start-1 lg:bg-black/60 lg:backdrop-blur-sm lg:m-6 lg:rounded-xl lg:self-center">
-              <Badge className="mb-3 px-3 py-1 text-xs bg-red-600 text-white rounded-full border-none mr-2">
+              <Badge className="px-3 py-1 text-xs bg-red-600 text-white rounded-full border-none mr-2">
                 <span className="animate-typing">Breaking News</span>
               </Badge>
               
