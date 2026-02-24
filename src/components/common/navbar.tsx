@@ -7,31 +7,41 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from "@/components/ui/sheet"
 import { Menu, ChevronDown } from "lucide-react"
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+import { motion, AnimatePresence } from "framer-motion"
 import React from "react"
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
 
-// --- Data for Navigation Links ---
-const leagueLinks = [
-  { name: "Premier League", href: "/news_by_category/Premier League" },
-  { name: "La Liga", href: "/news_by_category/laliga" },
-  { name: "Bundesliga", href: "/news_by_category/Bundesliga" },
-  { name: "Serie A", href: "/news_by_category/Serie A" },
-  { name: "Ligue 1", href: "/news_by_category/Ligue 1" },
-  { name: "World Cup", href: "/news_by_category/World Cup 2026" },
-  { name: "UEFA", href: "/news_by_category/UEFA" },
-  { name: "Saudi Pro League", href: "/news_by_category/Saudi Pro League" },
-  { name: "South African Premiership", href: "/news_by_category/South African Premiership" },
-  { name: "International", href: "/news_by_category/international" },
-  { name: "Transfers", href: "/news_by_category/Transfers" },
+// --- Grouped League Data for Mega Menu ---
+const leagueGroups = {
+  "TOP 5 LEAGUES": [
+    { name: "Premier League", href: "/news_by_category/Premier League", icon: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+    { name: "La Liga", href: "/news_by_category/laliga", icon: "🇪🇸" },
+    { name: "Bundesliga", href: "/news_by_category/Bundesliga", icon: "🇩🇪" },
+    { name: "Serie A", href: "/news_by_category/Serie A", icon: "🇮🇹" },
+    { name: "Ligue 1", href: "/news_by_category/Ligue 1", icon: "🇫🇷" },
+  ],
+  "INTERNATIONAL": [
+    { name: "World Cup", href: "/news_by_category/World Cup 2026", icon: "🌍" },
+    { name: "UEFA", href: "/news_by_category/UEFA", icon: "🇪🇺" },
+    { name: "International", href: "/news_by_category/international", icon: "🏆" },
+  ],
+  "OTHER COMPETITIONS": [
+    { name: "Saudi Pro League", href: "/news_by_category/Saudi Pro League", icon: "🇸🇦" },
+    { name: "South African Premiership", href: "/news_by_category/South African Premiership", icon: "🇿🇦" },
+  ],
+  "TRANSFERS": [
+    { name: "Transfers", href: "/news_by_category/Transfers", icon: "🔄" },
+  ],
+}
+
+// Flatten for mobile
+const allLeagueLinks = Object.values(leagueGroups).flat()
+
+// --- Navigation Items (excluding Competitions) ---
+const navItems = [
+  { name: "News", href: "/news_page" },
+  { name: "Standings", href: "/standings" },
+  { name: "Betting", href: "/betting" },
 ]
 
 // --- Helper function to check for active links ---
@@ -41,88 +51,125 @@ const isActive = (pathname: string, href: string) =>
 // --- Main Navbar Component ---
 export default function Navbar() {
   const pathname = usePathname()
+  const [megaOpen, setMegaOpen] = useState(false)
 
-  const isLeagueActive = pathname.startsWith('/news_by_category/') || pathname === '/league';
+  const isLeagueActive = pathname.startsWith('/news_by_category/') || pathname === '/league'
 
   return (
-    <nav className="relative z-50 w-full border-b bg-background px-4 py-2 shadow-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
+    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-white/80 backdrop-blur-md dark:bg-gray-950/80 shadow-lg">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2">
         {/* Logo and Brand Name */}
-        <Link href="/" className="group flex items-center space-x-2 rounded-md transition-all duration-200">
-          <Image
-            src="/logo.png"
-            alt="GoalRush Logo"
-            width={50}
-            height={50}
-            className="object-contain transition-transform duration-200 group-hover:scale-150"
-          />
-          <span className="text-xl font-bold tracking-tight transition-colors duration-200 group-hover:text-primary">
+        <Link href="/" className="group flex items-center space-x-2 rounded-md transition-all duration-300 hover:scale-105">
+          <div className="relative">
+            <Image
+              src="/logo.png"
+              alt="GoalRush Logo"
+              width={50}
+              height={50}
+              className="object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+            />
+            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
+          </div>
+          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300 group-hover:from-indigo-500 group-hover:to-purple-500">
             GoalRush
           </span>
         </Link>
 
-        {/* --- Desktop Navigation --- */}
-        <NavigationMenu className="hidden md:block">
-          <NavigationMenuList>
-            {/* News Link */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild active={isActive(pathname, "/news_page")}>
-                <Link href="/news_page" className={navigationMenuTriggerStyle()}>
-                  News
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-1">
+          {navItems.map((item) => {
+            const active = isActive(pathname, item.href)
 
-            {/* League Dropdown */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className={cn(isLeagueActive && "bg-accent text-accent-foreground")}>Competitions</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-48 gap-1 p-2">
-                  {leagueLinks.map((component) => (
-                    <ListItem
-                      key={component.name}
-                      title={component.name}
-                      href={component.href}
-                      active={isActive(pathname, component.href)}
-                    />
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
+                  "hover:-translate-y-[1px] hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
+                  active && "text-indigo-600 dark:text-indigo-400"
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId="active-pill"
+                    className="absolute inset-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full -z-10"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+                {item.name}
+              </Link>
+            )
+          })}
+
+          {/* Mega Menu for Competitions */}
+          <div
+            onMouseEnter={() => setMegaOpen(true)}
+            onMouseLeave={() => setMegaOpen(false)}
+            className="relative"
+          >
+            <button
+              className={cn(
+                "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
+                "hover:-translate-y-[1px] hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
+                isLeagueActive && "text-indigo-600 dark:text-indigo-400"
+              )}
+            >
+              Competitions
+              {isLeagueActive && (
+                <motion.span
+                  layoutId="active-pill"
+                  className="absolute inset-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full -z-10"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <AnimatePresence>
+              {megaOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-[600px] rounded-2xl border bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-xl p-6 grid grid-cols-2 gap-6"
+                >
+                  {Object.entries(leagueGroups).map(([group, items]) => (
+                    <div key={group} className={cn(items.length > 4 && "col-span-2")}>
+                      <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2 font-semibold">
+                        {group}
+                      </p>
+                      <div className="flex flex-col gap-1">
+                        {items.map((item) => (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            className="flex items-center gap-2 text-sm px-3 py-2 rounded-md transition-all duration-150 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:-translate-y-[1px]"
+                          >
+                            <span className="text-base">{item.icon}</span>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
-            {/* Standings Link */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild active={isActive(pathname, "/standings")}>
-                <Link href="/standings" className={navigationMenuTriggerStyle()}>
-                  Standings
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            {/* Betting Link */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild active={isActive(pathname, "/betting")}>
-                <Link href="/betting" className={navigationMenuTriggerStyle()}>
-                  Betting
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-          </NavigationMenuList>
-        </NavigationMenu>
-
-        {/* --- Mobile Navigation --- */}
+        {/* Mobile Navigation */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <button className="p-2 rounded-md hover:bg-muted">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Open menu</span>
+              <button className="p-2 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-all duration-300 hover:scale-110">
+                <Menu className="h-6 w-6 text-gray-700 dark:text-gray-300" />
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-60">
+            <SheetContent side="right" className="w-72 p-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md border-l border-white/10 shadow-2xl">
               <VisuallyHidden.Root>
-                <SheetTitle>Mobile Navigation Menu</SheetTitle>
+                <SheetTitle>Mobile Navigation</SheetTitle>
               </VisuallyHidden.Root>
 
               <MobileNavContent pathname={pathname} isLeagueActive={isLeagueActive} />
@@ -134,120 +181,72 @@ export default function Navbar() {
   )
 }
 
-// --- Reusable ListItem component for NavigationMenu ---
-const ListItem = React.forwardRef<
-  React.ElementRef<typeof Link>,
-  React.ComponentPropsWithoutRef<typeof Link> & { active?: boolean; title: string }
->(({ className, title, children, active, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <Link
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            active ? "bg-accent text-accent-foreground" : "",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </Link>
-      </NavigationMenuLink>
-    </li>
-  )
-})
-ListItem.displayName = "ListItem"
-
-// --- Component for Mobile Navigation Content ---
-function MobileNavContent({ pathname, isLeagueActive }: { pathname: string, isLeagueActive: boolean }) {
+// --- Mobile Navigation Content ---
+function MobileNavContent({ pathname, isLeagueActive }: { pathname: string; isLeagueActive: boolean }) {
   const [leagueOpen, setLeagueOpen] = useState(false)
 
   return (
-    <div className="flex flex-col gap-2 mt-8">
-      {/* News Link */}
-      <SheetClose asChild>
-        <Link
-          href="/news_page"
-          className={cn(
-            "text-sm font-medium px-3 py-2 rounded-md transition-colors",
-            isActive(pathname, "/news_page")
-              ? "bg-muted text-primary font-semibold"
-              : "text-muted-foreground hover:text-primary hover:bg-muted"
-          )}
-        >
-          News
-        </Link>
-      </SheetClose>
+    <div className="flex flex-col gap-1 p-4 mt-12">
+      {navItems.map((item) => (
+        <SheetClose asChild key={item.name}>
+          <Link
+            href={item.href}
+            className={cn(
+              "text-sm font-medium px-4 py-3 rounded-lg transition-all duration-300",
+              "hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
+              isActive(pathname, item.href)
+                ? "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+                : "text-gray-700 dark:text-gray-300"
+            )}
+          >
+            {item.name}
+          </Link>
+        </SheetClose>
+      ))}
 
-      {/* League (collapsible) */}
+      {/* Competitions (collapsible) */}
       <div>
         <button
           onClick={() => setLeagueOpen((o) => !o)}
           aria-expanded={leagueOpen}
           className={cn(
-            "w-full flex items-center justify-between text-left px-3 py-2 rounded-md text-sm font-medium transition-colors",
+            "w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300",
+            "hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
             isLeagueActive
-              ? "bg-muted text-primary font-semibold"
-              : "text-muted-foreground hover:text-primary hover:bg-muted"
+              ? "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+              : "text-gray-700 dark:text-gray-300"
           )}
         >
           <span>Competitions</span>
-          <ChevronDown className={cn("h-4 w-4 transition-transform", leagueOpen && "rotate-180")} />
+          <ChevronDown className={cn("h-4 w-4 transition-transform duration-300", leagueOpen && "rotate-180")} />
         </button>
-        {leagueOpen && (
-          <div className="mt-1 ml-4 flex flex-col gap-1 border-l-2 pl-2">
-            {leagueLinks.map(({ name, href }) => (
+        <div
+          className={cn(
+            "overflow-hidden transition-all duration-300 ease-in-out",
+            leagueOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          )}
+        >
+          <div className="mt-1 ml-4 flex flex-col gap-1 border-l-2 border-indigo-200 dark:border-indigo-800 pl-2 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-300 dark:scrollbar-thumb-indigo-700">
+            {allLeagueLinks.map(({ name, href, icon }) => (
               <SheetClose asChild key={name}>
                 <Link
                   href={href}
                   className={cn(
-                    "text-sm font-medium px-3 py-1.5 rounded-md transition-colors",
+                    "flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg transition-all duration-300",
+                    "hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
                     isActive(pathname, href)
-                      ? "bg-muted text-primary font-semibold"
-                      : "text-muted-foreground hover:text-primary hover:bg-muted"
+                      ? "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+                      : "text-gray-600 dark:text-gray-400"
                   )}
                 >
+                  <span className="text-base">{icon}</span>
                   {name}
                 </Link>
               </SheetClose>
             ))}
           </div>
-        )}
+        </div>
       </div>
-
-      {/* Standings Link */}
-      <SheetClose asChild>
-        <Link
-          href="/standings"
-          className={cn(
-            "text-sm font-medium px-3 py-2 rounded-md transition-colors",
-            isActive(pathname, "/standings")
-              ? "bg-muted text-primary font-semibold"
-              : "text-muted-foreground hover:text-primary hover:bg-muted"
-          )}
-        >
-          Standings
-        </Link>
-      </SheetClose>
-
-      {/* Betting Link */}
-      <SheetClose asChild>
-        <Link
-          href="/betting"
-          className={cn(
-            "text-sm font-medium px-3 py-2 rounded-md transition-colors",
-            isActive(pathname, "/betting")
-              ? "bg-muted text-primary font-semibold"
-              : "text-muted-foreground hover:text-primary hover:bg-muted"
-          )}
-        >
-          Betting
-        </Link>
-      </SheetClose>
     </div>
   )
 }
