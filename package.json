@@ -27,6 +27,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
+    "framer-motion": "^12.34.3",
     "html-react-parser": "^5.2.6",
     "lucide-react": "^0.522.0",
     "mongodb": "^6.17.0",
