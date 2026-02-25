@@ -37,7 +37,7 @@ const leagueGroups = {
 // Flatten for mobile
 const allLeagueLinks = Object.values(leagueGroups).flat()
 
-// --- Navigation Items (excluding Competitions) ---
+// --- Navigation Items ---
 const navItems = [
   { name: "News", href: "/news_page" },
   { name: "Standings", href: "/standings" },
