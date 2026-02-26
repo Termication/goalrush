@@ -89,7 +89,7 @@ export default function ReadNextSection({ relatedArticles }: ReadNextSectionProp
             key={article._id}
             className="group block"
           >
-            <div className="relative h-56 rounded-2xl overflow-hidden shadow-lg bg-gray-900 border border-gray-200 dark:border-gray-800 group-hover:border-indigo-400 dark:group-hover:border-indigo-600 transition-all duration-300">
+            <div className="relative h-56 rounded-2xl overflow-hidden shadow-lg bg-gray-900 dark:border-gray-800 group-hover:border-indigo-400 dark:group-hover:border-indigo-600 transition-all duration-300">
               <Image
                 src={article.imageUrl}
                 alt={article.title}
