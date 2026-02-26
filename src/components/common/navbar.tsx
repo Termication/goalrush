@@ -6,7 +6,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from "@/components/ui/sheet"
-import { Menu, ChevronDown } from "lucide-react"
+import { Menu, ChevronDown, Newspaper, Trophy, Goal, Timer } from "lucide-react" // added icons
 import { motion, AnimatePresence } from "framer-motion"
 import React from "react"
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
@@ -37,11 +37,11 @@ const leagueGroups = {
 // Flatten for mobile
 const allLeagueLinks = Object.values(leagueGroups).flat()
 
-// --- Navigation Items ---
+// --- Navigation Items with icons ---
 const navItems = [
-  { name: "News", href: "/news_page" },
-  { name: "Standings", href: "/standings" },
-  { name: "Betting", href: "/betting" },
+  { name: "News", href: "/news_page", icon: Newspaper },
+  { name: "Standings", href: "/standings", icon: Timer },
+  { name: "Betting", href: "/betting", icon: Goal },
 ]
 
 // --- Helper function to check for active links ---
@@ -78,6 +78,7 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
+            const Icon = item.icon
             const active = isActive(pathname, item.href)
 
             return (
@@ -85,7 +86,7 @@ export default function Navbar() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
+                  "relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
                   "hover:-translate-y-[1px] hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
                   active && "text-indigo-600 dark:text-indigo-400"
                 )}
@@ -97,12 +98,13 @@ export default function Navbar() {
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
+                <Icon className="h-4 w-4" />
                 {item.name}
               </Link>
             )
           })}
 
-          {/* Mega Menu for Competitions */}
+          {/* Mega Menu for Competitions (with its own icon) */}
           <div
             onMouseEnter={() => setMegaOpen(true)}
             onMouseLeave={() => setMegaOpen(false)}
@@ -110,11 +112,12 @@ export default function Navbar() {
           >
             <button
               className={cn(
-                "relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
+                "relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
                 "hover:-translate-y-[1px] hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
                 isLeagueActive && "text-indigo-600 dark:text-indigo-400"
               )}
             >
+              <Trophy className="h-4 w-4" />
               Competitions
               {isLeagueActive && (
                 <motion.span
@@ -181,30 +184,34 @@ export default function Navbar() {
   )
 }
 
-// --- Mobile Navigation Content ---
+// --- Mobile Navigation Content (with icons) ---
 function MobileNavContent({ pathname, isLeagueActive }: { pathname: string; isLeagueActive: boolean }) {
   const [leagueOpen, setLeagueOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-1 p-4 mt-12">
-      {navItems.map((item) => (
-        <SheetClose asChild key={item.name}>
-          <Link
-            href={item.href}
-            className={cn(
-              "text-sm font-medium px-4 py-3 rounded-lg transition-all duration-300",
-              "hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
-              isActive(pathname, item.href)
-                ? "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
-                : "text-gray-700 dark:text-gray-300"
-            )}
-          >
-            {item.name}
-          </Link>
-        </SheetClose>
-      ))}
+      {navItems.map((item) => {
+        const Icon = item.icon
+        return (
+          <SheetClose asChild key={item.name}>
+            <Link
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 text-sm font-medium px-4 py-3 rounded-lg transition-all duration-300",
+                "hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
+                isActive(pathname, item.href)
+                  ? "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300"
+                  : "text-gray-700 dark:text-gray-300"
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              {item.name}
+            </Link>
+          </SheetClose>
+        )
+      })}
 
-      {/* Competitions (collapsible) */}
+      {/* Competitions (collapsible) with icon */}
       <div>
         <button
           onClick={() => setLeagueOpen((o) => !o)}
@@ -217,7 +224,10 @@ function MobileNavContent({ pathname, isLeagueActive }: { pathname: string; isLe
               : "text-gray-700 dark:text-gray-300"
           )}
         >
-          <span>Competitions</span>
+          <span className="flex items-center gap-3">
+            <Trophy className="h-4 w-4" />
+            Competitions
+          </span>
           <ChevronDown className={cn("h-4 w-4 transition-transform duration-300", leagueOpen && "rotate-180")} />
         </button>
         <div
