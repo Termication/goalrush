@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { RichTextEditor } from '@/components/common/RichTextEditor';
-import ReplyArticle from '@/components/common/reply';
+import ReplyArticle from '@/components/inArticle/reply';
 
 // --- TYPES ---
 interface ArticleUpdate {

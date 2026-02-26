@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MoveLeft, Calendar, Clock } from 'lucide-react';
-import ArticleBody from '@/components/common/ArticleBody';
+import ArticleBody from '@/components/inArticle/ArticleBody';
 import AdBanner from '@/components/ads/AdBanner';
 import SocialShare from '@/components/social/SocialShare';
 import ArticleJsonLd from '@/components/seo/ArticleJsonLd';
@@ -18,6 +18,7 @@ import BreadcrumbJsonLd from '@/components/seo/BreadcrumbJsonLd';
 import NewsletterSubscribe from '@/components/newsletter/NewsletterSubscribe';
 import LeftTrendingWidget from '@/components/widgets/LeftTrendingWidget';
 import RightOddsWidget from '@/components/widgets/RightOddsWidget';
+import ReadNextSection from '@/components/inArticle/ReadNext';
 
 // Define the structure of a thread update
 interface ArticleUpdate {
@@ -280,50 +281,14 @@ export default function NewsPage() {
               />
           </div>
 
+          {/* --- Read Next Section --- */}
+          <ReadNextSection relatedArticles={relatedArticles} />
+
           {/* --- Newsletter Subscription --- */}
           <div className="my-12">
             <NewsletterSubscribe />
           </div>
 
-          {/* --- Read Next Section --- */}
-          {relatedArticles.length > 0 && (
-            <section className="mt-16 pt-8 border-t border-gray-800">
-              <h2 className="text-2xl font-poppins font-bold mb-6 text-gray-100">
-                Read Next
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {relatedArticles.map((related) => (
-                  <Link
-                    href={`/news/${related.slug}`}
-                    key={related._id}
-                    className="block group"
-                  >
-                    <Card className="overflow-hidden h-full bg-gray-900 border-gray-800 group-hover:border-indigo-500 transition-all duration-30">
-                      <div className="relative w-full h-40">
-                        <Image
-                          src={related.imageUrl}
-                          alt={related.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <CardContent className="p-4">
-                        <Badge
-                          variant="secondary"
-                          className="mb-2 bg-gray-800 text-gray-300"
-                        >
-                          {related.category}
-                        </Badge>
-                        <h3 className="text-md font-semibold leading-tight h-16 text-gray-100 group-hover:text-indigo-400 transition-colors">
-                          {related.title}
-                        </h3>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
       </main>
     </>
