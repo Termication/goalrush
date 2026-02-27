@@ -8,6 +8,7 @@ interface Article {
   _id: string;
 }
 
+// This component is used in the admin manage page to link to the reply page for a specific article`
 export default function ReplyArticle({ article }: { article: Article }) {
   return (
     <Link href={`/admin/manage/reply/${article._id}`}>
