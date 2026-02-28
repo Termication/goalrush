@@ -135,7 +135,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96, y: 10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-[600px] rounded-2xl border bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-xl p-6 grid grid-cols-2 gap-6"
+                  className="absolute right-0 top-full mt-4 w-[600px] max-w-[90vw] rounded-2xl border bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-6 origin-top-right"
                 >
                   {Object.entries(leagueGroups).map(([group, items]) => (
                     <div key={group} className={cn(items.length > 4 && "col-span-2")}>
