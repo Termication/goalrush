@@ -74,10 +74,27 @@ export default function HomePage() {
   // Show skeleton while loading
   if (isLoading) return <HomePageSkeleton />
 
-  const featured = articles.find((article) => article.isFeatured) || articles[0]
-  const headlines = articles.filter((a) => a.slug !== featured?.slug).slice(0, 4)
 
-  if (!featured) return null
+if (!articles || articles.length === 0) return null;
+
+  const featured = (articles.find((article) => article.isFeatured) || articles) as Article;
+
+  // Filter out the featured article, then sort the remaining articles
+  const headlines = articles
+    .filter((a) => a.slug !== featured.slug)
+
+    // 1. Sort all articles strictly chronologically (newest first)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
+    // 2. Take the top 4 latest articles
+    .slice(0, 4)
+    
+    // 3. Move any threaded articles in this group of 4 to the very beginning
+    .sort((a, b) => {
+      const aHasUpdates = a.updates && a.updates.length > 0 ? 1 : 0;
+      const bHasUpdates = b.updates && b.updates.length > 0 ? 1 : 0;
+      return bHasUpdates - aHasUpdates; 
+    });
 
   // Mobile layout
   if (isMobile) {
@@ -86,6 +103,9 @@ export default function HomePage() {
         <Link href={`/news/${featured.slug}`} className="block group max-w-7xl mx-auto">
           <div className="relative overflow-hidden rounded-xl shadow-lg lg:grid lg:grid-cols-5 lg:gap-1">
             <div className="relative h-[60vh] lg:h-[60vh] lg:col-span-5">
+              
+              {/* Live Updates Badge on Featured Mobile */}
+              {featured.updates && featured.updates.length > 0 && <LiveUpdateBadge />}
 
               <Image
                 src={featured.imageUrl}
