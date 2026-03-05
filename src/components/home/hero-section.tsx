@@ -21,7 +21,7 @@ interface Article {
   updates?: any[]
 }
 
-// Reusable Component for the Pulsing Live Badge
+// Live Update Badge Component
 const LiveUpdateBadge = () => (
   <div className="absolute top-3 left-3 z-10 flex items-center gap-2 bg-red-600/90 backdrop-blur-md border border-red-500 text-white px-2.5 py-1 rounded-md text-xs font-bold shadow-lg">
     <span className="relative flex h-2 w-2">
@@ -88,7 +88,7 @@ if (!articles || articles.length === 0) return null;
 
     // 2. Take the top 4 latest articles
     .slice(0, 4)
-    
+
     // 3. Move any threaded articles in this group of 4 to the very beginning
     .sort((a, b) => {
       const aHasUpdates = a.updates && a.updates.length > 0 ? 1 : 0;
