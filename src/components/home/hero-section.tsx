@@ -32,7 +32,7 @@ const LiveUpdateBadge = () => (
   </div>
 );
 
-// Component for the hero section of the homepage, featuring the latest news article and a grid of recent headlines. It fetches articles from an API, handles loading states with a skeleton, and adapts its layout for mobile and desktop screens. The featured article is highlighted with a "Breaking News" badge, and any articles with live updates are marked with a "Threaded" badge that includes an animated ping effect.
+// Component for the hero section of the homepage
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
   const [articles, setArticles] = useState<Article[]>([])
