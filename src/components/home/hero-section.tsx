@@ -46,7 +46,7 @@ export default function HomePage() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Fetch articles with a small delay
+  // Fetch articles
   useEffect(() => {
     const fetchArticles = async () => {
       try {
