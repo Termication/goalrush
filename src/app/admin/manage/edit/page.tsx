@@ -84,7 +84,7 @@ export default function AdminArticlesPage() {
     setExpandedThreads(prev => ({ ...prev, [articleId]: !prev[articleId] }));
   };
 
-  // --- Delete Main Article ---
+  // Delete Main Article
   const handleDelete = async () => {
     if (!selectedId) return;
 
@@ -112,7 +112,7 @@ export default function AdminArticlesPage() {
     }
   };
 
-  // --- Delete Individual Thread Update ---
+  // Delete Individual Thread Update
   const handleDeleteUpdate = async (articleId: string, updateId: string) => {
     if (!confirm('Are you sure you want to delete this thread update?')) return;
 
@@ -138,7 +138,7 @@ export default function AdminArticlesPage() {
     }
   };
 
-  // --- Edit Individual Thread Update ---
+  // Edit Individual Thread Update
   const handleSaveUpdateEdit = async (articleId: string, updateId: string) => {
     try {
       const res = await fetch(`/api/articles/by-id/${articleId}`, {
