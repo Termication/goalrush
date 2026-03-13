@@ -1,6 +1,6 @@
 # ⚽ GoalRush - Football News Website
 
-[![Screenshot-Goal-Rush-2026.png](https://i.postimg.cc/9F9LnzZn/Screenshot-Goal-Rush-2026.png)](https://postimg.cc/rK8GdVh1)
+[![Screenshot-2026-03-13-at-20-10-40-Goal-Rush-Your-Daily-Football-Fix.png](https://i.postimg.cc/jSkRSCGj/Screenshot-2026-03-13-at-20-10-40-Goal-Rush-Your-Daily-Football-Fix.png)](https://postimg.cc/G4YWM330)
 
 **GoalRush** is a full-stack, modern football news website built with Next.js and the TALL stack (Tailwind CSS, Alpine.js-like interactivity via React, Laravel-like API routes via Next.js, and Livewire-like components via React Server Components). It features a dynamic homepage, individual article pages, and a secure admin panel for creating and managing content, complete with a rich text editor and image uploading capabilities.
 
