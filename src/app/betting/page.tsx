@@ -113,8 +113,8 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
   useEffect(() => {
     if (trend) {
       setActiveTrend(trend);
-      // Keep the green/red highlight active for 3 seconds
-      const timer = setTimeout(() => setActiveTrend(null), 3000); 
+      // Keep the green/red highlight active for 2.5 seconds
+      const timer = setTimeout(() => setActiveTrend(null), 2500); 
       return () => clearTimeout(timer);
     }
   }, [value, trend]); 
