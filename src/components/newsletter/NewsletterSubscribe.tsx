@@ -20,7 +20,7 @@ export default function NewsletterSubscribe() {
     }
 
     setLoading(true);
-    // TODO: Replace with actual API call in production
+    // TODO: Replace with actual API call
 
     setTimeout(() => {
       toast.success('Successfully subscribed to newsletter!');
