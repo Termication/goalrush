@@ -44,7 +44,7 @@ export async function GET() {
         return table.map((item: any) => ({
             rank: item.position,
             team: {
-                name: item.team.shortName || item.team.tla || item.team.name,
+                name: item.team.name || item.team.shortName || item.team.tla,
                 logo: item.team.crest,
             },
             points: item.points,
