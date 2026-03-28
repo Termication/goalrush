@@ -9,6 +9,8 @@ import {
   PlusCircle, Search, Clock, Sparkles, X
 } from 'lucide-react';
 
+import { useTeamLogos } from '@/components/hooks/useTeamLogos';
+
 // --- CONFIGURATION ---
 const LEAGUES = [
   { key: 'soccer_epl', name: 'Premier League', icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
@@ -42,6 +44,51 @@ interface Match {
     }[];
   }[];
 }
+
+// Helper function to map country names to flag emojis for International matches
+const getCountryFlag = (countryName: string) => {
+  const flags: Record<string, string> = {
+    // South America
+    'Argentina': '🇦🇷', 'Brazil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴',
+    'Chile': '🇨🇱', 'Peru': '🇵🇪', 'Ecuador': '🇪🇨', 'Paraguay': '🇵🇾',
+    'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪',
+
+    // Europe
+    'France': '🇫🇷', 'England': '🏴', 'Spain': '🇪🇸', 'Germany': '🇩🇪',
+    'Portugal': '🇵🇹', 'Italy': '🇮🇹', 'Netherlands': '🇳🇱', 'Belgium': '🇧🇪',
+    'Croatia': '🇭🇷', 'Switzerland': '🇨🇭', 'Denmark': '🇩🇰', 'Sweden': '🇸🇪',
+    'Norway': '🇳🇴', 'Poland': '🇵🇱', 'Serbia': '🇷🇸', 'Turkey': '🇹🇷',
+    'Greece': '🇬🇷', 'Ukraine': '🇺🇦', 'Austria': '🇦🇹', 'Hungary': '🇭🇺',
+    'Czech Republic': '🇨🇿', 'Slovakia': '🇸🇰', 'Romania': '🇷🇴',
+    'Bulgaria': '🇧🇬', 'Finland': '🇫🇮', 'Iceland': '🇮🇸',
+
+    // Africa
+    'South Africa': '🇿🇦', 'Nigeria': '🇳🇬', 'Ghana': '🇬🇭',
+    'Senegal': '🇸🇳', 'Cameroon': '🇨🇲', 'Morocco': '🇲🇦',
+    'Egypt': '🇪🇬', 'Algeria': '🇩🇿', 'Tunisia': '🇹🇳',
+    'Ivory Coast': '🇨🇮', 'Mali': '🇲🇱',
+
+    // North America
+    'USA': '🇺🇸', 'United States': '🇺🇸', 'Canada': '🇨🇦', 'Mexico': '🇲🇽',
+    'Costa Rica': '🇨🇷', 'Panama': '🇵🇦',
+
+    // Asia
+    'Japan': '🇯🇵', 'South Korea': '🇰🇷', 'China': '🇨🇳',
+    'Saudi Arabia': '🇸🇦', 'Qatar': '🇶🇦', 'Iran': '🇮🇷',
+    'India': '🇮🇳', 'UAE': '🇦🇪',
+
+    // Oceania
+    'Australia': '🇦🇺', 'New Zealand': '🇳🇿',
+
+    // UK Nations
+    'Wales': '🏴', 'Scotland': '🏴', 'Ireland': '🇮🇪'
+  };
+  
+  // Clean up the name for matching (e.g., handle "USA" vs "United States")
+  const name = countryName.trim();
+  return flags[name] || '🌍'; 
+};
+
 
 // Helper to check if match is live (within 1 hour of start)
 const isLiveMatch = (commenceTime: string) => {
@@ -196,6 +243,9 @@ export default function BettingPage() {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   const liveMatches = useLiveOdds(rawMatches);
+  
+  // Initialize the team logos hook
+  const { getLogo } = useTeamLogos();
 
   const fetchOdds = useCallback(async () => {
     setLoading(true);
@@ -238,6 +288,9 @@ export default function BettingPage() {
     return match.home_team.toLowerCase().includes(searchTerm.toLowerCase()) ||
            match.away_team.toLowerCase().includes(searchTerm.toLowerCase());
   });
+  
+  // Determine if the current view is for an international tournament
+  const isInternational = selectedSport === 'soccer_fifa_world_cup';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4 sm:px-6 lg:px-8">
@@ -378,14 +431,37 @@ export default function BettingPage() {
                   {/* Teams & Odds */}
                   <div className="p-5">
                     <div className="flex justify-between items-center mb-6 gap-4">
+                      
+                      {/* Home Team Logo / Flag */}
                       <div className="flex items-center gap-2 w-1/2">
-                        <span className="text-2xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> {/* Placeholder */}
+                        {isInternational ? (
+                          <span className="text-2xl">{getCountryFlag(match.home_team)}</span>
+                        ) : (
+                          <img 
+                            src={getLogo(match.home_team)} 
+                            alt={match.home_team} 
+                            className="w-6 h-6 object-contain"
+                            onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100/png?text=Team')}
+                          />
+                        )}
                         <h3 className="font-bold text-gray-900 dark:text-white text-lg truncate">{match.home_team}</h3>
                       </div>
-                      <span className="text-xs text-gray-400 font-bold">VS</span>
+                      
+                      <span className="text-xs text-gray-400 font-bold shrink-0">VS</span>
+                      
+                      {/* 🟢 Away Team Logo / Flag */}
                       <div className="flex items-center gap-2 w-1/2 justify-end">
                         <h3 className="font-bold text-gray-900 dark:text-white text-lg truncate">{match.away_team}</h3>
-                        <span className="text-2xl">🇪🇸</span>
+                        {isInternational ? (
+                          <span className="text-2xl">{getCountryFlag(match.away_team)}</span>
+                        ) : (
+                          <img 
+                            src={getLogo(match.away_team)} 
+                            alt={match.away_team} 
+                            className="w-6 h-6 object-contain"
+                            onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100/png?text=Team')}
+                          />
+                        )}
                       </div>
                     </div>
 
