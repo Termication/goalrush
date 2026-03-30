@@ -38,7 +38,7 @@ export function useTeamLogos() {
     fetchAndExtractLogos();
   }, []);
 
-  // SMARTER GETTER: Handles slight typos and missing "FC" / "CF"
+  // Handles slight typos and missing "FC" / "CF"
   const getLogo = (teamName: string) => {
     // 1. Check for exact match first
     if (logos[teamName]) return logos[teamName];
