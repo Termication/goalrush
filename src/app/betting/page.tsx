@@ -351,7 +351,7 @@ export default function BettingPage() {
           </div>
         </div>
 
-        {/* Bet Slip Mini */}
+        {/* To Do: Bet Slip Mini */}
         {betSlip.length > 0 && (
           <div className="mb-6 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-green-200 dark:border-green-800 flex items-center justify-between">
             <div className="flex items-center gap-2">
