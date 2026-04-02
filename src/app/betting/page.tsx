@@ -6,7 +6,7 @@ import { format, isAfter, subMinutes } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { 
   Loader2, Calendar, Trophy, Globe, TrendingUp, TrendingDown, 
-  PlusCircle, Search, Clock, Sparkles, X
+  PlusCircle, Search, Clock, Sparkles, X, Trash2
 } from 'lucide-react';
 
 import { useTeamLogos } from '@/components/hooks/useTeamLogos';
@@ -48,12 +48,9 @@ interface Match {
 // Helper function to map country names to flag emojis for International matches
 const getCountryFlag = (countryName: string) => {
   const flags: Record<string, string> = {
-    // South America
     'Argentina': '🇦🇷', 'Brazil': '🇧🇷', 'Uruguay': '🇺🇾', 'Colombia': '🇨🇴',
     'Chile': '🇨🇱', 'Peru': '🇵🇪', 'Ecuador': '🇪🇨', 'Paraguay': '🇵🇾',
     'Bolivia': '🇧🇴', 'Venezuela': '🇻🇪',
-
-    // Europe
     'France': '🇫🇷', 'England': '🏴', 'Spain': '🇪🇸', 'Germany': '🇩🇪',
     'Portugal': '🇵🇹', 'Italy': '🇮🇹', 'Netherlands': '🇳🇱', 'Belgium': '🇧🇪',
     'Croatia': '🇭🇷', 'Switzerland': '🇨🇭', 'Denmark': '🇩🇰', 'Sweden': '🇸🇪',
@@ -61,36 +58,23 @@ const getCountryFlag = (countryName: string) => {
     'Greece': '🇬🇷', 'Ukraine': '🇺🇦', 'Austria': '🇦🇹', 'Hungary': '🇭🇺',
     'Czech Republic': '🇨🇿', 'Slovakia': '🇸🇰', 'Romania': '🇷🇴',
     'Bulgaria': '🇧🇬', 'Finland': '🇫🇮', 'Iceland': '🇮🇸',
-
-    // Africa
     'South Africa': '🇿🇦', 'Nigeria': '🇳🇬', 'Ghana': '🇬🇭',
     'Senegal': '🇸🇳', 'Cameroon': '🇨🇲', 'Morocco': '🇲🇦',
     'Egypt': '🇪🇬', 'Algeria': '🇩🇿', 'Tunisia': '🇹🇳',
     'Ivory Coast': '🇨🇮', 'Mali': '🇲🇱',
-
-    // North America
     'USA': '🇺🇸', 'United States': '🇺🇸', 'Canada': '🇨🇦', 'Mexico': '🇲🇽',
     'Costa Rica': '🇨🇷', 'Panama': '🇵🇦',
-
-    // Asia
     'Japan': '🇯🇵', 'South Korea': '🇰🇷', 'China': '🇨🇳',
     'Saudi Arabia': '🇸🇦', 'Qatar': '🇶🇦', 'Iran': '🇮🇷',
     'India': '🇮🇳', 'UAE': '🇦🇪',
-
-    // Oceania
     'Australia': '🇦🇺', 'New Zealand': '🇳🇿',
-
-    // UK Nations
     'Wales': '🏴', 'Scotland': '🏴', 'Ireland': '🇮🇪'
   };
   
-  // Clean up the name for matching (e.g., handle "USA" vs "United States")
   const name = countryName.trim();
   return flags[name] || '🌍'; 
 };
 
-
-// Helper to check if match is live (within 1 hour of start)
 const isLiveMatch = (commenceTime: string) => {
   const matchTime = new Date(commenceTime);
   const now = new Date();
@@ -153,7 +137,6 @@ function useLiveOdds(initialMatches: Match[]) {
   return liveMatches;
 }
 
-// Odds component with motion animation
 const LiveOdd = ({ label, value, trend }: { label: string, value: number | string, trend?: 'up' | 'down' | 'neutral' }) => {
   const [highlight, setHighlight] = useState<'up' | 'down' | null>(null);
 
@@ -208,7 +191,6 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
   );
 };
 
-// Simple Snackbar component
 const Snackbar = ({ message, visible, onClose }: { message: string; visible: boolean; onClose: () => void }) => {
   useEffect(() => {
     if (visible) {
@@ -238,13 +220,14 @@ export default function BettingPage() {
   const [loading, setLoading] = useState(true);
   const [selectedSport, setSelectedSport] = useState('soccer_epl');
   const [searchTerm, setSearchTerm] = useState('');
-  const [betSlip, setBetSlip] = useState<{ matchId: string, selection: string, odds: number }[]>([]);
+  const [betSlip, setBetSlip] = useState<{ matchId: string, selection: string, odds: number, matchName: string }[]>([]);
   const [snackbar, setSnackbar] = useState<{ visible: boolean; message: string }>({ visible: false, message: '' });
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  
+  // Stake State for calculations
+  const [stake, setStake] = useState<number>(10);
 
   const liveMatches = useLiveOdds(rawMatches);
-  
-  // Initialize the team logos hook
   const { getLogo } = useTeamLogos();
 
   const fetchOdds = useCallback(async () => {
@@ -278,9 +261,18 @@ export default function BettingPage() {
     return { bookieName: bookie.title, outcomes: h2h.outcomes, lastUpdated: new Date() };
   };
 
-  const addToBetSlip = (matchId: string, selection: string, odds: number) => {
-    setBetSlip(prev => [...prev, { matchId, selection, odds }]);
+  const addToBetSlip = (matchId: string, matchName: string, selection: string, odds: number) => {
+    // Prevent duplicate additions of the exact same outcome
+    if (betSlip.some(bet => bet.matchId === matchId && bet.selection === selection)) {
+        setSnackbar({ visible: true, message: 'Already in bet slip' });
+        return;
+    }
+    setBetSlip(prev => [...prev, { matchId, matchName, selection, odds }]);
     setSnackbar({ visible: true, message: `Added: ${selection} @ ${odds.toFixed(2)}` });
+  };
+
+  const removeFromBetSlip = (indexToRemove: number) => {
+    setBetSlip(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
   const filteredMatches = liveMatches.filter(match => {
@@ -289,8 +281,11 @@ export default function BettingPage() {
            match.away_team.toLowerCase().includes(searchTerm.toLowerCase());
   });
   
-  // Determine if the current view is for an international tournament
   const isInternational = selectedSport === 'soccer_fifa_world_cup';
+
+  // Calculate Accumulator Totals
+  const totalOdds = betSlip.reduce((total, bet) => total * bet.odds, 1);
+  const potentialReturn = totalOdds * stake;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4 sm:px-6 lg:px-8">
@@ -317,7 +312,7 @@ export default function BettingPage() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                 </span>
                 Live Market Updates
-                <span className="text-xs text-gray-400">· Last updated {format(lastUpdated, 'HH:mm:ss')}</span>
+                <span className="text-xs text-gray-400">· {lastUpdated ? `Last updated ${format(lastUpdated, 'HH:mm:ss')}` : 'Connecting...'}</span>
               </p>
             </div>
           </div>
@@ -351,20 +346,82 @@ export default function BettingPage() {
           </div>
         </div>
 
-        {/* To Do: Bet Slip Mini */}
+        {/* Full Bet Slip Visualizer */}
         {betSlip.length > 0 && (
-          <div className="mb-6 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-green-200 dark:border-green-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium">{betSlip.length} selection(s) in bet slip</span>
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-green-200 dark:border-green-800 overflow-hidden"
+          >
+            <div className="p-4 bg-green-50 dark:bg-green-900/30 border-b border-green-100 dark:border-green-800/50 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <h3 className="font-bold text-gray-900 dark:text-white text-lg">Your Bet Slip ({betSlip.length})</h3>
+              </div>
+              <button 
+                onClick={() => setBetSlip([])} 
+                className="text-sm flex items-center gap-1 text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium transition-colors"
+              >
+                <Trash2 className="h-4 w-4" /> Clear All
+              </button>
             </div>
-            <button
-              onClick={() => setBetSlip([])}
-              className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              Clear
-            </button>
-          </div>
+            
+            {/* Selections List */}
+            <div className="p-4 space-y-3 max-h-64 overflow-y-auto">
+              {betSlip.map((bet, idx) => (
+                <div key={idx} className="flex justify-between items-center bg-gray-50 dark:bg-gray-900/50 p-3 rounded-xl border border-gray-100 dark:border-gray-700">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500 font-medium mb-0.5">{bet.matchName}</span>
+                    <span className="font-bold text-sm text-gray-900 dark:text-white">{bet.selection}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="font-black text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded-md">
+                      {bet.odds.toFixed(2)}
+                    </span>
+                    <button 
+                      onClick={() => removeFromBetSlip(idx)} 
+                      className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Calculation Footer */}
+            <div className="p-5 bg-gray-50 dark:bg-gray-900/80 border-t border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-6">
+              <div className="flex flex-wrap items-center gap-6 w-full sm:w-auto">
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Stake ($)</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={stake}
+                    onChange={(e) => setStake(Math.max(1, Number(e.target.value)))}
+                    className="w-24 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 font-bold focus:ring-2 focus:ring-green-500 outline-none shadow-sm"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Total Odds</span>
+                  <span className="font-black text-xl text-gray-900 dark:text-white">{totalOdds.toFixed(2)}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">Est. Return</span>
+                  <span className="font-black text-xl text-green-600 dark:text-green-400">${potentialReturn.toFixed(2)}</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSnackbar({ visible: true, message: `Successfully placed bet for $${stake.toFixed(2)}!` });
+                  setBetSlip([]);
+                }}
+                className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-xl font-black shadow-lg shadow-green-500/30 transition-all active:scale-95"
+              >
+                Place Bet
+              </button>
+            </div>
+          </motion.div>
         )}
 
         {/* Content */}
@@ -424,7 +481,7 @@ export default function BettingPage() {
                     </div>
                     <div className="flex items-center gap-1 text-xs text-gray-400" title={`Odds from ${oddsData.bookieName}`}>
                       <Clock className="h-3 w-3" />
-                      <span>{format(new Date(), 'HH:mm')}</span>
+                      <span>{lastUpdated ? format(lastUpdated, 'HH:mm') : '--:--'}</span>
                     </div>
                   </div>
 
@@ -432,7 +489,6 @@ export default function BettingPage() {
                   <div className="p-5">
                     <div className="flex justify-between items-center mb-6 gap-4">
                       
-                      {/* Home Team Logo / Flag */}
                       <div className="flex items-center gap-2 w-1/2">
                         {isInternational ? (
                           <span className="text-2xl">{getCountryFlag(match.home_team)}</span>
@@ -449,7 +505,6 @@ export default function BettingPage() {
                       
                       <span className="text-xs text-gray-400 font-bold shrink-0">VS</span>
                       
-                      {/* 🟢 Away Team Logo / Flag */}
                       <div className="flex items-center gap-2 w-1/2 justify-end">
                         <h3 className="font-bold text-gray-900 dark:text-white text-lg truncate">{match.away_team}</h3>
                         {isInternational ? (
@@ -466,20 +521,17 @@ export default function BettingPage() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 mb-4">
-                      <LiveOdd label="1" value={homeOutcome?.price || '-'} trend={homeOutcome?.trend} />
-                      <LiveOdd label="X" value={drawOutcome?.price || '-'} trend={drawOutcome?.trend} />
-                      <LiveOdd label="2" value={awayOutcome?.price || '-'} trend={awayOutcome?.trend} />
+                      {/* Note: Modified onClick handlers here to pass the team names correctly! */}
+                      <button onClick={() => homeOutcome && addToBetSlip(match.id, `${match.home_team} vs ${match.away_team}`, `${match.home_team} to win`, homeOutcome.price)} className="text-left">
+                        <LiveOdd label="1" value={homeOutcome?.price || '-'} trend={homeOutcome?.trend} />
+                      </button>
+                      <button onClick={() => drawOutcome && addToBetSlip(match.id, `${match.home_team} vs ${match.away_team}`, `Draw`, drawOutcome.price)} className="text-left">
+                        <LiveOdd label="X" value={drawOutcome?.price || '-'} trend={drawOutcome?.trend} />
+                      </button>
+                      <button onClick={() => awayOutcome && addToBetSlip(match.id, `${match.home_team} vs ${match.away_team}`, `${match.away_team} to win`, awayOutcome.price)} className="text-left">
+                        <LiveOdd label="2" value={awayOutcome?.price || '-'} trend={awayOutcome?.trend} />
+                      </button>
                     </div>
-
-                    <button
-                      onClick={() => {
-                        if (homeOutcome) addToBetSlip(match.id, `${match.home_team} to win`, homeOutcome.price);
-                      }}
-                      className="w-full mt-2 py-2 px-4 rounded-xl border border-green-200 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-900/20 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
-                    >
-                      <PlusCircle className="h-4 w-4" />
-                      Add to bet slip
-                    </button>
                   </div>
                 </motion.div>
               );
