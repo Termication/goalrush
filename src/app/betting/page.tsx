@@ -521,7 +521,6 @@ export default function BettingPage() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 mb-4">
-                      {/* Note: Modified onClick handlers here to pass the team names correctly! */}
                       <button onClick={() => homeOutcome && addToBetSlip(match.id, `${match.home_team} vs ${match.away_team}`, `${match.home_team} to win`, homeOutcome.price)} className="text-left">
                         <LiveOdd label="1" value={homeOutcome?.price || '-'} trend={homeOutcome?.trend} />
                       </button>
