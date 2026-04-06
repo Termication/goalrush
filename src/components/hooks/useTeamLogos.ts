@@ -35,7 +35,7 @@ const MANUAL_ALIASES: Record<string, string> = {
   "wolves": "wolverhampton",
   "nottm forest": "nottingham forest",
   "psv eindhoven": "psv",
-  "sporting cp": "sporting",
+  "sporting lisbon": "sporting",
   "benfica": "sl benfica",
   "porto": "fc porto",
 };
