@@ -40,6 +40,7 @@ const MANUAL_ALIASES: Record<string, string> = {
   "porto": "fc porto",
 };
 
+// Custom hook to fetch team logos from the standings API and provide a lookup function
 export function useTeamLogos() {
   const [logos, setLogos] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
