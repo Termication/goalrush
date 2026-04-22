@@ -16,6 +16,7 @@ interface Article {
   isFeatured?: boolean;
 }
 
+// This widget is designed to be used on the left side of the homepage, showing the top 5 trending articles.
 export default function LeftTrendingWidget() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
