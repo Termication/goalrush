@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal, MoveLeft, Tag } from 'lucide-react';
 
 
-import { RichTextEditor } from '@/components/common/RichTextEditor';
+import { RichTextEditor } from '@/components/inArticle/RichTextEditor';
 
 interface Article {
   _id: string;

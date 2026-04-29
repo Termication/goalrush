@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal, UploadCloud } from 'lucide-react';
-import { RichTextEditor } from '@/components/common/RichTextEditor';
+import { RichTextEditor } from '@/components/inArticle/RichTextEditor';
 
 export default function CreateArticlePage() {
   // --- AUTHENTICATION CHECK ---
