@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { RichTextEditor } from '@/components/common/RichTextEditor';
+import { RichTextEditor } from '@/components/inArticle/RichTextEditor';
 import ReplyArticle from '@/components/inArticle/reply';
 
 // --- TYPES ---
