@@ -53,6 +53,10 @@ export const RichTextEditor = ({ content, onChange }: { content: string, onChang
         
         content_style: `
                   body { font-family:Helvetica,Arial,sans-serif; font-size:14px } 
+                  h1 { font-size: 2.25rem; font-weight: 800; margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.2; }
+                  h2 { font-size: 1.875rem; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.3; }
+                  h3 { font-size: 1.5rem; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.4; }
+                  h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.4; }
                   img { border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 100%; height: auto; }
                   blockquote.model-quote { border-left: 4px solid #4f46e5; margin: 1.5em 0; padding: 0.5em 1em; background-color: #f1f5f9; border-radius: 4px; } 
                   blockquote.model-quote footer { margin-top: 1em; font-style: italic; text-align: right;
