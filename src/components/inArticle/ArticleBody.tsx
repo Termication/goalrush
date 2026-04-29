@@ -108,10 +108,10 @@ export default function ArticleBody({ body }: { body: string }) {
     <div className="prose dark:prose-invert max-w-none prose-lg 
 
       /* Heading Styles */
-      [&_h1]:text-4xl [&_h1]:font-extrabold [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:leading-tight [&_h1]:text-gray-900 dark:[&_h1]:text-gray-100
-      [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:leading-tight [&_h2]:text-gray-900 dark:[&_h2]:text-gray-100
-      [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:mb-4 [&_h3]:mt-8 [&_h3]:text-gray-900 dark:[&_h3]:text-gray-100
-      [&_h4]:text-xl [&_h4]:font-semibold [&_h4]:mb-4 [&_h4]:mt-8 [&_h4]:text-gray-900 dark:[&_h4]:text-gray-100
+      [&_h1]:text-4xl [&_h1]:font-extrabold [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:leading-tight [&_h1]:text-gray-100 dark:[&_h1]:text-gray-100
+      [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:leading-tight [&_h2]:text-gray-100 dark:[&_h2]:text-gray-100
+      [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:mb-4 [&_h3]:mt-8 [&_h3]:text-gray-100 dark:[&_h3]:text-gray-100
+      [&_h4]:text-xl [&_h4]:font-semibold [&_h4]:mb-4 [&_h4]:mt-8 [&_h4]:text-gray-100 dark:[&_h4]:text-gray-100
 
       /* General Styles */
       [&_blockquote]:border-l-4 
