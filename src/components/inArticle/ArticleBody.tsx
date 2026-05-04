@@ -131,6 +131,7 @@ export default function ArticleBody({ body }: { body: string }) {
       [&_th]:p-4 [&_th]:font-semibold [&_th]:text-blue-700 dark:[&_th]:text-blue-700 
       [&_th]:border-b dark:[&_th]:border-gray-800
       
+      /* selector to target all td elements inside the table, including those in thead/tbody */
       [&_td]:bg-gray-900 dark:[&_td]:bg-gray-900
       [&_td]:text-white dark:[&_td]:text-white
       [&_td]:p-4 [&_td]:border-b dark:[&_td]:border-gray-800
