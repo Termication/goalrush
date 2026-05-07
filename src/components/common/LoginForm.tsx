@@ -38,6 +38,7 @@ export default function LoginForm() {
     setIsLoading(false);
   };
 
+  // Render the login form
   return (
     <main className="flex items-center justify-center min-h-screen bg-slate-100 dark:bg-slate-900 p-4">
       <Card className="w-full max-w-sm">
