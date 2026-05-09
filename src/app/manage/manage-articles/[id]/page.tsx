@@ -141,6 +141,7 @@ export default function EditArticlePage() {
     return <main className="flex items-center justify-center min-h-screen">Loading article...</main>;
   }
 
+  // --- MAIN RENDER ---
   return (
     <main className="bg-slate-100 dark:bg-slate-900 min-h-screen p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
