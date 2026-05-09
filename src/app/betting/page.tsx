@@ -75,6 +75,7 @@ const getCountryFlag = (countryName: string) => {
   return flags[name] || '🌍'; 
 };
 
+// Helper function to determine if a match is currently live (within 1 hour before or after start time)
 const isLiveMatch = (commenceTime: string) => {
   const matchTime = new Date(commenceTime);
   const now = new Date();
@@ -148,6 +149,7 @@ const LiveOdd = ({ label, value, trend }: { label: string, value: number | strin
     }
   }, [value, trend]);
 
+  // Determine color based on trend
   return (
     <div
       title={highlight === 'up' ? 'Odds increased' : highlight === 'down' ? 'Odds decreased' : 'Current odds'}
