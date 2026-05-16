@@ -6,19 +6,33 @@
 
 ----
 
-## ✨ Features
+# ✨ Core Features
 
-- **Dynamic Homepage**: Displays a featured article and a grid of recent headlines, fetched directly from the database.
-- **Responsive Design**: A clean, modern UI that looks great on all devices, from mobile phones to desktop monitors.
-- **Individual Article Pages**: Dynamically generated pages for each news story using slugs for clean, SEO-friendly URLs.
-- **"Read Next" Suggestions**: Keeps users engaged by showing related articles at the bottom of each news page.
-- **Secure Admin Panel**: A protected route
-- **Rich Text Editor**: Component powered by TinyMCE for writing articles with formatting options like headings, lists, bold, and italics.
-- **Image Uploading**: Seamlessly upload featured images and images within the article body directly to Cloudinary.
-- **Skeleton Loading States**: Improves user experience by showing a content skeleton while data is being fetched.
-- **Email & Password Authentication**: A simple but secure login system for the admin panel.
+## 📰 Advanced Content Delivery
 
----
+    Threaded "Live" Articles: Articles support continuous timeline updates (similar to live match text commentary). Threaded articles are automatically prioritized on the homepage with a pulsing "Live Updates" badge.
+
+    Dynamic Homepage Routing: An algorithmic homepage that automatically highlights breaking news and filters the latest headlines based on publication dates and update statuses.
+
+    Smart "Read Next" Engine: Keeps users engaged by dynamically suggesting related articles based on category and tags at the bottom of every story.
+
+## 📈 SmartBet & Live Odds Integration
+
+    Real-Time Odds Tracking: Integrates with external football APIs to fetch live match data, standings, and fluctuating H2H (Head-to-Head) betting odds.
+
+    Accumulator Bet Slip: A fully functional, interactive bet slip that allows users to add selections, input a stake, and instantly calculate total odds and potential returns.
+
+    Dynamic Team Assets: Custom React hooks that intelligently fuzzy-match team names to automatically pull and render the correct club crests or international flags.
+
+## 🛡️ Secure Admin Panel & CMS
+
+    Protected Dashboard: Secured via NextAuth.js, allowing only authorized personnel to draft, edit, and delete content.
+
+    Rich Media Editor: Integrated TinyMCE editor customized with tailored CSS to ensure headings, quotes, and tables look identical in the editor and on the live site.
+
+    Cloudinary Integration: Seamless drag-and-drop image uploading for featured thumbnails and in-article assets.
+
+    On-the-Fly SEO Management: Manage Meta tags, JSON-LD structured data, and OpenGraph images directly from the admin dashboard.
 
 ## 🚀 Tech Stack
 
