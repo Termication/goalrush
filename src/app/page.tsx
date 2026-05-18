@@ -9,12 +9,15 @@ import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
 import RandomLeftTable from "@/components/home/RandomLeftTable"
 import RandomRightTable from "@/components/home/RandomRightTable"
+import WorldCupCountdown from "@/components/widgets/WorldCupCountdown"
 
 
 
 export default function Home() {
   return (
     <main className="w-full min-h-screen flex flex-col pt-0">
+
+
       <HomePage />
 
 
@@ -25,10 +28,16 @@ export default function Home() {
       {/* --- RANDOM RIGHT TABLE (Premier League or Bundesliga) --- */}
       <RandomRightTable />
       {/* ----------------------------- */}
+
+      {/* --- WORLD CUP COUNTDOWN --- */ }
+      <WorldCupCountdown />
+      {/* ----------------------------- */}
       
       {/* --- TRENDING ARTICLES --- */}
       <TrendingArticles />
       {/* ----------------------------- */}
+
+
       
       <RandomCategorySection />
 
