@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Trophy, CalendarClock } from 'lucide-react';
+import { CalendarClock } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
-// FIFA World Cup 2026 kicks off on June 11, 2026
-const WORLD_CUP_START = new Date('2026-06-11T00:00:00Z').getTime();
+// The estimated global kickoff time for the 2026 World Cup
+const WORLD_CUP_START = new Date('2026-06-11T19:00:00Z').getTime();
 
 export default function WorldCupCountdown() {
   const [timeLeft, setTimeLeft] = useState({
@@ -15,9 +16,18 @@ export default function WorldCupCountdown() {
     seconds: 0,
   });
   const [mounted, setMounted] = useState(false);
+  const [localKickoff, setLocalKickoff] = useState('');
 
   useEffect(() => {
     setMounted(true);
+    
+    // Safely generate the user's local time ONLY on the client to prevent hydration errors
+    const localTimeFormatted = new Intl.DateTimeFormat(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }).format(new Date(WORLD_CUP_START));
+    
+    setLocalKickoff(localTimeFormatted);
     
     const calculateTimeLeft = () => {
       const now = new Date().getTime();
@@ -39,7 +49,7 @@ export default function WorldCupCountdown() {
     return () => clearInterval(timer);
   }, []);
 
-  // Prevent hydration mismatch by not rendering the numbers until the client mounts
+  // Prevent hydration mismatch by not rendering the component until the client mounts
   if (!mounted) return null;
 
   return (
@@ -54,18 +64,26 @@ export default function WorldCupCountdown() {
         {/* Subtle background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-amber-500/5 blur-3xl pointer-events-none" />
 
-        {/* Left Side: Title & Icon */}
+        {/* Left Side: Logo & Title */}
         <div className="flex items-center gap-4 z-10 text-center md:text-left">
-          <div className="h-14 w-14 rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0">
-            <Trophy className="h-7 w-7 text-white" />
+          
+          {/* Custom Logo Image with a soft backlight */}
+          <div className="relative h-16 w-16 shrink-0 drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]">
+            <Image 
+              src="/world-cup.png" 
+              alt="FIFA World Cup 2026 Logo" 
+              fill 
+              className="object-contain" 
+            />
           </div>
+
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2 justify-center md:justify-start">
               FIFA World Cup 2026
             </h2>
             <p className="text-sm text-gray-400 font-medium flex items-center gap-1.5 justify-center md:justify-start mt-1">
-              <CalendarClock className="w-4 h-4" /> 
-              North America
+              <CalendarClock className="w-4 h-4 text-amber-500" /> 
+              {localKickoff}
             </p>
           </div>
         </div>
