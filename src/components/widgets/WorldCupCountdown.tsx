@@ -57,10 +57,9 @@ export default function WorldCupCountdown() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="w-full max-w-7xl mx-auto mb-10 overflow-hidden"
+      className="-mx-4 sm:mx-auto max-w-7xl mb-10 overflow-hidden"
     >
-     <div className="relative bg-gradient-to-r from-gray-900 via-[#1a1c29] to-gray-900 border border-gray-800 shadow-2xl rounded-2xl p-4 py-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
-        
+    <div className="relative bg-gradient-to-r from-gray-900 via-[#1a1c29] to-gray-900 border-y sm:border border-x-0 sm:border-x border-gray-800 shadow-2xl rounded-none sm:rounded-2xl p-4 py-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
         {/* Subtle background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-amber-500/5 blur-3xl pointer-events-none" />
 
@@ -107,7 +106,7 @@ export default function WorldCupCountdown() {
 // Micro-component for each time unit block
 function TimeUnit({ value, label, highlight = false }: { value: number; label: string; highlight?: boolean }) {
   return (
-    <div className="flex flex-col items-center min-w-[50px] sm:min-w-[70px]">
+    <div className="flex flex-col items-center min-w-[60px] sm:min-w-[70px]">
       <div className={`text-2xl sm:text-4xl font-black font-poppins tabular-nums tracking-tight ${highlight ? 'text-amber-500' : 'text-gray-100'}`}>
         {value.toString().padStart(2, '0')}
       </div>
