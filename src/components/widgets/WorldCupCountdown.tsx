@@ -5,7 +5,7 @@ import { CalendarClock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-// The estimated global kickoff time for the 2026 World Cup
+// The kickoff time for the 2026 World Cup
 const WORLD_CUP_START = new Date('2026-06-11T19:00:00Z').getTime();
 
 export default function WorldCupCountdown() {
