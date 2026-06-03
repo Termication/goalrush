@@ -41,8 +41,8 @@ export default function LeftTrendingWidget() {
   }, []);
 
   if (loading) return null; 
-  if (articles.length === 0) return null;
-
+  if
+  // No articles to show, we can choose to render nothing or a placeholder message
   return (
     <aside 
       className={cn(
