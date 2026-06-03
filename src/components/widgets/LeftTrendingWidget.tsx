@@ -43,6 +43,8 @@ export default function LeftTrendingWidget() {
   if (loading) return null; 
   if (articles.length === 0) return null;
 
+
+  // The widget is hidden on smaller screens and only appears on xl and above. It is fixed positioned to stay in view as the user scrolls.
   return (
     <aside 
       className={cn(

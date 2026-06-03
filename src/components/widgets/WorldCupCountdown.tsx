@@ -52,6 +52,7 @@ export default function WorldCupCountdown() {
   // Prevent hydration mismatch by not rendering the component until the client mounts
   if (!mounted) return null;
 
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
