@@ -55,12 +55,14 @@ export default function Ligue1Table() {
 
   return (
     <div 
-      className={`hidden 2xl:block fixed right-0 top-20 w-64 border border-gray-300 bg-white shadow-lg rounded-l-md z-40 transition-all duration-500 group ${
+
+      className={`hidden 2xl:block fixed right-0 top-20 w-64 border border-gray-300 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white shadow-lg rounded-l-md z-40 transition-all duration-500 group ${
         isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10 pointer-events-none'
       }`}
     >
 
-      <div className="bg-[#091c3e] text-white p-2 border-b border-blue-900">
+  
+      <div className="bg-[#091c3e] text-white p-2 border-b border-blue-900 dark:border-gray-800">
         <h3 className="text-sm font-bold flex items-center gap-2">
             <Image
                 src="/more_graphics/ligue1-logo.png"
@@ -79,18 +81,26 @@ export default function Ligue1Table() {
         className="max-h-[600px] overflow-y-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         <table className="w-full border-collapse text-xs">
-          <thead className="bg-gray-100 sticky top-0 z-10">
-            <tr className="border-b border-gray-200 text-gray-500">
+          {/* Dark mode background for sticky header */}
+          <thead className="bg-gray-100 dark:bg-gray-900 sticky top-0 z-10">
+            <tr className="border-b border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400">
               <th className="text-center p-2 w-8">#</th>
               <th className="text-left p-2">Team</th>
-              <th className="text-center p-2 w-10 text-black font-bold">Pts</th>
+              <th className="text-center p-2 w-10 text-black dark:text-white font-bold">Pts</th>
             </tr>
           </thead>
           <tbody>
             {standings.map((team) => (
-              <tr key={team.rank} className="border-b border-gray-100 hover:bg-gray-50">
+              // Hover states and borders for dark mode rows
+              <tr key={team.rank} className="border-b border-gray-100 dark:border-gray-800/60 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
 
-                <td className={`p-2 text-center font-medium ${team.rank <= 4 ? 'text-blue-600 font-bold' : (team.rank >= 16 ? 'text-red-600' : 'text-gray-500')}`}>
+                <td className={`p-2 text-center font-medium ${
+                  team.rank <= 4 
+                    ? 'text-blue-600 dark:text-blue-400 font-bold' // 🟢 Lighter blue for dark mode
+                    : (team.rank >= 16 
+                        ? 'text-red-600 dark:text-red-400' // 🟢 Lighter red for dark mode
+                        : 'text-gray-500 dark:text-gray-400')
+                }`}>
                     {team.rank}
                 </td>
                 <td className="p-2 flex items-center gap-2">
@@ -103,7 +113,8 @@ export default function Ligue1Table() {
                     {team.team.name}
                   </span>
                 </td>
-                <td className="p-2 text-center font-bold text-gray-900">
+
+                <td className="p-2 text-center font-bold text-gray-900 dark:text-white">
                   {team.points}
                 </td>
               </tr>
@@ -114,7 +125,8 @@ export default function Ligue1Table() {
 
       <button 
         onClick={scrollTable}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#091c3e] text-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#06142e]"
+    
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#091c3e] text-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#06142e] dark:hover:bg-[#030a17]"
       >
         <ChevronDown className="h-4 w-4" />
       </button>

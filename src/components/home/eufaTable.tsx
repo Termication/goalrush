@@ -53,11 +53,13 @@ export default function UefaTable() {
 
   return (
     <div 
-      className={`hidden 2xl:block fixed left-0 top-20 w-64 border border-gray-300 bg-white shadow-lg rounded-r-md z-40 transition-all duration-500 group ${
+
+      className={`hidden 2xl:block fixed left-0 top-20 w-64 border border-gray-300 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white shadow-lg rounded-r-md z-40 transition-all duration-500 group ${
         isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10 pointer-events-none'
       }`}
     >
-      <div className="bg-[#1e3c72] text-white p-2 border-b border-blue-800">
+
+      <div className="bg-[#1e3c72] text-white p-2 border-b border-blue-800 dark:border-gray-800">
         <h3 className="text-sm font-bold flex items-center gap-2">
             <Image
                 src="/more_graphics/uefa-champions-league-logo.png"
@@ -78,17 +80,24 @@ export default function UefaTable() {
         className="max-h-[600px] overflow-y-auto relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         <table className="w-full border-collapse text-xs">
-          <thead className="bg-gray-100 sticky top-0 z-10">
-             <tr className="border-b border-gray-200 text-gray-500">
+          {/* Dark mode background for sticky header */}
+          <thead className="bg-gray-100 dark:bg-gray-900 sticky top-0 z-10">
+             <tr className="border-b border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400">
                 <th className="p-2 w-8 text-center">#</th>
                 <th className="p-2 text-left">Team</th>
-                <th className="p-2 w-8 text-center font-bold text-black">Pts</th>
+                <th className="p-2 w-8 text-center font-bold text-black dark:text-white">Pts</th>
              </tr>
           </thead>
           <tbody>
             {teams.map((team) => (
-              <tr key={team.rank} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className={`p-2 text-center font-medium ${team.rank <= 8 ? 'text-green-600 font-bold' : 'text-gray-500'}`}>
+              // Hover states and borders for dark mode rows
+              <tr key={team.rank} className="border-b border-gray-100 dark:border-gray-800/60 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+
+                <td className={`p-2 text-center font-medium ${
+                  team.rank <= 8 
+                    ? 'text-green-600 dark:text-green-400 font-bold' 
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}>
                     {team.rank}
                 </td>
                 <td className="p-2 flex items-center gap-2">
@@ -97,7 +106,10 @@ export default function UefaTable() {
                     {team.team.name}
                   </span>
                 </td>
-                <td className="p-2 text-center font-bold text-gray-900">{team.points}</td>
+
+                <td className="p-2 text-center font-bold text-gray-900 dark:text-white">
+                  {team.points}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -106,7 +118,8 @@ export default function UefaTable() {
 
       <button 
         onClick={scrollTable}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-blue-700"
+
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-blue-700 dark:hover:bg-blue-800"
       >
         <ChevronDown className="h-4 w-4" />
       </button>
