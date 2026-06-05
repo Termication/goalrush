@@ -15,7 +15,7 @@ import WorldCupCountdown from "@/components/widgets/WorldCupCountdown"
 
 export default function Home() {
   return (
-    <main className="w-full min-h-screen flex flex-col pt-0">
+    <main className="w-full min-h-screen flex flex-col pt-0 bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white transition-colors duration-300">
 
 
       <HomePage />
