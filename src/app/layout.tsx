@@ -9,6 +9,7 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import OrganizationJsonLd from "@/components/seo/OrganizationJsonLd";
 import WebSiteJsonLd from "@/components/seo/WebSiteJsonLd";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -72,7 +73,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="light">
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-neutral-100 via-neutral-200 to-white`}
       >        
@@ -90,12 +91,20 @@ export default function RootLayout({
         <WebSiteJsonLd />
         
         <NextAuthProvider>
-          <Navbar />
-          <Toaster />
-          {children}
-          <Footer />
-          <Analytics />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+              <Navbar />
+              <Toaster />
+              {children}
+              <Footer />
+              <Analytics />
+          </ThemeProvider>
         </NextAuthProvider>
+          
       </body>
     </html>
   );
