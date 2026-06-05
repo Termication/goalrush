@@ -195,7 +195,7 @@ if (!articles || articles.length === 0) return null;
             )}
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors duration-300">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-primary transition-colors duration-300">
             {featured.title}
           </h1>
           <p className="text-lg text-muted-foreground mb-6">{featured.summary}</p>
