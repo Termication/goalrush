@@ -96,9 +96,9 @@ export default function Ligue1Table() {
 
                 <td className={`p-2 text-center font-medium ${
                   team.rank <= 4 
-                    ? 'text-blue-600 dark:text-blue-400 font-bold' // 🟢 Lighter blue for dark mode
+                    ? 'text-blue-600 dark:text-blue-400 font-bold'
                     : (team.rank >= 16 
-                        ? 'text-red-600 dark:text-red-400' // 🟢 Lighter red for dark mode
+                        ? 'text-red-600 dark:text-red-400'
                         : 'text-gray-500 dark:text-gray-400')
                 }`}>
                     {team.rank}
