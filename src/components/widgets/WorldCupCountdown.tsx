@@ -43,7 +43,7 @@ export default function WorldCupCountdown() {
       }
     };
 
-    calculateTimeLeft(); // Initial call
+    calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
@@ -61,13 +61,13 @@ export default function WorldCupCountdown() {
       className="-mx-4 sm:mx-auto max-w-7xl mb-10 overflow-hidden"
     >
     <div className="relative bg-gradient-to-r from-gray-900 via-[#1a1c29] to-gray-900 border-y sm:border border-x-0 sm:border-x border-gray-800 shadow-2xl rounded-none sm:rounded-2xl p-4 py-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
-        {/* Subtle background glow */}
+
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-amber-500/5 blur-3xl pointer-events-none" />
 
-        {/* Left Side: Logo & Title */}
+     
         <div className="flex items-center gap-4 z-10 text-center md:text-left">
           
-          {/* Custom Logo Image with a soft backlight */}
+     
           <div className="relative h-16 w-16 shrink-0 drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]">
             <Image 
               src="/world-cup.png" 
