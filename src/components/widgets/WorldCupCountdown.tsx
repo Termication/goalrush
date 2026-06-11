@@ -104,7 +104,6 @@ export default function WorldCupCountdown() {
   );
 }
 
-// Micro-component for each time unit block
 function TimeUnit({ value, label, highlight = false }: { value: number; label: string; highlight?: boolean }) {
   return (
     <div className="flex flex-col items-center min-w-[60px] sm:min-w-[70px]">

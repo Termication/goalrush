@@ -28,10 +28,6 @@ export default function Home() {
       {/* --- RANDOM RIGHT TABLE (Premier League or Bundesliga) --- */}
       <RandomRightTable />
       {/* ----------------------------- */}
-
-      {/* --- WORLD CUP COUNTDOWN --- */ }
-      <WorldCupCountdown />
-      {/* ----------------------------- */}
       
       {/* --- TRENDING ARTICLES --- */}
       <TrendingArticles />
