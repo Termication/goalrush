@@ -9,7 +9,7 @@ import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
 import RandomLeftTable from "@/components/home/RandomLeftTable"
 import RandomRightTable from "@/components/home/RandomRightTable"
-import WorldCupCountdown from "@/components/widgets/WorldCupCountdown"
+
 
 
 
@@ -19,7 +19,6 @@ export default function Home() {
 
 
       <HomePage />
-
 
       {/* --- RANDOM LEFT TABLE (La Liga or UEFA) --- */}
       <RandomLeftTable />
