@@ -47,7 +47,7 @@
 - **RichEditorThis**: (RichTextEditor component powered by TinyMCE.)
 - **Deployment**: [Vercel](https://goal-rush.live)
 
----
+------
 
 ## 📄 License
 
