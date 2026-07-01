@@ -49,7 +49,7 @@ export default function WorldCupCountdown() {
     return () => clearInterval(timer);
   }, []);
 
-  // Prevent hydration mismatch by not rendering the component until the client mounts
+  
   if (!mounted) return null;
 
 
