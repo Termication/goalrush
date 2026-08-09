@@ -8,6 +8,7 @@ export interface IArticle extends Document {
   body: string;
   imageUrl: string;
   category: string;
+  authorName?: string;
   isFeatured: boolean;
   slug: string;
   seoTags?: string[];
@@ -42,6 +43,12 @@ const ArticleSchema: Schema = new Schema({
   category: {
     type: String,
     required: [true, 'Please provide a category for the article.'],
+    trim: true,
+  },
+  authorName: {
+    type: String,
+    default: 'Editorial Staff',
+    required: [true, 'Please provide an author name for the article.'],
     trim: true,
   },
   isFeatured: {
