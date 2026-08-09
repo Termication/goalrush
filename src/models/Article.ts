@@ -8,7 +8,7 @@ export interface IArticle extends Document {
   body: string;
   imageUrl: string;
   category: string;
-  authorName?: string;
+  author: Schema.Types.ObjectId;
   isFeatured: boolean;
   slug: string;
   seoTags?: string[];
@@ -45,12 +45,11 @@ const ArticleSchema: Schema = new Schema({
     required: [true, 'Please provide a category for the article.'],
     trim: true,
   },
-  authorName: {
-    type: String,
-    default: 'Editorial Staff',
-    required: [true, 'Please provide an author name for the article.'],
-    trim: true,
-  },
+  author: {
+      type: Schema.Types.ObjectId,
+      ref: 'Author',
+      required: true,
+    },
   isFeatured: {
     type: Boolean,
     default: false,
