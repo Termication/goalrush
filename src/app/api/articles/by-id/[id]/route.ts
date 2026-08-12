@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
+import Author from '@/models/Author';
 
 export async function GET(
   request: Request,
@@ -9,7 +10,9 @@ export async function GET(
   const { id } = await params;
 
   await dbConnect();
-  const article = await Article.findById(id);
+  const _ensureAuthor = Author;
+
+  const article = await Article.findById(id).populate('author');
   if (!article) {
     return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
   }
@@ -76,6 +79,7 @@ export async function PUT(
   if ('body' in reqBody) article.body = reqBody.body;
   if ('imageUrl' in reqBody) article.imageUrl = reqBody.imageUrl;
   if ('category' in reqBody) article.category = reqBody.category;
+  if ('author' in reqBody) article.author = reqBody.author;
   if ('isFeatured' in reqBody) article.isFeatured = reqBody.isFeatured;
   if ('isTrending' in reqBody) article.isTrending = reqBody.isTrending;
   if ('imageAlt' in reqBody) article.imageAlt = reqBody.imageAlt;
@@ -100,6 +104,7 @@ export async function PUT(
   }
 
   await article.save();
+  await article.populate('author');
   return NextResponse.json({ success: true, article });
 }
 
