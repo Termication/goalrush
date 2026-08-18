@@ -8,6 +8,7 @@ export interface IAuthor extends Document {
   avatarUrl?: string;
   role?: string;
   email?: string;
+  user?: Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,6 +40,10 @@ const AuthorSchema: Schema = new Schema(
       type: String,
       default: null,
     },
+    user: { 
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      default: null },
   },
   { timestamps: true }
 );

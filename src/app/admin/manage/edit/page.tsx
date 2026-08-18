@@ -8,7 +8,18 @@ import { toast } from 'react-hot-toast';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trash2, Pencil, Tag, Clock, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  Trash2, 
+  Pencil, 
+  Tag, 
+  Clock, 
+  ChevronDown, 
+  ChevronUp, 
+  ChevronLeft, 
+  ChevronRight, 
+  Users, 
+  PlusCircle 
+} from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -99,7 +110,7 @@ export default function AdminArticlesPage() {
         const newTotalItems = articles.length - 1;
         const newTotalPages = Math.ceil(newTotalItems / ITEMS_PER_PAGE);
         if (currentPage > newTotalPages && newTotalPages > 0) {
-            setCurrentPage(newTotalPages);
+          setCurrentPage(newTotalPages);
         }
       } else {
         toast.error(json.error || 'Failed to delete article');
@@ -179,6 +190,7 @@ export default function AdminArticlesPage() {
   if (status === 'unauthenticated') redirect('/login');
   if (loading) return <p className="text-center mt-10">Loading articles...</p>;
 
+  const userRole = (session?.user as any)?.role;
 
   // Pagination Calculation Logic
   const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
@@ -194,8 +206,31 @@ export default function AdminArticlesPage() {
   };
 
   return (
-    <main className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-6">Manage Articles</h1>
+    <main className="p-6 max-w-6xl mx-auto space-y-6">
+      {/* TOP HEADER & NAVIGATION BAR */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-800">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Article Management</h1>
+          <p className="text-sm text-muted-foreground">Review, edit, publish updates, and manage published stories.</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Manage Staff Shortcut (Super Admin Only) */}
+          {userRole === 'admin' && (
+            <Link href="/admin/manage-staff">
+              <Button variant="outline" className="border-green-600/30 text-green-700 hover:bg-green-50 dark:hover:bg-green-950/30">
+                <Users className="w-4 h-4 mr-2 text-green-600" /> Manage Staff
+              </Button>
+            </Link>
+          )}
+
+          <Link href="/admin/create-article">
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+              <PlusCircle className="w-4 h-4 mr-2" /> New Article
+            </Button>
+          </Link>
+        </div>
+      </div>
 
       <div className="grid gap-6">
         {currentArticles.map((article) => (
@@ -275,7 +310,6 @@ export default function AdminArticlesPage() {
                     />
                     <div className="flex justify-end mt-4">
                       <Button onClick={async () => {
-                         // Note: Add SEO logic here if needed
                          toast.success("SEO update simulated.");
                       }}>Save Tags</Button>
                     </div>
@@ -311,7 +345,6 @@ export default function AdminArticlesPage() {
                               })}
                             </span>
 
-                            {/* Thread Action Buttons */}
                             <div className="flex items-center gap-2">
                               {editingUpdateId === update._id ? (
                                 <>
