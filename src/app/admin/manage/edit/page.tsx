@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import LogoutButton from '@/components/common/LogoutButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Trash2, 
@@ -230,6 +231,9 @@ export default function AdminArticlesPage() {
             </Button>
           </Link>
         </div>
+
+        {/* 👈 Logout Button */}
+        <LogoutButton variant="ghost" className="text-slate-500 hover:text-red-600" />
       </div>
 
       <div className="grid gap-6">
