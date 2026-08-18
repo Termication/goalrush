@@ -16,6 +16,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const error = searchParams?.get('error');
 
@@ -25,14 +26,20 @@ export default function LoginForm() {
 
     const result = await signIn('credentials', {
       redirect: false,
-      email,
-      password,
+      email: email.trim(),
+      password: password,
     });
 
     if (result?.error) {
+      setLoginError('Not Authorized User');
+      setIsLoading(false);
+    }
+    else if (result?.ok) {
       router.refresh();
-    } else {
       router.push('/admin/create-article');
+
+    } else {
+      setIsLoading(false);
     }
 
     setIsLoading(false);

@@ -1,5 +1,9 @@
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import dbConnect from "@/lib/dbConnect";
+import User from "@/models/User";
+import Author from "@/models/Author";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -7,27 +11,62 @@ export const authOptions: AuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const adminEmail = process.env.ADMIN_EMAIL;
-        const adminPassword = process.env.ADMIN_PASSWORD;
-
-        if (!adminEmail || !adminPassword) {
-          console.error("Admin credentials are not set.");
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        if (credentials?.email === adminEmail && credentials?.password === adminPassword) {
-          return { id: "1", name: "Admin User", email: adminEmail };
-        } else {
+        await dbConnect();
+
+        const cleanEmail = credentials.email.trim().toLowerCase();
+        const cleanPassword = credentials.password.trim();
+
+        const user = await User.findOne({ email: cleanEmail })
+          .select("+passwordHash")
+          .populate("author");
+
+        if (!user) {
           return null;
         }
-      }
-    })
+
+        const isValid = await bcrypt.compare(cleanPassword, user.passwordHash);
+
+        if (!isValid) {
+          return null;
+        }
+
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.author ? (user.author as any).name : "Admin User",
+          authorId: user.author ? (user.author as any)._id.toString() : null,
+          role: user.role,
+        };
+      },
+    }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.authorId = (user as any).authorId;
+        token.role = (user as any).role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).id = token.id;
+        (session.user as any).authorId = token.authorId;
+        (session.user as any).role = token.role;
+      }
+      return session;
+    },
+  },
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
   session: {
     strategy: "jwt",

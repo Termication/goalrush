@@ -50,7 +50,6 @@ export default function CreateArticlePage() {
     setFormData(prev => ({ ...prev, isTrending: Boolean(checked) }));
   };
 
-  
   // --- FEATURED IMAGE UPLOAD ---
   const handleFeaturedImageUpload = async (file: File) => {
     const uploadFormData = new FormData();
@@ -84,20 +83,34 @@ export default function CreateArticlePage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     if (!formData.imageUrl) {
-        setError("Please upload a featured image before publishing.");
-        return;
+      setError("Please upload a featured image before publishing.");
+      return;
     }
+
+    // Extract logged-in author ID from NextAuth session
+    const authorId = (session?.user as any)?.authorId;
+    if (!authorId) {
+      setError("Your account does not have an associated Author profile. Please re-login or run seed.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     setSuccess(null);
 
-    // Prepare the data to send
+    // Prepare the payload including author reference
+    const payload = {
+      ...formData,
+      author: authorId,
+    };
+
     try {
       const response = await fetch('/api/articles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
@@ -120,9 +133,9 @@ export default function CreateArticlePage() {
   // --- REDIRECTION LOGIC ---
   if (status === 'loading') {
     return (
-        <main className="flex items-center justify-center min-h-screen">
-            <p>Loading session...</p>
-        </main>
+      <main className="flex items-center justify-center min-h-screen">
+        <p>Loading session...</p>
+      </main>
     );
   }
 
@@ -130,7 +143,6 @@ export default function CreateArticlePage() {
     redirect('/login');
   }
 
-  // Render the form only if authenticated
   return (
     <main className="bg-slate-100 dark:bg-slate-900 min-h-screen p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
@@ -161,7 +173,7 @@ export default function CreateArticlePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="featuredImage">Featured Image</Label>
-                   <input
+                  <input
                     ref={featuredImageRef}
                     type="file"
                     accept="image/*"
@@ -201,7 +213,6 @@ export default function CreateArticlePage() {
                   Is this article trending?
                 </Label>
               </div>
-
 
               {success && (
                 <Alert variant="default">
