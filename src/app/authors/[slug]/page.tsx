@@ -14,16 +14,19 @@ interface AuthorPageProps {
 export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
   const { slug } = await params;
   await dbConnect();
+  
+  // Ensure schema registration
+  const _ = Author;
   const author = await Author.findOne({ slug }).lean() as IAuthor | null;
 
-  if (!author) return { title: 'Author Not Found' };
+  if (!author) return { title: 'Author Not Found | GoalRush' };
 
   return {
     title: `${author.name} - ${author.role || 'Journalist'} | GoalRush`,
     description: author.bio || `Read articles written by ${author.name} on GoalRush.`,
     openGraph: {
-      title: author.name,
-      description: author.bio,
+      title: `${author.name} - GoalRush`,
+      description: author.bio || `Read articles by ${author.name}`,
       images: author.avatarUrl ? [{ url: author.avatarUrl }] : [],
     },
   };
@@ -34,13 +37,15 @@ export default async function AuthorProfilePage({ params }: AuthorPageProps) {
   await dbConnect();
 
   // 1. Fetch Author Details
-  const author = await Author.findOne({ slug }).lean() as IAuthor | null;
+  const author = await Author.findOne({ slug }).lean() as any;
   if (!author) notFound();
 
   // 2. Fetch All Articles Written by This Author
-  const articles = await Article.find({ author: author._id })
+  const rawArticles = await Article.find({ author: author._id })
     .sort({ createdAt: -1 })
-    .lean() as IArticle[];
+    .lean();
+
+  const articles = JSON.parse(JSON.stringify(rawArticles)) as IArticle[];
 
   // 3. Structured Data for Google News (Person Schema)
   const jsonLd = {
@@ -48,8 +53,8 @@ export default async function AuthorProfilePage({ params }: AuthorPageProps) {
     '@type': 'Person',
     name: author.name,
     jobTitle: author.role || 'Writer',
-    description: author.bio,
-    image: author.avatarUrl,
+    description: author.bio || '',
+    image: author.avatarUrl || '',
     worksFor: {
       '@type': 'NewsMediaOrganization',
       name: 'GoalRush',
@@ -74,19 +79,37 @@ export default async function AuthorProfilePage({ params }: AuthorPageProps) {
                 alt={author.name}
                 fill
                 className="object-cover"
+                sizes="112px"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-slate-400">
-                {author.name.charAt(0)}
+                {author.name?.charAt(0) || 'A'}
               </div>
             )}
           </div>
 
           <div className="space-y-3 text-center sm:text-left flex-1">
             <div>
-              <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                {author.name}
-              </h1>
+              
+              {(() => {
+                const parts = author.name.trim().split(' ');
+                const firstName = parts[0];
+                const lastName = parts.slice(1).join(' ');
+
+                return (
+                  <h1 className="text-3xl tracking-tight">
+                    <span className="font-black text-slate-900 dark:text-white">
+                      {firstName}
+                    </span>{' '}
+                    {lastName && (
+                      <span className="font-light text-slate-500 dark:text-slate-400">
+                        {lastName}
+                      </span>
+                    )}
+                  </h1>
+                );
+              })()}
+
               <p className="text-sm font-semibold text-green-600 dark:text-green-400 mt-1">
                 {author.role || 'Staff Writer'}
               </p>
@@ -116,19 +139,26 @@ export default async function AuthorProfilePage({ params }: AuthorPageProps) {
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {articles.map((article) => (
+              {articles.map((article: any) => (
                 <Link
-                  key={article._id.toString()}
+                  key={String(article._id)}
                   href={`/news/${article.slug}`}
                   className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all flex flex-col"
                 >
                   <div className="relative h-48 w-full bg-slate-100 dark:bg-slate-800">
-                    <Image
-                      src={article.imageUrl}
-                      alt={article.imageAlt || article.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                    {article.imageUrl ? (
+                      <Image
+                        src={article.imageUrl}
+                        alt={article.imageAlt || article.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xs text-slate-400 font-medium">
+                        GoalRush News
+                      </div>
+                    )}
                     <span className="absolute top-3 left-3 bg-green-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
                       {article.category}
                     </span>
