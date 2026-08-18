@@ -90,9 +90,26 @@ export default async function AuthorProfilePage({ params }: AuthorPageProps) {
 
           <div className="space-y-3 text-center sm:text-left flex-1">
             <div>
-              <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                {author.name}
-              </h1>
+              
+              {(() => {
+                const parts = author.name.trim().split(' ');
+                const firstName = parts[0];
+                const lastName = parts.slice(1).join(' ');
+
+                return (
+                  <h1 className="text-3xl tracking-tight">
+                    <span className="font-black text-slate-900 dark:text-white">
+                      {firstName}
+                    </span>{' '}
+                    {lastName && (
+                      <span className="font-light text-slate-500 dark:text-slate-400">
+                        {lastName}
+                      </span>
+                    )}
+                  </h1>
+                );
+              })()}
+
               <p className="text-sm font-semibold text-green-600 dark:text-green-400 mt-1">
                 {author.role || 'Staff Writer'}
               </p>
