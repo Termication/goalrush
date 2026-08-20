@@ -25,6 +25,7 @@ export default function EditArticlePage() {
     imageUrl: '',
     category: '',
     isFeatured: false,
+    author: '',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -43,8 +44,8 @@ export default function EditArticlePage() {
         const res = await fetch(`/api/articles/by-id/${id}`);
         if (!res.ok) throw new Error('Failed to fetch article');
         const json = await res.json();
-        const { title, summary, body, imageUrl, category, isFeatured } = json.article;
-        setFormData({ title, summary, body, imageUrl, category, isFeatured });
+        const { title, summary, body, imageUrl, category, isFeatured, author } = json.article;
+        setFormData({ title, summary, body, imageUrl, category, isFeatured, author });
       } catch (err: any) {
         setError(err.message || 'Error loading article data.');
       } finally {
