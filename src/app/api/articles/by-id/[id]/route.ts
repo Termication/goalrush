@@ -88,13 +88,30 @@ export async function PUT(
     if ('imageAlt' in reqBody) article.imageAlt = reqBody.imageAlt;
     if ('email' in reqBody) article.email = reqBody.email;
 
-    // Preserve/Assign Author fallback to satisfy Mongoose validation
-    if (reqBody.author) {
-          article.author = reqBody.author;
+    // Ensure author is a valid non-empty string or fallback
+        const incomingAuthor = typeof reqBody.author === 'string' && reqBody.author.trim() !== '' 
+          ? reqBody.author.trim() 
+          : null;
+
+        if (incomingAuthor) {
+          article.author = incomingAuthor;
         } else if (!article.author) {
+          // Fallback 1: NextAuth token authorId
           const sessionAuthorId = (session.user as any)?.authorId;
+          
           if (sessionAuthorId) {
             article.author = sessionAuthorId;
+          } else {
+            // Fallback 2: Look up User in DB directly
+            const dbUser = await User.findOne({ email: session.user?.email });
+            if (dbUser?.author) {
+              article.author = dbUser.author;
+            } else {
+              return NextResponse.json(
+                { success: false, error: 'No valid author profile linked to this user account.' },
+                { status: 400 }
+              );
+            }
           }
         }
 
