@@ -41,14 +41,15 @@ export async function PUT(
 
     const reqBody = await request.json();
 
+    // 1. Fetch document WITHOUT population to ensure fields remain raw ObjectIds
     const article = await Article.findById(id);
     if (!article) {
       return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
     }
 
-    // 1. EDIT EXISTING THREAD UPDATE
+    // 2. Handle Live Thread Update Edit
     if ('editThreadUpdate' in reqBody && reqBody.editThreadUpdate?.id) {
-      const threadToEdit = article.updates.id(reqBody.editThreadUpdate.id);
+      const threadToEdit = article.updates?.id(reqBody.editThreadUpdate.id);
 
       if (!threadToEdit) {
         return NextResponse.json({ success: false, error: 'Thread update not found in database' }, { status: 404 });
@@ -56,11 +57,10 @@ export async function PUT(
 
       threadToEdit.body = reqBody.editThreadUpdate.body;
       await article.save();
-      await article.populate('author');
       return NextResponse.json({ success: true, article });
     }
 
-    // 2. ADD NEW THREAD UPDATE
+    // 3. Handle Live Thread Reply / New Update
     if ('newThreadReply' in reqBody && reqBody.newThreadReply) {
       if (!article.updates) article.updates = [];
 
@@ -73,47 +73,52 @@ export async function PUT(
       });
 
       await article.save();
-      await article.populate('author');
       return NextResponse.json({ success: true, article });
     }
 
-    // 3. STANDARD ARTICLE UPDATE (Main form save)
+    // 4. Resolve Author ID cleanly (handles string, populated object, or fallback)
+    let authorIdToAssign: any = null;
+
+    if (reqBody.author) {
+      if (typeof reqBody.author === 'string' && reqBody.author.trim() !== '') {
+        authorIdToAssign = reqBody.author.trim();
+      } else if (typeof reqBody.author === 'object' && reqBody.author._id) {
+        authorIdToAssign = reqBody.author._id;
+      }
+    }
+
+    if (!authorIdToAssign && article.author) {
+      authorIdToAssign = typeof article.author === 'object' && (article.author as any)._id
+        ? (article.author as any)._id
+        : article.author;
+    }
+
+    if (!authorIdToAssign) {
+      const sessionAuthorId = (session.user as any)?.authorId;
+      if (sessionAuthorId) {
+        authorIdToAssign = sessionAuthorId;
+      } else {
+        const dbUser = await User.findOne({ email: session.user?.email });
+        if (dbUser?.author) {
+          authorIdToAssign = dbUser.author;
+        }
+      }
+    }
+
+    // 5. Update direct fields
     if ('title' in reqBody) article.title = reqBody.title;
     if ('summary' in reqBody) article.summary = reqBody.summary;
     if ('body' in reqBody) article.body = reqBody.body;
     if ('imageUrl' in reqBody) article.imageUrl = reqBody.imageUrl;
     if ('category' in reqBody) article.category = reqBody.category;
-    if ('isFeatured' in reqBody) article.isFeatured = reqBody.isFeatured;
-    if ('isTrending' in reqBody) article.isTrending = reqBody.isTrending;
+    if ('isFeatured' in reqBody) article.isFeatured = Boolean(reqBody.isFeatured);
+    if ('isTrending' in reqBody) article.isTrending = Boolean(reqBody.isTrending);
     if ('imageAlt' in reqBody) article.imageAlt = reqBody.imageAlt;
     if ('email' in reqBody) article.email = reqBody.email;
 
-    // Ensure author is a valid non-empty string or fallback
-        const incomingAuthor = typeof reqBody.author === 'string' && reqBody.author.trim() !== '' 
-          ? reqBody.author.trim() 
-          : null;
-
-        if (incomingAuthor) {
-          article.author = incomingAuthor;
-        } else if (!article.author) {
-          // Fallback 1: NextAuth token authorId
-          const sessionAuthorId = (session.user as any)?.authorId;
-          
-          if (sessionAuthorId) {
-            article.author = sessionAuthorId;
-          } else {
-            // Fallback 2: Look up User in DB directly
-            const dbUser = await User.findOne({ email: session.user?.email });
-            if (dbUser?.author) {
-              article.author = dbUser.author;
-            } else {
-              return NextResponse.json(
-                { success: false, error: 'No valid author profile linked to this user account.' },
-                { status: 400 }
-              );
-            }
-          }
-        }
+    if (authorIdToAssign) {
+      article.author = authorIdToAssign;
+    }
 
     if ('updates' in reqBody && Array.isArray(reqBody.updates)) {
       article.updates = reqBody.updates.map((update: any) => ({
@@ -134,7 +139,6 @@ export async function PUT(
     }
 
     await article.save();
-    await article.populate('author');
     return NextResponse.json({ success: true, article });
   } catch (err: any) {
     console.error('❌ Article update error:', err);
