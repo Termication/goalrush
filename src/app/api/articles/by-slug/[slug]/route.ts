@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
+import Author from '@/models/Author';
 
 export async function GET(
   req: Request,
@@ -11,7 +12,9 @@ export async function GET(
   try {
     await dbConnect();
 
-    const article = await Article.findOne({ slug });
+    const _ensureAuthor = Author;
+
+    const article = await Article.findOne({ slug }).populate('author');
     if (!article) {
       return NextResponse.json({ success: false, error: 'Article not found' }, { status: 404 });
     }
