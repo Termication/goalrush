@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
 import slugify from 'slugify';
+import User from '@/models/User';
+import Author from '@/models/Author';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
 
 // Handle GET requests — fetch all articles
 export async function GET(request: Request) {
@@ -45,24 +49,33 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     await dbConnect();
-    console.log("✅ Connected to MongoDB");
+    const _ensureAuthor = Author;
 
+    const session = await getServerSession(authOptions);
     const body = await request.json();
-    const { title, summary, body: articleBody, imageUrl, category, isFeatured } = body;
+    const { title, summary, body: articleBody, imageUrl, category, isFeatured, author } = body;
 
     if (!title || !summary || !articleBody || !imageUrl || !category) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
-    // ✅ Generate a slug manually
-  let slug = slugify(title, { lower: true, strict: true });
-  let count = 1;
-  const ArticleModel = (Article as any).default || Article;
+    // Resolve Author ID
+    let authorId = author;
+    if (!authorId && session) {
+      authorId = (session.user as any)?.authorId;
+      if (!authorId) {
+        const user = await User.findOne({ email: session.user?.email });
+        if (user?.author) authorId = user.author;
+      }
+    }
 
-  while (await ArticleModel.findOne({ slug })) {
-    slug = `${slug}-${count++}`;
-  }
+    let slug = slugify(title, { lower: true, strict: true });
+    let count = 1;
+    const ArticleModel = (Article as any).default || Article;
 
+    while (await ArticleModel.findOne({ slug })) {
+      slug = `${slug}-${count++}`;
+    }
 
     const newArticle = await new ArticleModel({
       title,
@@ -70,12 +83,12 @@ export async function POST(request: Request) {
       body: articleBody,
       imageUrl,
       category,
-      isFeatured,
+      isFeatured: Boolean(isFeatured),
       slug,
+      ...(authorId ? { author: authorId } : {}),
     }).save();
 
     return NextResponse.json({ success: true, data: newArticle }, { status: 201 });
-
   } catch (error: any) {
     console.error("Error creating article:", error);
     if (error.name === 'ValidationError') {
