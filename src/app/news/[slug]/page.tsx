@@ -29,6 +29,14 @@ interface ArticleUpdate {
   createdAt: string;
 }
 
+interface AuthorData {
+  _id?: string;
+  name: string;
+  slug?: string;
+  avatarUrl?: string;
+  role?: string;
+}
+
 // Define the structure of an article
 interface Article {
   _id: string;
@@ -39,6 +47,7 @@ interface Article {
   category: string;
   slug: string;
   createdAt: string;
+  author?: string | AuthorData; // 👈 Added author field
   updates?: ArticleUpdate[];
 }
 
@@ -126,6 +135,12 @@ export default function NewsPage() {
     );
   }
 
+// Safely extract author details
+  const authorObj = typeof article.author === 'object' && article.author !== null ? article.author : null;
+  const authorName = authorObj?.name || (typeof article.author === 'string' ? article.author : 'Editorial Team');
+  const authorAvatar = authorObj?.avatarUrl;
+  const authorSlug = authorObj?.slug;
+
   return (
     <>
       {/* Dynamic Meta Tags */}
@@ -186,10 +201,45 @@ export default function NewsPage() {
           </div>
 
 
-          <header className="mb-6">
-            <Badge className="mb-4 bg-indigo-500 text-white">
+<header className="mb-6">
+            <Badge className="mb-4 bg-indigo-500 text-white hover:bg-indigo-600">
               {article.category || 'News'}
             </Badge>
+
+            {/* --- TOP AUTHOR DETAILS BLOCK --- */}
+            <div className="flex items-center gap-3 mt-2 pb-6 border-b border-gray-800">
+              {authorSlug ? (
+                <Link href={`/authors/${authorSlug}`} className="flex items-center gap-3 group/author">
+                  <div className="relative h-12 w-12 rounded-full overflow-hidden bg-gray-800 border border-gray-700 flex-shrink-0">
+                    {authorAvatar ? (
+                      <Image src={authorAvatar} alt={authorName} fill className="object-cover" />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full text-lg font-bold text-gray-400">
+                        {authorName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-base font-semibold text-gray-200 group-hover/author:text-indigo-400 transition-colors">
+                      {authorName}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {authorObj?.role || 'Staff Journalist'}
+                    </p>
+                  </div>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="relative h-12 w-12 rounded-full overflow-hidden bg-gray-800 border border-gray-700 flex-shrink-0 flex items-center justify-center">
+                    <span className="text-lg font-bold text-gray-400">{authorName.charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <p className="text-base font-semibold text-gray-200">{authorName}</p>
+                    <p className="text-xs text-gray-500">Editorial Team</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </header>
 
           {/* Pulsating Live Updates Indicator (Only shows if updates exist) */}
