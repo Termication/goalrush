@@ -9,6 +9,13 @@ import { TrendingUp, ArrowUpRight, Clock, User, Sparkles, ChevronRight } from 'l
 import { Skeleton } from '@/components/ui/skeleton';
 
 
+interface AuthorData {
+  _id?: string;
+  name: string;
+  slug?: string;
+  avatarUrl?: string;
+}
+
 interface Article {
   _id: string;
   title: string;
@@ -19,7 +26,7 @@ interface Article {
   createdAt: string;
   isTrending?: boolean;
   isFeatured?: boolean;
-  author?: string;
+  author?: string | AuthorData;
   readTime?: number;
 }
 
@@ -109,7 +116,11 @@ function GradientCard({ article, index }: { article: Article; index: number }) {
     'from-indigo-500 via-blue-500 to-cyan-500',
   ];
 
-  const currentGradient = gradientColors[index % gradientColors.length];
+const currentGradient = gradientColors[index % gradientColors.length];
+
+  // Safely extract author name
+  const authorObj = typeof article.author === 'object' && article.author !== null ? article.author : null;
+  const authorName = authorObj?.name || (typeof article.author === 'string' ? article.author : null);
 
   return (
     <Link href={`/news/${article.slug}`} className="block h-full group">
@@ -172,10 +183,10 @@ function GradientCard({ article, index }: { article: Article; index: number }) {
                 <Clock className="h-3 w-3 sm:h-4 sm:4" />
                 {article.readTime || 5} min
               </div>
-              {article.author && (
+                {authorName && (
                 <div className="flex items-center gap-1">
                   <User className="h-3 w-3 sm:h-4 sm:4" />
-                  <span className="hidden sm:inline">{article.author}</span>
+                  <span className="hidden sm:inline">{authorName}</span>
                 </div>
               )}
             </div>
