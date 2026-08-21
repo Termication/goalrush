@@ -21,6 +21,14 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+interface AuthorData {
+  _id?: string;
+  name: string;
+  slug?: string;
+  avatarUrl?: string;
+  role?: string;
+}
+
 interface Article {
   _id?: string
   title: string
@@ -30,7 +38,7 @@ interface Article {
   isFeatured?: boolean
   summary?: string
   category?: string
-  author?: string
+  author?: string | AuthorData
   readTime?: number
   views?: number
 }
@@ -376,6 +384,11 @@ function ArticleCard({ article, index, size = 'medium' }: {
     day: 'numeric'
   })
 
+  // Safely extract author name
+  const authorObj = typeof article.author === 'object' && article.author !== null ? article.author : null;
+  const authorName = authorObj?.name || (typeof article.author === 'string' ? article.author : null);
+  const firstName = authorName ? authorName.split(' ')[0] : null;
+
   return (
     <Link
       href={`/news/${article.slug}`}
@@ -438,14 +451,16 @@ function ArticleCard({ article, index, size = 'medium' }: {
             {article.title}
           </h3>
 
-          {/* Metadata Row */}
-          <div className="flex items-center justify-between mt-3 text-gray-300 text-sm">
-             <div className="flex items-center gap-2">
-                {article.author && (
-                    <span className="font-medium text-white">{article.author.split(' ')[0]}</span>
-                )}
-                <span>•</span>
-                <div className="flex items-center gap-1">
+              {/* Metadata Row */}
+              <div className="flex items-center justify-between mt-3 text-gray-300 text-sm">
+                <div className="flex items-center gap-2">
+                    {firstName && (
+                        <>
+                          <span className="font-medium text-white">{firstName}</span>
+                          <span>•</span>
+                        </>
+                    )}
+                    <div className="flex items-center gap-1">
                     <CalendarDays className="h-3.5 w-3.5" />
                     {formattedDate}
                 </div>

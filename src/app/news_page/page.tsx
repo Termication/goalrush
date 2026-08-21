@@ -5,10 +5,18 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import AdBanner from '@/components/ads/AdBanner';
-import { Clock, BookOpen, TrendingUp, Sparkles, ArrowRight, Calendar, User, Eye, BookmarkPlus, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, BookOpen, TrendingUp, ArrowRight, Calendar, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import SocialShare from '@/components/social/SocialShare';
+
+interface AuthorData {
+  _id?: string;
+  name: string;
+  slug?: string;
+  avatarUrl?: string;
+  role?: string;
+}
 
 interface Article {
   _id: string;
@@ -19,7 +27,7 @@ interface Article {
   category?: string;
   readTime?: number;
   createdAt?: string;
-  author?: string;
+  author?: string | AuthorData;
   views?: number;
   isFeatured?: boolean;
   isTrending?: boolean;
@@ -35,7 +43,6 @@ export default function NewsPage() {
   const [nextArticle, setNextArticle] = useState<Article | null>(null);
   const [featuredArticle, setFeaturedArticle] = useState<Article | null>(null);
 
-  // Load articles
   useEffect(() => {
     const fetchArticles = async () => {
       setLoading(true);
@@ -44,20 +51,18 @@ export default function NewsPage() {
         const json = await res.json();
 
         if (json.success) {
-          const articles = json.articles || [];
-          setArticles(articles);
+          const articlesList = json.articles || [];
+          setArticles(articlesList);
 
           const total = json.total || 0;
           setTotalPages(Math.max(1, Math.ceil(total / PAGE_SIZE)));
 
-          // Get featured article
-          const featured = articles.find((a: Article) => a.isFeatured);
-          setFeaturedArticle(featured || articles[0] || null);
+          const featured = articlesList.find((a: Article) => a.isFeatured);
+          setFeaturedArticle(featured || articlesList[0] || null);
 
-          // Suggest unread
           const readSlugs = JSON.parse(localStorage.getItem('readArticles') || '[]') as string[];
-          const unread = articles.find((a: Article) => !readSlugs.includes(a.slug));
-          setNextArticle(unread || articles[0] || null);
+          const unread = articlesList.find((a: Article) => !readSlugs.includes(a.slug));
+          setNextArticle(unread || articlesList[0] || null);
         }
       } catch (err) {
         console.error('Failed to fetch articles:', err);
@@ -69,7 +74,6 @@ export default function NewsPage() {
     fetchArticles();
   }, [page]);
 
-  // Track read articles
   const markAsRead = (slug: string) => {
     const stored = JSON.parse(localStorage.getItem('readArticles') || '[]') as string[];
     if (!stored.includes(slug)) {
@@ -86,7 +90,6 @@ export default function NewsPage() {
     if (page < totalPages) setPage(p => p + 1);
   };
 
-  // Different gradient overlays for variety
   const gradientOverlays = [
     'bg-gradient-to-t from-black/90 via-black/50 to-transparent',
     'bg-gradient-to-t from-black/85 via-black/45 to-transparent',
@@ -131,7 +134,7 @@ export default function NewsPage() {
           </div>
         </div>
 
-        {/* Continue Reading */}
+        {/* Continue Reading Banner */}
         {nextArticle && !loading && (
           <div className="mb-12 relative">
             <div className="absolute -top-3 left-6 z-10">
@@ -147,7 +150,6 @@ export default function NewsPage() {
               className="block group"
             >
               <div className="relative h-[300px] rounded-2xl overflow-hidden shadow-xl border-2 border-gray-200 dark:border-gray-700 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all duration-300">
-                {/* Full background image */}
                 <div className="absolute inset-0">
                   <Image
                     src={nextArticle.imageUrl}
@@ -156,17 +158,25 @@ export default function NewsPage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                  {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
                 </div>
 
-                {/* Content */}
                 <div className="relative h-full p-8 flex items-center">
                   <div className="max-w-2xl">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="flex items-center gap-1.5 text-sm text-gray-300">
                         <Clock className="h-4 w-4" />
-                        {nextArticle.readTime || 5} min remaining
+                        {nextArticle.readTime || 5} min read
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm text-green-400 font-medium">
+                        <User className="h-4 w-4" />
+                        <span>
+                          By {
+                            typeof nextArticle.author === 'object' && nextArticle.author !== null 
+                              ? (nextArticle.author.name || 'Editorial Team') 
+                              : (nextArticle.author || 'Editorial Team')
+                          }
+                        </span>
                       </div>
                     </div>
 
@@ -199,7 +209,6 @@ export default function NewsPage() {
           <ArticlesSkeleton />
         ) : (
           <>
-            {/* Grid Header */}
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                 Latest Stories
@@ -214,7 +223,6 @@ export default function NewsPage() {
               </div>
             </div>
 
-            {/* Creative Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {articles.map((article, index) => (
                 <ArticleCard 
@@ -227,7 +235,7 @@ export default function NewsPage() {
               ))}
             </div>
 
-            {/* Modern Pagination */}
+            {/* Pagination */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 py-8 border-t border-gray-200 dark:border-gray-800">
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Showing <span className="font-semibold text-gray-900 dark:text-white">{(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, totalPages * PAGE_SIZE)}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages * PAGE_SIZE}</span> articles
@@ -291,116 +299,126 @@ export default function NewsPage() {
   );
 }
 
-// Modern Article Card Component with Full Image
+// Article Card Component with Author Integration
 function ArticleCard({ article, index, markAsRead, gradientOverlay }: { 
   article: Article; 
   index: number; 
   markAsRead: (slug: string) => void;
   gradientOverlay: string;
 }) {
+  const authorObj = typeof article.author === 'object' && article.author !== null ? article.author : null;
+  // Fallback to "Editorial Team" if no author is found
+  const authorName = authorObj?.name || (typeof article.author === 'string' ? article.author : 'Editorial Team');
+  const authorAvatar = authorObj?.avatarUrl;
+  const authorSlug = authorObj?.slug;
+
   return (
-    <Link
-      href={`/news/${article.slug}`}
-      onClick={() => markAsRead(article.slug)}
-      className="block h-full group"
-    >
-      <div className="relative h-[400px] w-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
-        {/* Full Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src={article.imageUrl}
-            alt={article.title}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform duration-700"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+    <div className="relative h-[400px] w-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] group">
+      <Link
+        href={`/news/${article.slug}`}
+        onClick={() => markAsRead(article.slug)}
+        className="absolute inset-0 z-0"
+      >
+        <Image
+          src={article.imageUrl}
+          alt={article.title}
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-700"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+        <div className={`absolute inset-0 ${gradientOverlay} group-hover:from-black/95 group-hover:via-black/60 transition-all duration-500`} />
+      </Link>
+
+      <div className="relative h-full p-6 flex flex-col justify-end z-10 pointer-events-none">
+        {/* Top Badges & Share */}
+        <div className="flex items-center justify-between mb-4 pointer-events-auto">
+          <div className="flex items-center gap-2">
+            <div className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold rounded-full uppercase tracking-wider">
+              {article.category || "News"}
+            </div>
+            {article.isTrending && (
+              <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-xs font-bold rounded-full">
+                <TrendingUp className="h-3 w-3" />
+                TRENDING
+              </div>
+            )}
+          </div>
           
-          {/* Gradient Overlay - Covers entire card */}
-          <div className={`absolute inset-0 ${gradientOverlay} group-hover:from-black/95 group-hover:via-black/60 transition-all duration-500`} />
-          
-          {/* Subtle Pattern Overlay */}
-          <div className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-              backgroundSize: '20px 20px'
-            }}
-          />
+          <div className="z-20">
+            <SocialShare
+              url={`https://www.goal-rush.live/news/${article.slug}`}
+              title={article.title}
+              description={article.summary}
+              className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors flex items-center justify-center"
+            />
+          </div>
         </div>
 
-        {/* Content Overlay */}
-        <div className="relative h-full p-6 flex flex-col justify-end">
-          {/* Top Badges */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold rounded-full uppercase tracking-wider">
-                {article.category || "News"}
-              </div>
-              {article.isTrending && (
-                <div className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-xs font-bold rounded-full">
-                  <TrendingUp className="h-3 w-3" />
-                  TRENDING
-                </div>
-              )}
-            </div>
-            
-            <div className="absolute top-4 right-4 z-20">
-              <SocialShare
-                url={`https://www.goal-rush.live/news/${article.slug}`}
-                title={article.title}
-                description={article.summary}
-                className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors flex items-center justify-center"
-                  />
-            </div>
-
-
-          </div>
-
-          {/* Title */}
+        {/* Title */}
+        <Link href={`/news/${article.slug}`} className="pointer-events-auto">
           <h3 className="text-xl md:text-2xl font-bold text-white mb-3 line-clamp-2 group-hover:line-clamp-3 transition-all duration-300">
             {article.title}
           </h3>
-          
-          {/* Summary */}
-          <p className="text-gray-300 text-sm md:text-base mb-4 line-clamp-2 group-hover:line-clamp-3 transition-all duration-300">
-            {article.summary}
-          </p>
+        </Link>
+        
+        {/* Summary */}
+        <p className="text-gray-300 text-sm md:text-base mb-4 line-clamp-2 group-hover:line-clamp-3 transition-all duration-300">
+          {article.summary}
+        </p>
 
-          {/* Footer Info */}
-          <div className="flex items-center justify-between pt-4 border-t border-white/20">
-            <div className="flex items-center gap-3">
-              {article.author && (
+        {/* Footer Info with Author */}
+        <div className="flex items-center justify-between pt-4 border-t border-white/20">
+          <div className="flex items-center gap-3 pointer-events-auto">
+            {authorName && (
+              authorSlug ? (
+                <Link 
+                  href={`/authors/${authorSlug}`} 
+                  className="flex items-center gap-2 group/author hover:opacity-90"
+                >
+                  <div className="relative h-8 w-8 rounded-full overflow-hidden bg-gradient-to-r from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold shadow-md border border-white/20">
+                    {authorAvatar ? (
+                      <Image src={authorAvatar} alt={authorName} fill className="object-cover" />
+                    ) : (
+                      authorName.charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <span className="text-sm font-medium text-gray-200 group-hover/author:text-green-400 transition-colors">
+                    {authorName.length > 16 ? authorName.substring(0, 16) + '...' : authorName}
+                  </span>
+                </Link>
+              ) : (
                 <div className="flex items-center gap-2">
                   <div className="h-8 w-8 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold shadow-md">
-                    {article.author.charAt(0).toUpperCase()}
+                    {authorName.charAt(0).toUpperCase()}
                   </div>
                   <span className="text-sm text-gray-300">
-                    {article.author.length > 15 ? article.author.substring(0, 15) + '...' : article.author}
+                    {authorName.length > 16 ? authorName.substring(0, 16) + '...' : authorName}
                   </span>
                 </div>
-              )}
+              )
+            )}
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 text-sm text-gray-300">
+              <Clock className="h-4 w-4" />
+              {article.readTime || 5} min
             </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5 text-sm text-gray-300">
-                <Clock className="h-4 w-4" />
-                {article.readTime || 5} min
-              </div>
-              <div className="flex items-center gap-2 text-white font-medium group-hover:text-indigo-300 transition-colors">
-                <span>Read</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
+            <Link 
+              href={`/news/${article.slug}`} 
+              className="flex items-center gap-1 text-white font-medium hover:text-indigo-300 transition-colors pointer-events-auto"
+            >
+              <span>Read</span>
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
-
-        {/* Hover Glow Effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 pointer-events-none" />
       </div>
-    </Link>
+    </div>
   );
 }
 
-// Skeleton Loader for Articles
+// Skeleton Loader
 function ArticlesSkeleton() {
   const gradients = [
     'from-gray-800 to-gray-900',
@@ -412,63 +430,47 @@ function ArticlesSkeleton() {
   ];
 
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div
-            key={i}
-            className={cn(
-              "relative h-[400px] w-full overflow-hidden rounded-2xl",
-              "bg-gradient-to-br",
-              gradients[i % gradients.length]
-            )}
-          >
-            {/* Pattern Overlay */}
-            <div 
-              className="absolute inset-0 opacity-10"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                backgroundSize: '20px 20px'
-              }}
-            />
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div
+          key={i}
+          className={cn(
+            "relative h-[400px] w-full overflow-hidden rounded-2xl bg-gradient-to-br",
+            gradients[i % gradients.length]
+          )}
+        >
+          <div className="relative h-full p-6 flex flex-col justify-end">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-6 w-20 bg-gradient-to-r from-gray-700 to-gray-800" />
+                  <Skeleton className="h-6 w-16 bg-gradient-to-r from-gray-700 to-gray-800" />
+                </div>
+                <Skeleton className="h-8 w-8 rounded-full bg-gradient-to-r from-gray-700 to-gray-800" />
+              </div>
 
-            {/* Content Skeleton */}
-            <div className="relative h-full p-6 flex flex-col justify-end">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-6 w-20 bg-gradient-to-r from-gray-700 to-gray-800" />
-                    <Skeleton className="h-6 w-16 bg-gradient-to-r from-gray-700 to-gray-800" />
-                  </div>
+              <Skeleton className="h-7 w-full bg-gradient-to-r from-gray-700 to-gray-800" />
+              <Skeleton className="h-7 w-5/6 bg-gradient-to-r from-gray-700 to-gray-800" />
+              
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full bg-gradient-to-r from-gray-700 to-gray-800" />
+                <Skeleton className="h-4 w-2/3 bg-gradient-to-r from-gray-700 to-gray-800" />
+              </div>
+
+              <div className="flex items-center justify-between pt-4">
+                <div className="flex items-center gap-2">
                   <Skeleton className="h-8 w-8 rounded-full bg-gradient-to-r from-gray-700 to-gray-800" />
+                  <Skeleton className="h-4 w-24 bg-gradient-to-r from-gray-700 to-gray-800" />
                 </div>
-
-                <Skeleton className="h-7 w-full bg-gradient-to-r from-gray-700 to-gray-800" />
-                <Skeleton className="h-7 w-5/6 bg-gradient-to-r from-gray-700 to-gray-800" />
-                
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-full bg-gradient-to-r from-gray-700 to-gray-800" />
-                  <Skeleton className="h-4 w-2/3 bg-gradient-to-r from-gray-700 to-gray-800" />
-                </div>
-
-                <div className="flex items-center justify-between pt-4">
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-8 w-8 rounded-full bg-gradient-to-r from-gray-700 to-gray-800" />
-                    <Skeleton className="h-4 w-16 bg-gradient-to-r from-gray-700 to-gray-800" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Skeleton className="h-4 w-12 bg-gradient-to-r from-gray-700 to-gray-800" />
-                    <Skeleton className="h-4 w-16 bg-gradient-to-r from-gray-700 to-gray-800" />
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-4 w-12 bg-gradient-to-r from-gray-700 to-gray-800" />
+                  <Skeleton className="h-4 w-16 bg-gradient-to-r from-gray-700 to-gray-800" />
                 </div>
               </div>
             </div>
-
-            {/* Shimmer Effect */}
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
           </div>
-        ))}
-      </div>
-    </>
+        </div>
+      ))}
+    </div>
   );
 }

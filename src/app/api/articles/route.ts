@@ -27,6 +27,7 @@ export async function GET(request: Request) {
 
     const [articles, total] = await Promise.all([
       Article.find(query)
+        .populate('author')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
