@@ -3,6 +3,8 @@ import dbConnect from '@/lib/dbConnect';
 import Article from '@/models/Article';
 import Author from '@/models/Author';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     await dbConnect();
