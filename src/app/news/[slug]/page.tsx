@@ -209,7 +209,7 @@ export default function NewsPage() {
             {/* --- TOP AUTHOR DETAILS BLOCK --- */}
             <div className="flex items-center gap-3 mt-2 pb-6 border-b border-gray-800">
               {authorSlug ? (
-                <Link href={`/authors/${authorSlug}`} className="flex items-center gap-3 group/author">
+                <Link href="#" className="flex items-center gap-3 group/author">
                   <div className="relative h-12 w-12 rounded-full overflow-hidden bg-gray-800 border border-gray-700 flex-shrink-0">
                     {authorAvatar ? (
                       <Image src={authorAvatar} alt={authorName} fill className="object-cover" />
