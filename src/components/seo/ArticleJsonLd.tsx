@@ -5,6 +5,7 @@ interface ArticleJsonLdProps {
   datePublished: string;
   dateModified?: string;
   authorName?: string;
+  authorUrl?: string;
   slug: string;
 }
 
@@ -14,7 +15,8 @@ export default function ArticleJsonLd({
   imageUrl,
   datePublished,
   dateModified,
-  authorName = "GoalRush Team",
+  authorName = "Editorial Team",
+  authorUrl,
   slug,
 }: ArticleJsonLdProps) {
   const structuredData = {
@@ -22,14 +24,16 @@ export default function ArticleJsonLd({
     "@type": "NewsArticle",
     headline: title,
     description: description,
-    image: imageUrl,
+    image: [imageUrl],
     datePublished: datePublished,
     dateModified: dateModified || datePublished,
-    author: {
-      "@type": "Organization",
-      name: authorName,
-      url: "https://www.goal-rush.live",
-    },
+    author: [
+      {
+        "@type": "Person",
+        name: authorName,
+        url: authorUrl || "https://www.goal-rush.live",
+      }
+    ],
     publisher: {
       "@type": "Organization",
       name: "GoalRush",
