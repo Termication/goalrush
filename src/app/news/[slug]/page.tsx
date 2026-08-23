@@ -160,13 +160,15 @@ export default function NewsPage() {
       </Head>
       
       {/* JSON-LD Structured Data for SEO */}
-      <ArticleJsonLd
-        title={article.title}
-        description={article.summary}
-        imageUrl={article.imageUrl}
-        datePublished={article.createdAt}
-        slug={article.slug}
-      />
+        <ArticleJsonLd
+          title={article.title}
+          description={article.summary}
+          imageUrl={article.imageUrl}
+          datePublished={article.createdAt}
+          slug={article.slug}
+          authorName={authorName}
+          authorUrl={authorSlug ? `https://www.goal-rush.live/authors/${authorSlug}` : undefined}
+        />
       
       {/* Breadcrumb Structured Data */}
       <BreadcrumbJsonLd
