@@ -1,12 +1,20 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Trophy, BarChart3, ChevronRight, Zap, Loader2 } from 'lucide-react';
+import { Trophy, BarChart3, ChevronRight, Zap, Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useTeamLogos } from '@/components/hooks/useTeamLogos';
 
 const PREFERRED_BOOKIES = ['Unibet', 'William Hill', 'Bet365', 'Betfair', 'Sunbet'];
+
+// Top leagues to aggregate matches from
+const TOP_LEAGUES = [
+  'soccer_epl', 
+  'soccer_spain_la_liga', 
+  'soccer_uefa_champs_league', 
+  'soccer_fifa_world_cup'
+];
 
 interface Outcome {
   name: string;
@@ -18,6 +26,7 @@ interface Match {
   home_team: string;
   away_team: string;
   commence_time: string;
+  sport_key: string;
   bookmakers: {
     title: string;
     markets: {
@@ -46,98 +55,134 @@ const getCountryFlag = (countryName: string) => {
   return flags[countryName.trim()] || '🌍'; 
 };
 
-export default function OddsPredictionWidget({ sportKey = 'soccer_epl' }: { sportKey?: string }) {
+export default function OddsPredictionWidget() {
+  const [allMatches, setAllMatches] = useState<Match[]>([]);
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
   const [matchData, setMatchData] = useState<ProcessedMatchData | null>(null);
+  
   const [loading, setLoading] = useState(true);
   const [hasVoted, setHasVoted] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const { getLogo } = useTeamLogos();
 
-  const fetchFeaturedMatch = useCallback(async () => {
+  // 1. Fetch matches from multiple top leagues
+  const fetchAllTopMatches = useCallback(async () => {
+    setLoading(true);
     try {
-      const res = await fetch(`/api/odds?sport=${sportKey}`);
-      const data: Match[] = await res.json();
+      // Fetch all leagues in parallel
+      const fetchPromises = TOP_LEAGUES.map(league => 
+        fetch(`/api/odds?sport=${league}`)
+          .then(res => res.json())
+          .then((data: Match[]) => {
+             // Attach the sport_key to each match so we know where it came from
+             return data.map(match => ({ ...match, sport_key: league }));
+          })
+          .catch(() => []) // Silently handle if one league fails
+      );
 
-      if (!data || data.length === 0) {
+      const results = await Promise.all(fetchPromises);
+      const aggregatedMatches = results.flat();
+
+      if (aggregatedMatches.length === 0) {
         setLoading(false);
         return;
       }
 
-      // Find the match closest to the current time
+      // Sort all matches by how close they are to right now
       const now = new Date().getTime();
-      const closestMatch = data.reduce((prev, curr) => {
-        return Math.abs(new Date(curr.commence_time).getTime() - now) < Math.abs(new Date(prev.commence_time).getTime() - now)
-          ? curr
-          : prev;
+      const sortedMatches = aggregatedMatches.sort((a, b) => {
+        return Math.abs(new Date(a.commence_time).getTime() - now) - Math.abs(new Date(b.commence_time).getTime() - now);
       });
 
-      // Extract Odds
-      const bookie = closestMatch.bookmakers.find(b => PREFERRED_BOOKIES.includes(b.title)) || closestMatch.bookmakers[0];
-      const h2h = bookie?.markets.find((m) => m.key === 'h2h');
-      
-      const homeOutcome = h2h?.outcomes.find(o => o.name === closestMatch.home_team);
-      const awayOutcome = h2h?.outcomes.find(o => o.name === closestMatch.away_team);
-      const drawOutcome = h2h?.outcomes.find(o => o.name === 'Draw');
+      setAllMatches(sortedMatches);
+      processAndSetMatch(sortedMatches[0]);
 
-      if (!homeOutcome || !awayOutcome || !drawOutcome) {
-        setLoading(false);
-        return;
-      }
-
-      // Calculate implied probability to generate realistic community vote splits
-      const impliedHome = 1 / homeOutcome.price;
-      const impliedDraw = 1 / drawOutcome.price;
-      const impliedAway = 1 / awayOutcome.price;
-      const totalImplied = impliedHome + impliedDraw + impliedAway;
-
-      const processed: ProcessedMatchData = {
-        id: closestMatch.id,
-        league: sportKey === 'soccer_fifa_world_cup' ? 'World Cup' : 'Premier League',
-        time: format(new Date(closestMatch.commence_time), "MMM d, HH:mm"),
-        isInternational: sportKey === 'soccer_fifa_world_cup',
-        home: {
-          name: closestMatch.home_team,
-          short: closestMatch.home_team.substring(0, 3).toUpperCase(),
-          color: 'bg-red-500',
-          odds: homeOutcome.price,
-          voteSplit: Math.round((impliedHome / totalImplied) * 100)
-        },
-        draw: {
-          name: 'Draw',
-          short: 'DRAW',
-          color: 'bg-gray-500',
-          odds: drawOutcome.price,
-          voteSplit: Math.round((impliedDraw / totalImplied) * 100)
-        },
-        away: {
-          name: closestMatch.away_team,
-          short: closestMatch.away_team.substring(0, 3).toUpperCase(),
-          color: 'bg-sky-500',
-          odds: awayOutcome.price,
-          voteSplit: Math.round((impliedAway / totalImplied) * 100)
-        }
-      };
-
-      setMatchData(processed);
     } catch (error) {
       console.error('Failed to load featured odds', error);
     } finally {
       setLoading(false);
     }
-  }, [sportKey]);
+  }, []);
+
+  // 2. Process a raw match into UI data
+  const processAndSetMatch = (rawMatch: Match) => {
+    const bookie = rawMatch.bookmakers.find(b => PREFERRED_BOOKIES.includes(b.title)) || rawMatch.bookmakers[0];
+    const h2h = bookie?.markets.find((m) => m.key === 'h2h');
+    
+    const homeOutcome = h2h?.outcomes.find(o => o.name === rawMatch.home_team);
+    const awayOutcome = h2h?.outcomes.find(o => o.name === rawMatch.away_team);
+    const drawOutcome = h2h?.outcomes.find(o => o.name === 'Draw');
+
+    if (!homeOutcome || !awayOutcome || !drawOutcome) {
+      return; // Skip if odds are missing
+    }
+
+    const impliedHome = 1 / homeOutcome.price;
+    const impliedDraw = 1 / drawOutcome.price;
+    const impliedAway = 1 / awayOutcome.price;
+    const totalImplied = impliedHome + impliedDraw + impliedAway;
+
+    // Format League Name nicely
+    let leagueName = 'Premier League';
+    if (rawMatch.sport_key === 'soccer_fifa_world_cup') leagueName = 'World Cup';
+    if (rawMatch.sport_key === 'soccer_spain_la_liga') leagueName = 'La Liga';
+    if (rawMatch.sport_key === 'soccer_uefa_champs_league') leagueName = 'Champions League';
+
+    const processed: ProcessedMatchData = {
+      id: rawMatch.id,
+      league: leagueName,
+      time: format(new Date(rawMatch.commence_time), "MMM d, HH:mm"),
+      isInternational: rawMatch.sport_key === 'soccer_fifa_world_cup',
+      home: {
+        name: rawMatch.home_team,
+        short: rawMatch.home_team.substring(0, 3).toUpperCase(),
+        color: 'bg-red-500',
+        odds: homeOutcome.price,
+        voteSplit: Math.round((impliedHome / totalImplied) * 100)
+      },
+      draw: {
+        name: 'Draw',
+        short: 'DRAW',
+        color: 'bg-gray-500',
+        odds: drawOutcome.price,
+        voteSplit: Math.round((impliedDraw / totalImplied) * 100)
+      },
+      away: {
+        name: rawMatch.away_team,
+        short: rawMatch.away_team.substring(0, 3).toUpperCase(),
+        color: 'bg-sky-500',
+        odds: awayOutcome.price,
+        voteSplit: Math.round((impliedAway / totalImplied) * 100)
+      }
+    };
+
+    setMatchData(processed);
+  };
 
   useEffect(() => {
-    fetchFeaturedMatch();
-  }, [fetchFeaturedMatch]);
+    fetchAllTopMatches();
+  }, [fetchAllTopMatches]);
 
   const handleVote = (choice: 'home' | 'draw' | 'away') => {
     setSelectedChoice(choice);
     setHasVoted(true);
   };
 
+  // 3. Load the next match in the sorted array
+  const loadNextMatch = () => {
+    const nextIndex = currentMatchIndex + 1;
+    // Loop back to start if we reach the end of the array
+    const newIndex = nextIndex >= allMatches.length ? 0 : nextIndex;
+    
+    setCurrentMatchIndex(newIndex);
+    setHasVoted(false); // Reset voting state
+    setSelectedChoice(null);
+    processAndSetMatch(allMatches[newIndex]);
+  };
+
   if (loading) {
     return (
-      <div className="w-full max-w-7xl mx-auto h-[350px] bg-gray-900 rounded-3xl animate-pulse border border-gray-800 flex items-center justify-center">
+      <div className="w-full max-w-7xl mx-auto h-[350px] bg-[#1c1d1e] rounded-3xl animate-pulse border border-gray-800 flex items-center justify-center">
         <Loader2 className="h-8 w-8 text-indigo-500 animate-spin" />
       </div>
     );
@@ -158,7 +203,7 @@ export default function OddsPredictionWidget({ sportKey = 'soccer_epl' }: { spor
               <Zap className="h-4 w-4 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white leading-tight">Predictions</h3>
+              <h3 className="text-lg font-bold text-white leading-tight">Fan Prediction</h3>
               <p className="text-xs text-indigo-400 font-medium tracking-wide uppercase">{matchData.league}</p>
             </div>
           </div>
@@ -223,18 +268,25 @@ export default function OddsPredictionWidget({ sportKey = 'soccer_epl' }: { spor
           </div>
         ) : (
           <div className="space-y-5 animate-in slide-in-from-bottom-4 fade-in duration-700">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="h-4 w-4 text-green-400" />
-              <p className="text-sm font-semibold text-gray-200">Community Consensus</p>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-green-400" />
+                <p className="text-sm font-semibold text-gray-200">Community Consensus</p>
+              </div>
             </div>
             
             <ResultBar label={matchData.home.name} percentage={matchData.home.voteSplit} odds={matchData.home.odds} color={matchData.home.color} isSelected={selectedChoice === 'home'} />
             <ResultBar label="Draw" percentage={matchData.draw.voteSplit} odds={matchData.draw.odds} color={matchData.draw.color} isSelected={selectedChoice === 'draw'} />
             <ResultBar label={matchData.away.name} percentage={matchData.away.voteSplit} odds={matchData.away.odds} color={matchData.away.color} isSelected={selectedChoice === 'away'} />
 
-            {/* <button className="w-full mt-4 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-800 text-sm font-semibold text-gray-300 hover:bg-gray-700 hover:text-white transition-colors border border-gray-700 hover:border-indigo-500/50">
-              Bet on this match <ChevronRight className="h-4 w-4" />
-            </button> */}
+            {/* Next Match Button */}
+            <button 
+              onClick={loadNextMatch}
+              className="w-full mt-6 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-800 text-sm font-semibold text-indigo-300 hover:bg-gray-700 hover:text-white transition-colors border border-gray-700 hover:border-indigo-500/50 group"
+            >
+              <RefreshCw className="h-4 w-4 group-hover:rotate-180 transition-transform duration-500" />
+              Predict Another Match
+            </button>
           </div>
         )}
       </div>
