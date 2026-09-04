@@ -9,6 +9,7 @@ import NewsletterSubscribe from "@/components/newsletter/NewsletterSubscribe"
 import TrendingArticles from "@/components/trending/TrendingArticles"
 import RandomLeftTable from "@/components/home/RandomLeftTable"
 import RandomRightTable from "@/components/home/RandomRightTable"
+import OddsPredictionWidget from "@/components/widgets/OddsPredictionWidget"
 
 
 
@@ -27,6 +28,12 @@ export default function Home() {
       {/* --- RANDOM RIGHT TABLE (Premier League or Bundesliga) --- */}
       <RandomRightTable />
       {/* ----------------------------- */}
+
+
+      {/* --- ODDS PREDICTION WIDGET --- */}
+      <OddsPredictionWidget />
+      {/* ----------------------------- */}
+      
       
       {/* --- TRENDING ARTICLES --- */}
       <TrendingArticles />
