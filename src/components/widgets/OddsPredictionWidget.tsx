@@ -158,7 +158,7 @@ export default function OddsPredictionWidget({ sportKey = 'soccer_epl' }: { spor
               <Zap className="h-4 w-4 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white leading-tight">Fan Prediction</h3>
+              <h3 className="text-lg font-bold text-white leading-tight">Predictions</h3>
               <p className="text-xs text-indigo-400 font-medium tracking-wide uppercase">{matchData.league}</p>
             </div>
           </div>
