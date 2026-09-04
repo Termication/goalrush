@@ -232,9 +232,9 @@ export default function OddsPredictionWidget({ sportKey = 'soccer_epl' }: { spor
             <ResultBar label="Draw" percentage={matchData.draw.voteSplit} odds={matchData.draw.odds} color={matchData.draw.color} isSelected={selectedChoice === 'draw'} />
             <ResultBar label={matchData.away.name} percentage={matchData.away.voteSplit} odds={matchData.away.odds} color={matchData.away.color} isSelected={selectedChoice === 'away'} />
 
-            <button className="w-full mt-4 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-800 text-sm font-semibold text-gray-300 hover:bg-gray-700 hover:text-white transition-colors border border-gray-700 hover:border-indigo-500/50">
+            {/* <button className="w-full mt-4 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-800 text-sm font-semibold text-gray-300 hover:bg-gray-700 hover:text-white transition-colors border border-gray-700 hover:border-indigo-500/50">
               Bet on this match <ChevronRight className="h-4 w-4" />
-            </button>
+            </button> */}
           </div>
         )}
       </div>
