@@ -183,12 +183,13 @@ const currentGradient = gradientColors[index % gradientColors.length];
                 <Clock className="h-3 w-3 sm:h-4 sm:4" />
                 {article.readTime || 5} min
               </div>
-                {authorName && (
-                <div className="flex items-center gap-1">
-                  <User className="h-3 w-3 sm:h-4 sm:4" />
-                  <span className="hidden sm:inline">{authorName}</span>
-                </div>
-              )}
+                {/* {authorName && (
+                // <div className="flex items-center gap-1">
+                //   <User className="h-3 w-3 sm:h-4 sm:4" />
+                //   <span className="hidden sm:inline">
+                // {authorName} </span>
+                // </div>
+              )} */}
             </div>
             
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-white/30 group-hover:w-11 group-hover:h-11 sm:group-hover:w-14 sm:group-hover:h-14 transition-all duration-300">
